@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mora for Studying</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        /* --- الإعدادات الأساسية والثيمات --- */
+        :root {
+            --transition-speed: 0.5s;
+        }
+        
+        body {
+            --accent-color: #00ff7f; 
+            --accent-glow: rgba(0, 255, 127, 0.4); 
+            --accent-hover: #33ff99;
+        }
+        body, body.mode-dark { --primary-bg: #05080f; --secondary-bg: #10141f; --glass-bg: rgba(16, 20, 31, 0.75); --primary-text-color: #e1e1ff; --border-color: rgba(255,255,255, 0.2); }
+        body.mode-light { --primary-bg: #f0f2f5; --secondary-bg: #ffffff; --glass-bg: rgba(255, 255, 255, 0.85); --primary-text-color: #1c1e21; --border-color: rgba(0,0,0, 0.2); }
+        body.mode-oled { --primary-bg: #000000; --secondary-bg: #111111; --glass-bg: rgba(17, 17, 17, 0.75); --primary-text-color: #e1e1ff; --border-color: rgba(255,255,255, 0.2); }
+        body.mode-gold-black { --primary-bg: #000000; --secondary-bg: #1a1a1a; --glass-bg: rgba(26, 26, 26, 0.75); --primary-text-color: #f0e6d2; --border-color: rgba(212, 175, 55, 0.3); --accent-color: #d4af37; --accent-glow: rgba(212, 175, 55, 0.4); --accent-hover: #b89b31; }
+        /* --- التنسيقات العامة --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--primary-bg); color: var(--primary-text-color); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; height: 100vh; overflow: hidden; }
+        /* --- خلفية متحركة --- */
+        .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: var(--primary-bg); }
+        .glow-element { position: absolute; border-radius: 50%; filter: blur(150px); animation: pulse 15s infinite alternate; }
+        #glow1 { width: 400px; height: 400px; background: var(--accent-color); top: 10%; left: 10%; opacity: 0.3; }
+        #glow2 { width: 300px; height: 300px; background: var(--accent-hover); bottom: 5%; right: 5%; opacity: 0.4; animation-direction: alternate-reverse; }
+        @keyframes pulse { from { transform: scale(0.8) translate(0, 0); } to { transform: scale(1.2) translate(50px, 30px); } }
+        
+        /* --- نظام الصفحات (تسجيل دخول، تحميل، رئيسية) --- */
+        .page { display: flex; flex-direction: column; align-items: center; position: absolute; top:0; left:0; width:100%; height:100%; transition: opacity 0.7s ease, transform 0.7s ease; opacity: 0; pointer-events: none; }
+        .page.active { opacity: 1; pointer-events: auto; }
+        .page.exit { opacity: 0; transform: scale(0.95); }
+        
+        #login-page { padding: 20px; justify-content: center; gap: 25px; } 
+        #main-page { padding-top: 0; }
+        /* --- شاشة التحميل --- */
+        #loading-page { justify-content: center; align-items: center; }
+        .loading-text { font-size: 1.6rem; font-weight: 700; color: var(--primary-text-color); margin-bottom: 30px; text-shadow: 0 0 10px var(--accent-glow); animation: subtleGlow 2.5s infinite alternate ease-in-out; padding: 0 15px; text-align: center; }
+        @keyframes subtleGlow { from { opacity: 0.7; transform: scale(1); } to { opacity: 1; transform: scale(1.02); } }
+        #loading-page::after { content: '...جاري التحميل'; font-size: 1rem; color: var(--primary-text-color); opacity: 0.8; margin-top: 20px; }
+        .loading-bar-container { width: 80%; max-width: 350px; height: 10px; background-color: var(--border-color); border-radius: 5px; overflow: hidden; box-shadow: 0 0 15px var(--accent-glow); }
+        .loading-bar { width: 100%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent-color), transparent); background-size: 200% 100%; border-radius: 5px; animation: loading-progress 1.8s linear infinite; }
+        @keyframes loading-progress { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+        
+        /* --- واجهة تسجيل الدخول (التصميم الجديد والمحسن) --- */
+        .login-box {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            padding: 40px 30px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: slideInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) backwards;
+        }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(50px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        /* --- خطوط الإطار المتحركة الاحترافية (مُعدل) --- */
+        .login-box span { position: absolute; display: block; }
+        
+        .login-box span:nth-child(1) { top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-color)); animation: animate-top 6s linear infinite; }
+        @keyframes animate-top { 0% { left: -100%; } 100% { left: 100%; } }
+        .login-box span:nth-child(2), .login-box span:nth-child(4) { display: none; }
+        .login-box span:nth-child(3) { bottom: 0; right: -100%; width: 100%; height: 2px; background: linear-gradient(270deg, transparent, var(--accent-color)); animation: animate-bottom 6s linear infinite; animation-delay: 3s; }
+        @keyframes animate-bottom { 0% { right: -100%; } 100% { right: 100%; } }
+        #login-form { width: 100%; display: flex; flex-direction: column; gap: 25px; }
+        
+        #animated-login-title { font-family: 'Cairo', sans-serif; font-size: 1.6rem; text-align: center; color: var(--primary-text-color); margin-bottom: 25px; font-weight: 700; text-shadow: 0 0 12px var(--accent-glow); animation: fadeInContent 1s 0.2s backwards; }
+        @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        #animated-login-title::after { content: '\f234'; font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; margin-right: 10px; font-size: 1.5rem; vertical-align: middle; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-glow); animation: fadeInContent 1s 0.4s backwards; }
+        [dir=ltr] #animated-login-title::after { margin-right: 0; margin-left: 10px; }
+        
+        .input-group { position: relative; animation: fadeInContent 1s backwards; }
+        .input-group:nth-of-type(1) { animation-delay: 0.4s; }
+        .input-group:nth-of-type(2) { animation-delay: 0.5s; }
+        .input-group:nth-of-type(3) { animation-delay: 0.6s; }
+        .input-group:nth-of-type(4) { animation-delay: 0.7s; }
+        .input-group:nth-of-type(5) { animation-delay: 0.8s; }
+        
+        .input-group label { position: absolute; top: 12px; right: 5px; color: var(--primary-text-color); opacity: 0.7; pointer-events: none; transition: all 0.3s ease; }
+        [dir=ltr] .input-group label { right: auto; left: 5px; }
+        .input-group input, .input-group select { width:100%; padding: 12px 5px; background: transparent; border: none; border-bottom: 2px solid var(--border-color); color: var(--primary-text-color); font-size: 1rem; transition: border-color 0.3s ease; }
+        
+        .input-group input:-webkit-autofill, .input-group input:-webkit-autofill:hover, .input-group input:-webkit-autofill:focus, .input-group input:-webkit-autofill:active { -webkit-text-fill-color: var(--primary-text-color) !important; -webkit-box-shadow: 0 0 0 30px #0c0f18 inset !important; background-color: transparent !important; }
+        .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -14px; font-size: 0.8rem; opacity: 1; color: var(--accent-color); }
+        .input-group input:focus, .input-group select:focus { outline: none; border-bottom-color: var(--accent-color); }
+        .input-group input::placeholder { color: transparent; }
+        
+        .password-hint { font-size: 0.8rem; text-align: center; color: var(--primary-text-color); opacity: 0.7; margin-top: -15px; animation: fadeInContent 1s 1.0s backwards; }
+        
+        .input-group select { color: var(--primary-text-color); opacity: 0.7; }
+        .input-group select:valid { opacity: 1; }
+        .input-group select option { background-color: var(--secondary-bg); color: var(--primary-text-color); }
+        .input-group select option[value=""][disabled] { display: none; }
+        
+        .input-group select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e1e1ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 13L5 8l6-5'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left .75rem center; background-size: 12px; -webkit-appearance: none; appearance: none; padding-right: 35px; }
+        [dir=ltr] .input-group select { background-position: right .75rem center; padding-right: 5px; padding-left: 35px; }
+        
+        .login-btn { width: 90%; max-width: 380px; padding: 12px 20px; background: transparent; color: var(--accent-color); border: none; border-radius: 8px; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; cursor: pointer; transition: all .4s ease; text-transform: uppercase; text-shadow: 0 0 5px var(--accent-color), 0 0 15px var(--accent-glow), 0 0 25px var(--accent-glow); animation: fadeInContent 1s 1.1s backwards; }
+        .login-btn:hover:not(:disabled) { background: transparent; color: var(--accent-hover); transform: translateY(-3px) scale(1.02); box-shadow: none; text-shadow: 0 0 8px var(--accent-hover), 0 0 20px var(--accent-glow), 0 0 40px var(--accent-glow), 0 0 60px var(--accent-glow); }
+        .login-btn:disabled { background: #555; color: #aaa; cursor: not-allowed; opacity: .6; box-shadow: none; transform: none; border-color: #555; text-shadow: none;}
+        #semester-warning { color: var(--accent-hover); text-align: center; height: 20px; font-weight: 600; font-size: .8rem; margin-top: -10px; }
+        
+        /* --- الصفحة الرئيسية --- */
+        .scrolling-banner {
+            width: 100%;
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 4px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scrolling-banner p {
+            display: inline-block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            animation: scroll-continuous 40s linear infinite;
+            background: linear-gradient(90deg, var(--accent-hover), #e1e1ff, var(--accent-hover));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+        
+        /* MODIFIED: Banner Animation Direction */
+        [dir="rtl"] .scrolling-banner p {
+            padding-left: 100%;
+        }
+        [dir="ltr"] .scrolling-banner p {
+            padding-left: 100%;
+        }
+
+        @keyframes scroll-continuous { 
+            0% { transform: translateX(-100%); } 
+            100% { transform: translateX(100%); } 
+        }
+
+        #main-header { width: 100%; max-width: 900px; padding: 15px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; text-align: right; }
+        [dir="ltr"] #main-header { text-align: left; }
+        
+        #main-header, .scrolling-banner {
+            animation: fadeInContent 0.8s 0.2s backwards;
+        }
+        
+        #app-logo { width: 50px; height: 50px; border-radius: 50%; box-shadow: 0 0 15px var(--accent-glow);  object-fit: cover; flex-shrink: 0;}
+        .header-content { flex-grow: 1; padding: 0 15px; }
+        #welcome-message-name { font-size: 1.2rem; font-weight: 700; }
+        #welcome-message-details { font-size: 0.9rem; font-weight: 400; opacity: 0.8; margin-top: 2px; }
+        @media (max-width: 480px) { #welcome-message-name { font-size: 1rem; } #welcome-message-details { font-size: 0.8rem; } }
+        #points-counter { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border-color); font-family: 'Orbitron', sans-serif; flex-shrink: 0; cursor: pointer; transition: transform 0.3s ease; }
+        #points-counter:hover { transform: scale(1.05); }
+        #points-counter .fa-star { color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
+        #points-display { font-weight: 700; font-size: 1.1rem; color: var(--primary-text-color); }
+        #view-wrapper { flex-grow: 1; position: relative; width: 100%; max-width: 900px; }
+        #courses-container, #details-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 0 20px 140px 20px; overscroll-behavior: contain; }
+        #courses-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .course-card { width: 100%; max-width: 350px; background: var(--secondary-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; animation: fadeIn 0.8s forwards; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .course-card:hover { border-color: var(--accent-color); }
+        .course-card i { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 5px; }
+        .course-card h3 { font-size: 1.1rem; color: var(--primary-text-color); font-weight: 600; }
+        #details-view { display: flex; flex-direction: column; }
+        #details-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; flex-shrink: 0; }
+        #back-to-courses-btn { background: transparent; border: 2px solid var(--border-color); color: var(--primary-text-color); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        #back-to-courses-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        [dir="rtl"] #back-to-courses-btn i { transform: scaleX(-1); }
+        #details-view-title { font-size: 1.5rem; font-weight: 700; }
+        #details-view-list { display: flex; flex-direction: column; gap: 15px; }
+        .detail-item { display: flex; align-items: center; justify-content: space-between; background: var(--secondary-bg); padding: 15px; border-radius: 10px; border: 1px solid var(--border-color); cursor: pointer; transition: all 0.2s ease; }
+        .detail-item:hover { background: var(--primary-bg); border-color: var(--accent-color); }
+        .detail-item span { font-size: 1.1rem; font-weight: 600; flex-grow: 1; text-align: right; }
+        .detail-item .lock-icon { font-size: 1.2rem; color: var(--accent-color); margin-right: 15px; }
+        .detail-item.unlocked .lock-icon { color: var(--primary-text-color); opacity: 0.6; }
+        
+        #courses-container, #details-view { transition: opacity 0.4s ease, transform 0.4s ease; }
+        #details-view { opacity: 0; transform: translateY(30px); pointer-events: none; }
+        #main-page.details-active #courses-container { opacity: 0; transform: translateY(-30px); pointer-events: none; }
+        #main-page.details-active #details-view { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        #main-page.details-active #main-header, #main-page.details-active .scrolling-banner { opacity: 0; pointer-events: none; }
+        
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 100; padding: 10px 0; background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--border-color); }
+        .nav-group { display: flex; justify-content: space-around; align-items: center; max-width: 500px; margin: 0 auto; }
+        .nav-item { cursor:pointer; display:flex; flex-direction:column; align-items:center; color:var(--primary-text-color); transition:all 0.3s ease; background: none; border: none; padding: 5px; position: relative; text-decoration: none; flex: 1; }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: color 0.2s ease, transform 0.2s ease; } 
+        #courses-btn.locked .fa-lock { animation: jiggle-lock 2s infinite ease-in-out; }
+        @keyframes jiggle-lock { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
+        .nav-item span { font-size: 0.7rem; white-space: nowrap; }
+        .nav-item:hover { color:var(--accent-hover); }
+        .nav-item:active i { color: var(--accent-color); }
+        
+        /* NEW: Nav Item Highlight Animation */
+        .nav-item.highlight-nav-item {
+            animation: highlight-pulse 1.5s infinite;
+            border-radius: 8px;
+        }
+        @keyframes highlight-pulse {
+            0% { box-shadow: 0 0 0 0 var(--accent-glow); }
+            70% { box-shadow: 0 0 15px 10px rgba(0,0,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
+        }
+
+        .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:opacity 0.4s ease; padding: 15px; }
+        .modal-overlay.active { opacity:1; pointer-events:auto; }
+        .modal-content { background:transparent; padding:30px; border-radius:12px; box-shadow: none; width:100%; max-width:550px; position:relative; border:none; transform:scale(0.9); transition:transform 0.4s ease; max-height: 85vh; overflow-y: auto; }
+        .modal-overlay.active .modal-content { transform:scale(1); }
+        .close-btn { position:absolute; top:15px; right:15px; background:none; border:none; color:var(--primary-text-color); font-size:1.8rem; cursor:pointer; transition:all 0.3s ease; text-shadow: 0 0 5px #000; z-index: 1001;}
+        .close-btn:hover { color: var(--accent-color); transform: rotate(90deg); }
+        
+        .modal-overlay.full-screen { flex-direction: column; gap: 8px; }
+        .full-screen > * { animation: fadeInContent 0.6s 0.2s backwards; }
+        .full-screen .close-btn { top: 25px; right: 25px; }
+        .full-screen h3 { font-size: 1.6rem; text-shadow: 0 0 10px var(--accent-glow); }
+        .full-screen p { font-size: 1rem; opacity: 0.9; max-width: 500px; text-align: center; }
+        
+        #about-modal.full-screen .social-icons { display: flex; justify-content: center; gap: 25px; margin-top: 15px; }
+        #about-modal.full-screen .social-icons a { color: var(--primary-text-color); font-size: 1.9rem; transition: color 0.3s ease, transform 0.3s ease; }
+        #about-modal.full-screen .social-icons a:hover { color: var(--accent-color); transform: scale(1.1) translateY(-5px); }
+        .dev-credit { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 0 6px var(--accent-glow); }
+        .institute-name { font-weight: 600; white-space: nowrap; }
+        @media (max-width: 380px) { .institute-name { font-size: 0.9rem; } }
+        .app-version { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; opacity: 0.9; margin-top: 15px; background: var(--glass-bg); border: 1px solid var(--border-color); padding: 4px 12px; border-radius: 50px; display: inline-block; }
+        
+        .modal-actions-list { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; margin-top: 30px; align-items: center; }
+        .modal-action-btn { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; max-width: 280px; padding: 12px 25px; font-size: 1rem; font-weight: 600; border-radius: 50px; cursor: pointer; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); background: transparent; border: 2px solid; }
+        .modal-action-btn i { color: inherit !important; }
+        .modal-action-btn:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
+        #rate-app-btn { color: var(--accent-color); border-color: var(--accent-color); }
+        #rate-app-btn:hover { background: var(--accent-color); color: #05080f; box-shadow: 0 0 20px var(--accent-glow); }
+        #blog-btn { color: #c37cff; border-color: #c37cff; }
+        #blog-btn:hover { background: #c37cff; color: #fff; box-shadow: 0 0 20px rgba(195, 124, 255, 0.6); }
+        #privacy-policy-btn { color: #49e3c0; border-color: #49e3c0; }
+        #privacy-policy-btn:hover { background: #49e3c0; color: #05080f; box-shadow: 0 0 20px rgba(73, 227, 192, 0.6); }
+        #timer-btn { color: #f37b12; border-color: #f37b12; }
+        #timer-btn:hover { background: #f37b12; color: #fff; box-shadow: 0 0 20px rgba(243, 123, 18, 0.6); }
+        
+        .sponsors-title { font-size: 1.2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 15px; margin-top: 15px; text-shadow: 0 0 8px var(--accent-glow); }
+        .sponsors-list { list-style: none; padding: 0; margin: 0 0 20px 0; line-height: 1.8; font-size: 1.1rem; text-align: center; }
+        .glowing-sponsors li { font-weight: 600; color: #fff; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); animation: pulse-glow 3s infinite alternate, fadeInSponsor 0.6s backwards; transition: transform 0.3s ease, text-shadow 0.3s ease; }
+        .glowing-sponsors li:last-child { border-bottom: none; margin-bottom: 0; }
+        .glowing-sponsors li:hover { transform: scale(1.05); text-shadow: 0 0 10px #fff, 0 0 20px var(--accent-color), 0 0 35px var(--accent-color); }
+        .glowing-sponsors.animate li:nth-child(1) { animation-delay: 0.5s; }
+        .glowing-sponsors.animate li:nth-child(2) { animation-delay: 0.7s; }
+        .glowing-sponsors.animate li:nth-child(3) { animation-delay: 0.9s; }
+        @keyframes fadeInSponsor { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse-glow { from { text-shadow: 0 0 4px #fff, 0 0 8px var(--accent-glow), 0 0 12px var(--accent-glow); } to { text-shadow: 0 0 8px #fff, 0 0 16px var(--accent-color), 0 0 24px var(--accent-color); } }
+        
+        #ai-modal.full-screen .ai-container, #platform-links-modal.full-screen .ai-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; width: 100%; max-width: 900px; padding: 20px 5px; }
+        .ai-btn { display: flex; align-items: center; justify-content: center; padding: 12px 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-color); color: var(--primary-text-color); text-align: center; text-decoration: none; border-radius: 10px; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; min-height: 60px; }
+        .ai-btn:hover { border-color: var(--accent-color); background: rgba(0,0,0, 0.2); transform: translateY(-3px); color: var(--accent-color); }
+        
+        #redirect-modal.full-screen { gap: 10px; text-align: center; }
+        #redirect-modal .dev-text { font-size: 1rem; opacity: 0.8; }
+        #redirect-modal .redirect-message { font-size: 1.5rem; font-weight: 600; }
+        #redirect-timer { font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700; color: var(--accent-color); text-shadow: 0 0 20px var(--accent-glow); animation: timerPulse 1s infinite; }
+        @keyframes timerPulse { 50% { transform: scale(1.1); } }
+        
+        #theme-switcher { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .theme-btn { display: flex; align-items: center; gap: 12px; padding: 10px; background-color: var(--glass-bg); color: var(--primary-text-color); border: 1px solid transparent; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .theme-btn:hover { border-color: var(--accent-color); background: var(--primary-bg); }
+        .theme-btn.active { border-color: var(--accent-color); font-weight: bold; }
+        .theme-swatch { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
+        .settings-section { margin-bottom: 25px; }
+        .settings-section h4 { padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); opacity: 0.9; font-weight: 700; }
+        .settings-options.vertical-options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .vertical-options .settings-btn {  width: 100%; padding: 12px; text-align: right; border: 1px solid var(--border-color); border-radius: 8px; background: transparent; transition: all 0.2s ease; color: var(--primary-text-color); text-shadow: 0 0 4px rgba(0, 0, 0, 0.7); }
+        [dir="ltr"] .vertical-options .settings-btn { text-align: left; }
+        .vertical-options .settings-btn:hover { border-color: var(--accent-color); background: var(--primary-bg); }
+        .vertical-options .settings-btn.active { border-color: var(--accent-color); background-color: var(--glass-bg); font-weight: bold; color: var(--accent-color); text-shadow: 0 0 8px var(--accent-glow); }
+        #privacy-modal p { line-height: 1.6; opacity: 0.9; margin-bottom: 10px; }
+        
+        .rating-stars { font-size: 2rem; color: var(--accent-color); padding: 20px 0; cursor: pointer; }
+        .rating-stars i { margin: 0 3px; transition: transform 0.2s ease, color 0.2s; }
+        .rating-stars i:hover { transform: scale(1.2); }
+        
+        #blog-modal .modal-content { display: flex; flex-direction: column; }
+        #blog-textarea { width: 100%; height: 250px; background-color: var(--primary-bg); border: 1px solid var(--border-color); color: var(--primary-text-color); border-radius: 8px; padding: 15px; font-size: 1rem; resize: vertical; margin-top: 15px; transition: all 0.3s ease; }
+        #blog-textarea:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 10px var(--accent-glow); }
+        .blog-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; }
+        #char-counter { font-size: 0.8rem; opacity: 0.7; }
+        #save-blog-btn { padding: 8px 25px; background: var(--accent-color); color: #05080f; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; }
+        #save-blog-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
+        #save-blog-btn.saved { background-color: #28a745; }
+        
+        #timer-container { text-align: center; max-width: 380px; }
+        #timer-display { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 700; color: var(--accent-color); text-shadow: 0 0 20px var(--accent-glow); margin: 20px 0; }
+        #timer-controls { display: flex; justify-content: center; gap: 20px; }
+        #timer-controls button { padding: 12px 30px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--border-color); color: var(--primary-text-color); background: transparent; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; min-width: 120px; }
+        #timer-controls button:hover { border-color: var(--accent-color); color: var(--accent-color); }
+        #timer-controls button#start-pause-timer-btn.running { background: var(--accent-color); color: #05080f; border-color: var(--accent-color); }
+        
+        .timer-animate-start { animation: timerPulseEffect 0.5s ease-in-out; }
+        .timer-animate-reset { animation: timerResetEffect 0.4s ease-in-out; }
+        @keyframes timerPulseEffect { 50% { transform: scale(1.05); text-shadow: 0 0 30px var(--accent-glow); } }
+        @keyframes timerResetEffect { 50% { opacity: 0.4; } }
+        @media (max-width: 360px) { #timer-display { font-size: 2.8rem; } #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; } }
+        
+        #points-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--glass-bg); color: var(--accent-color); padding: 15px 30px; border-radius: 10px; font-size: 1.5rem; font-weight: 700; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; border: 1px solid var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
+        #points-notification.show { opacity: 1; transform: translate(-50%, -60%); }
+        
+        #courses-locked-modal .modal-content, #lecture-content-modal .modal-content { background: var(--secondary-bg); box-shadow: 0 0 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); text-align: right; }
+        #courses-locked-modal .modal-content { background: transparent; box-shadow: none; border: none; text-align: center; }
+        #courses-locked-message { font-size: 1.4rem; font-weight: 600; line-height: 1.7; text-shadow: 0 0 15px rgba(0,0,0,0.7); max-width: 450px; }
+        #courses-locked-message .highlight { color: var(--accent-color); font-weight: 700; font-family: 'Orbitron', sans-serif; }
+        .dev-credit-modal { margin-top: 25px; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--accent-hover); text-shadow: 0 0 8px var(--accent-glow); opacity: 0.9; }
+        
+        #points-info-content { text-align: center; max-width: 450px; }
+        #points-info-content p { font-size: 1.2rem; font-weight: 600; line-height: 1.7; text-shadow: 0 0 15px rgba(0,0,0,0.7); margin-bottom: 15px; }
+        #points-info-content .highlight { color: var(--accent-color); font-weight: 700; font-family: 'Orbitron', sans-serif; }
+        
+        #lecture-content { line-height: 1.8; }
+        #lecture-content h3 { color: var(--accent-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); font-size: 1.5rem; }
+        #lecture-content h4 { color: var(--primary-text-color); opacity: 0.9; margin-top: 15px; margin-bottom: 8px; font-size: 1.2rem; }
+        #lecture-content p { opacity: 0.85; margin-bottom: 10px; }
+        
+        #video-player-modal .modal-content {
+            background: var(--secondary-bg);
+            box-shadow: 0 0 25px rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            max-width: 800px;
+            padding: 20px;
+        }
+        #video-player-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+        }
+        #video-player-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 8px;
+        }
+
+        /* --- Pointing Arrow Styles --- */
+        #pointing-arrow {
+            position: fixed;
+            z-index: 2000;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            text-shadow: 0 0 15px var(--accent-glow);
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(-50%);
+            /* MODIFIED: Slower arrow animation */
+            transition: opacity 0.4s ease, top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        #pointing-arrow.show {
+            opacity: 1;
+        }
+        #pointing-arrow.pointing-animation {
+            animation: point-pulse 1.5s infinite ease-in-out;
+        }
+        @keyframes point-pulse {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="animated-bg"><div class="glow-element" id="glow1"></div><div class="glow-element" id="glow2"></div></div>
+    
+    <div id="loading-page" class="page">
+        <p class="loading-text" data-key="loading_text">متنساش تصلي علي النبي</p>
+        <div class="loading-bar-container"><div class="loading-bar"></div></div>
+    </div>
+    
+    <div id="login-page" class="page">
+        <div class="login-box">
+            <span></span><span></span><span></span><span></span>
+            <form id="login-form" novalidate>
+                <h1 id="animated-login-title">يجب عليك التسجيل</h1>
+                <div class="input-group">
+                    <input type="text" id="name" required placeholder=" ">
+                    <label for="name" data-key="name_placeholder">ادخل اسمك</label>
+                </div>
+                <div class="input-group">
+                    <select id="year" required>
+                        <option value="" disabled selected data-key="year_placeholder">الفرقة</option>
+                        <option value="1" data-key="year_1">الأولى</option>
+                        <option value="2" data-key="year_2">الثانية</option>
+                        <option value="3" data-key="year_3">الثالثة</option>
+                        <option value="4" data-key="year_4">الرابعة</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <select id="major" required>
+                        <option value="" disabled selected data-key="major_placeholder">اختر الفرقة أولاً...</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <select id="semester" required>
+                        <option value="1" data-key="semester_1">الفصل الدراسي الأول</option>
+                        <option value="2" data-key="semester_2">الفصل الدراسي الثاني</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <input type="password" id="password" required minlength="8" placeholder=" " autocomplete="new-password"/>
+                        <label for="password" data-key="password_label">كلمة السر</label>
+                </div>
+                <p class="password-hint" data-key="password_hint">يجب أن تتكون من 8+ حروف وأرقام.</p>
+                <div id="semester-warning"></div>
+            </form>
+        </div>
+        <button type="submit" form="login-form" class="login-btn" data-key="login_btn">سجل الان</button>
+    </div>
+
+    <div id="main-page" class="page">
+        <div class="scrolling-banner">
+            <p>شكر خاص وتقدير لإدارة المعهد وأعضاء هيئة التدريس على دعمهم المتواصل وجهودهم المبذولة في سبيل عمل هذا التطبيق التعليمي.</p>
+        </div>
+        <header id="main-header">
+            <div id="points-counter">
+                <i class="fas fa-star"></i>
+                <span id="points-display">0</span>
+            </div>
+            <div class="header-content">
+                <p id="welcome-message-name"></p>
+                <p id="welcome-message-details"></p>
+            </div>
+            <img src="https://i.postimg.cc/gjS04rJw/IMG-20250414-WA0047.jpg" alt="App Logo" id="app-logo">
+        </header>
+
+        <div id="view-wrapper">
+            <div id="courses-container"></div>
+            <div id="details-view">
+                <div id="details-header"><button id="back-to-courses-btn" title="Back"><i class="fas fa-arrow-right"></i></button><h3 id="details-view-title"></h3></div>
+                <div id="details-view-list"></div>
+            </div>
+        </div>
+
+        <nav id="bottom-nav">
+            <div class="nav-group">
+                <button class="nav-item" id="pdf-btn"><i class="fas fa-file-pdf"></i><span data-key="nav_pdf">كتب</span></button>
+                <button class="nav-item" id="sections-btn"><i class="fas fa-layer-group"></i><span data-key="nav_sections">السكاشن</span></button>
+                <button class="nav-item" data-modal="ai-modal"><i class="fas fa-robot"></i><span data-key="nav_ai">AI</span></button>
+                <button class="nav-item" id="platform-btn"><i class="fas fa-university"></i><span data-key="nav_platform">المنصة</span></button>
+                <button class="nav-item" id="courses-btn"><i id="courses-icon" class="fas fa-lock"></i><span data-key="nav_courses">كورسات</span></button>
+                <button class="nav-item" data-modal="about-modal"><i class="fas fa-info-circle"></i><span data-key="nav_about">عنا</span></button>
+                <button class="nav-item" data-modal="settings-modal"><i class="fas fa-sliders-h"></i><span data-key="nav_settings">الإعدادات</span></button>
+            </div>
+        </nav>
+    </div>
+
+    <div id="points-notification">+9 نقاط</div>
+
+    <div id="message-modal" class="modal-overlay"><div class="modal-content" style="text-align: center;"><p id="message-text"></p><button class="modal-close-btn" data-key="close_btn">إغلاق</button></div></div>
+
+    <div id="settings-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><h3 data-key="settings_title">الإعدادات</h3><div class="settings-section"><h4 data-key="settings_lang">اللغة</h4><div class="settings-options vertical-options" id="lang-switcher"><button class="settings-btn" data-lang="ar">العربية</button><button class="settings-btn" data-lang="en">English</button></div></div><div class="settings-section"><h4 data-key="settings_theme">الثيم اللوني</h4><div id="theme-switcher"></div></div><div class="settings-section"><h4 data-key="settings_mode">الوضع</h4><div class="settings-options vertical-options" id="mode-switcher"><button class="settings-btn" data-mode="mode-dark" data-key="mode_dark">داكن</button><button class="settings-btn" data-mode="mode-light" data-key="mode_light">فاتح</button><button class="settings-btn" data-mode="mode-oled" data-key="mode_oled">ليلي</button><button class="settings-btn" data-mode="mode-gold-black" data-key="mode_gold_black">ذهبي</button></div></div></div></div>
+
+    <div id="privacy-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><h3 data-key="privacy_title">سياسة الخصوصية</h3><p data-key="privacy_content"></p></div></div>
+
+    <div id="about-modal" class="modal-overlay full-screen">
+        <button class="close-btn">×</button>
+        <h3 data-key="about_title">Mora for Studying</h3>
+        <p class="institute-name" data-key="about_desc"></p>
+        <p class="dev-credit" data-key="about_dev"></p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/eltopamr55?igsh=MWJ2MzJqaXBlZzRlaQ==" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="mailto:amrloutfy2006@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+            <a href="https://wa.me/201067941806" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p class="app-version" data-key="app_version"></p>
+        <h4 class="sponsors-title" data-key="sponsors_title">تحت رعاية</h4>
+        <ul class="sponsors-list glowing-sponsors">
+            <li>أ. د/ عبدالمنعم الدسوقي</li>
+            <li>أ. د/ إبراهيم ماريه</li>
+            <li>أ. د/ مصطفى عبدالمنعم</li>
+        </ul>
+        <div class="modal-actions-list">
+            <button id="rate-app-btn" class="modal-action-btn" data-modal="rating-modal" data-key="rate_app_btn"><i class="fas fa-star"></i> قيم التطبيق</button>
+            <button id="blog-btn" class="modal-action-btn" data-modal="blog-modal" data-key="blog_btn" style="display: none;"><i class="fas fa-feather-alt"></i> مدونتي</button>
+            <button id="timer-btn" class="modal-action-btn" data-modal="timer-modal" data-key="timer_btn"><i class="fas fa-stopwatch"></i> مؤقت المذاكرة</button>
+            <button id="privacy-policy-btn" class="modal-action-btn" data-modal="privacy-modal" data-key="privacy_policy_btn"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</button>
+        </div>
+    </div>
+
+    <div id="ai-modal" class="modal-overlay full-screen">
+        <button class="close-btn">×</button>
+        <h3 data-key="ai_title">اختر مساعدك الذكي</h3>
+        <div class="ai-container">
+            <a href="https://chatgpt.com/" class="ai-btn" target="_blank">ChatGPT</a>
+            <a href="https://gemini.google.com/" class="ai-btn" target="_blank">Gemini</a>
+            <a href="https://www.perplexity.ai/" class="ai-btn" target="_blank">Perplexity (بحث)</a>
+            <a href="https://claude.ai/" class="ai-btn" target="_blank">Claude</a>
+            <a href="https://www.grammarly.com/" class="ai-btn" target="_blank">Grammarly (كتابة)</a>
+            <a href="https://quillbot.com/" class="ai-btn" target="_blank">QuillBot (إعادة صياغة)</a>
+            <a href="https://www.wolframalpha.com/" class="ai-btn" target="_blank">WolframAlpha (حسابات)</a>
+            <a href="https://www.chatpdf.com/" class="ai-btn" target="_blank">ChatPDF</a>
+            <a href="https://socratic.org/" class="ai-btn" target="_blank">Socratic (حلول)</a>
+            <a href="https://consensus.app/" class="ai-btn" target="_blank">Consensus (أبحاث)</a>
+            <a href="https://elicit.org/" class="ai-btn" target="_blank">Elicit (أبحاث)</a>
+            <a href="https://www.tutorai.me/" class="ai-btn" target="_blank">TutorAI (مُعلم ذكي)</a>
+            <a href="https://www.mybib.com/" class="ai-btn" target="_blank">MyBib (توثيق)</a>
+            <a href="https://www.notion.so/product/ai" class="ai-btn" target="_blank">Notion AI (تنظيم)</a>
+            <a href="https://www.meta.ai/" class="ai-btn" target="_blank">Meta AI</a>
+            <a href="https://typeset.io/" class="ai-btn" target="_blank">SciSpace (أوراق علمية)</a>
+        </div>
+    </div>
+    
+    <div id="platform-links-modal" class="modal-overlay full-screen">
+        <button class="close-btn">×</button>
+        <h3 data-key="platform_title">روابط المنصة التعليمية</h3>
+        <div class="ai-container">
+             <a href="https://tanta-services.online/TantaPortal/index.php" class="ai-btn" target="_blank">بوابة خدمات المعهد</a>
+        </div>
+    </div>
+
+    <div id="redirect-modal" class="modal-overlay full-screen">
+        <p class="dev-text" data-key="redirect_dev">تم التطوير بواسطة Amr Lotfy</p>
+        <h3 class="redirect-message" data-key="redirect_msg">...جاري تحويلك الآن</h3>
+        <div id="redirect-timer">3</div>
+    </div>
+
+    <div id="rating-modal" class="modal-overlay">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-btn">×</button>
+            <h3 data-key="rating_title">قيم تجربتك</h3>
+            <div class="rating-stars">
+                <i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="blog-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn">×</button>
+            <h3 data-key="blog_title">مدونتي الشخصية</h3>
+            <textarea id="blog-textarea" placeholder="اكتب ملاحظاتك هنا..." maxlength="1000"></textarea>
+            <div class="blog-actions">
+                <span id="char-counter">0 / 1000</span>
+                <button id="save-blog-btn" data-key="blog_save_btn">حفظ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="timer-modal" class="modal-overlay">
+        <div class="modal-content" id="timer-container">
+            <button class="close-btn">×</button>
+            <h3 data-key="timer_title">مؤقت المذاكرة</h3>
+            <div id="timer-display">00:00:00</div>
+            <div id="timer-controls">
+                <button id="start-pause-timer-btn" data-key="timer_start_btn">بدء</button>
+                <button id="reset-timer-btn" data-key="timer_reset_btn">إعادة ضبط</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="courses-locked-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn">×</button>
+            <p id="courses-locked-message" data-key="courses_locked_msg"></p>
+            <p class="dev-credit-modal" data-key="dev_credit_text">تطوير: Amr Lotfy</p>
+        </div>
+    </div>
+
+    <div id="lecture-content-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn">×</button>
+            <div id="lecture-content"></div>
+        </div>
+    </div>
+    
+    <div id="video-player-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn">×</button>
+            <div id="video-player-container">
+                </div>
+        </div>
+    </div>
+
+    <div id="points-info-modal" class="modal-overlay full-screen">
+        <button class="close-btn">×</button>
+        <div id="points-info-content">
+            <p>يجب عليك جمع <span class="highlight">300</span> نقطة لفتح قسم الكورسات الذي يشمل كورسات متنوعة للعمل.</p>
+            <p>عند دخولك لأي محاضرة مفتوحة، تحصل على <span class="highlight">9</span> نقاط.</p>
+        </div>
+    </div>
+
+    <div id="pointing-arrow">
+        <i class="fas fa-hand-point-down"></i>
+    </div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const coursesData = { '1': { 'أعمال دولية': { '1': ['مبادئ المحاسبة المالية', 'مبادئ الاقتصاد', 'مبادئ القانون', 'لغة أجنبية (1)', 'مبادئ إدارة الأعمال', 'أساسيات الحاسب'], '2': ['محاسبة شركات', 'اقتصاديات التجارة الدولية', 'قانون دولي', 'لغة أجنبية (2)', 'إدارة الموارد البشرية', 'مبادئ التسويق'] }, 'نظم معلومات': { '1': ['طرق ومهارات الاتصال', 'رياضيات الأعمال', 'حقوق الإنسان', 'التفكير الابتكاري', 'السلوك التنظيمي', 'أساسيات الحاسب'], '2': ['مقدمة في نظم المعلومات', 'أساسيات البرمجة', 'رياضيات متقدمة', 'إدارة قواعد البيانات', 'مبادئ الإحصاء', 'لغة إنجليزية فنية'] } }, '2': { 'أعمال دولية': { '1': ['إدارة اللوجستيات وسلاسل الإمداد', 'مبادئ التسويق', 'اقتصاد جزئي', 'محاسبة التكاليف', 'قانون الأعمال'], '2': ['إدارة مالية', 'التسويق الدولي', 'اقتصاد كلي', 'محاسبة إدارية', 'نظم معلومات إدارية'] }, 'نظم معلومات': { '1': ['قانون الأعمال', 'قواعد البيانات (1)', 'إدارة الإنتاج', 'محاسبة شركات', 'تصميم برامج الحاسب'], '2': ['شبكات الحاسب (1)', 'تحليل وتصميم النظم', 'هياكل البيانات', 'بحوث العمليات', 'تطبيقات الإنترنت'] } }, '3': { 'محاسبة مالية': { '1': ['محاسبة ضريبية', 'محاسبة تكاليف متقدمة', 'تطبيقات الحاسب التجارية', 'اقتصاديات المالية العامة', 'الإحصاء التطبيقي', 'حقوق الإنسان'], '2': ['المراجعة الداخلية', 'محاسبة حكومية وقومية', 'نظم تكاليف فعلية', 'مشكلات محاسبية معاصرة', 'دراسات الجدوى'] }, 'علوم مالية ومصرفية': { '1': ['اقتصاديات المصارف', 'قانون المصارف والائتمان', 'تطبيقات الحاسب في المنشآت المالية', 'إدارة المنشآت المالية', 'حقوق الإنسان', 'الإحصاء التطبيقي'], '2': ['الأسواق المالية', 'إدارة المخاطر المالية', 'التحليل المالي', 'عمليات البنوك', 'التأمين وإدارة الخطر'] }, 'نظم معلومات': { '1': ['حقوق الإنسان', 'قواعد البيانات (2)', 'حزم الإحصاء والعمليات', 'محاسبة الضرائب', 'أمن المعلومات'], '2': ['تطوير تطبيقات الويب', 'الذكاء الاصطناعي', 'شبكات الحاسب (2)', 'إدارة المشروعات البرمجية', 'التجارة الإلكترونية'] } }, '4': { 'محاسبة مالية': { '1': ['المحاسبة الإدارية والموازنات', 'المحاسبة الدولية', 'المحاسبة في المنشآت المالية', 'نظم التكاليف', 'مشكلات محاسبية معاصرة', 'بحوث العمليات'], '2': ['مراجعة متقدمة', 'محاسبة البترول والفنادق', 'نظم المعلومات المحاسبية', 'التحليل المالي المتقدم', 'مشروع التخرج'] }, 'علوم مالية ومصرفية': { '1': ['مشكلات مصرفية ومالية معاصرة', 'الهندسة المالية', 'العقود الآجلة والمشتقات المالية', 'التمويل الدولي', 'إدارة المحافظ الاستثمارية'], '2': ['حوكمة الشركات', 'تقييم الأصول', 'استراتيجيات الاستثمار', 'الصيرفة الإسلامية', 'مشروع التخرج'] }, 'نظم معلومات': { '1': ['تأمين الشبكات', 'تنقيب البيانات', 'نظم دعم القرار', 'هندسة البرمجيات', 'إدارة مراكز المعلومات'], '2': ['الحوسبة السحابية', 'تطبيقات الموبايل', 'النظم الخبيرة', 'الجرائم الإلكترونية والتحقيق الرقمي', 'مشروع التخرج'] } } };
+    
+    const videoCoursesData = {
+        'ecommerce': {
+            title_ar: 'كورسات التجارة الإلكترونية', title_en: 'E-commerce Courses', icon: 'fas fa-cash-register',
+            videos: [
+                { title: 'كورس التجارة الالكترونية الكامل', embed_url: 'https://www.youtube.com/embed/h0unhODkj40' },
+                { title: 'دليلك الشامل لتبدأ في التجارة الالكترونية', embed_url: 'https://www.youtube.com/embed/ICFXS5WIS3Y' },
+                { title: 'أسرار التجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/q2f_BVSVeHQ' },
+                { title: 'كورس شامل للتجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/v46BIS_ICiA' }
+            ]
+        },
+        'graphic-design': {
+            title_ar: 'كورسات الجرافيك ديزاين', title_en: 'Graphic Design Courses', icon: 'fas fa-palette',
+            videos: [
+                { title: 'كورس جرافيك ديزاين كامل', embed_url: 'https://www.youtube.com/embed/va-MZOPrJ0s' },
+                { title: 'تعلم الفوتوشوب في فيديو واحد', embed_url: 'https://www.youtube.com/embed/4IJPI0d7STI' },
+                { title: 'تعلم اليستريتور في فيديو واحد', embed_url: 'https://www.youtube.com/embed/WlTsKiVwZAM' }
+            ]
+        },
+        'video-editing': {
+            title_ar: 'كورسات المونتاج', title_en: 'Video Editing Courses', icon: 'fas fa-film',
+            videos: [
+                { title: 'كورس مونتاج كامل ببرنامج واحد', embed_url: 'https://www.youtube.com/embed/qKtUjfolUOM' },
+                { title: 'تعلم المونتاج باستخدام أدوبي بريمير', embed_url: 'https://www.youtube.com/embed/8iGvUZKeLeU' }
+            ]
+        },
+        'data-analysis': {
+            title_ar: 'كورسات تحليل البيانات', title_en: 'Data Analysis Courses', icon: 'fas fa-chart-pie',
+            videos: [
+                { title: 'كورس تحليل البيانات الكامل', embed_url: 'https://www.youtube.com/embed/nXdkuxAj7tg' },
+                { title: 'تحليل البيانات باستخدام اكسل', embed_url: 'https://www.youtube.com/embed/z7nN0hZ_PtQ' }
+            ]
+        },
+        'ai': {
+            title_ar: 'كورسات الذكاء الاصطناعي', title_en: 'Artificial Intelligence Courses', icon: 'fas fa-brain',
+            videos: [
+                { title: 'كورس الذكاء الاصطناعي', embed_url: 'https://www.youtube.com/embed/oDmyhjwAYXk' },
+                { title: 'تعلم الذكاء الاصطناعي في 6 ساعات', embed_url: 'https://www.youtube.com/embed/Rp5VnXnWMLk' }
+            ]
+        }
+    };
+
+    const lectureLinks = {};
+    const lectureContent = {};
+    const translations = { 
+        ar: { login_title: "Mora Studying", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_hint: "يجب أن تتكون من 8+ حروف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", login_btn: "سجل الان", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.2", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", lecture_msg: "سوف يتم اضافتها قريبا", section_msg: "سوف يتم اضافتها قريبا", pdf_msg: "سوف يتم اضافتها قريبا", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين بياناتك بشكل آمن على جهازك المحلي ولا يتم رفعها إلى أي خوادم خارجية.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "مؤقت المذاكرة", timer_title: "مؤقت المذاكرة", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات في مجالات متنوعة منها البرمجة والتجارة الإلكترونية وغيرها. لفتح هذا القسم يجب عليك جمع <span class='highlight'>300</span> نقطة من خلال دخولك للمحاضرات المفتوحة داخل التطبيق.", dev_credit_text: "تطوير: Amr Lotfy" }, 
+        en: { login_title: "Mora Studying", name_placeholder: "Enter your name", password_label: "Password", password_hint: "Must be 8+ characters with letters and numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", login_btn: "Register Now", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.2", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", lecture_msg: "Will be added soon", section_msg: "Will be added soon", pdf_msg: "Will be added soon", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. Your data is stored securely on your local device and is not uploaded to any external servers.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Study Timer", timer_title: "Study Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains courses in various fields like programming, e-commerce, etc. To unlock this section, you need to collect <span class='highlight'>300</span> points by attending open lectures within the app.", dev_credit_text: "Developed by: Amr Lotfy" } 
+    };
+    const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
+    
+    const POINTS_TO_UNLOCK = 300;
+    const POINTS_PER_LECTURE = 9;
+    const htmlEl = document.documentElement, body = document.body, loadingPage = document.getElementById("loading-page"), loginPage = document.getElementById("login-page"), mainPage = document.getElementById("main-page"), loginForm = document.getElementById("login-form"), yearSelect = document.getElementById("year"), majorSelect = document.getElementById("major"), semesterSelect = document.getElementById("semester"), loginBtn = document.querySelector(".login-btn"), semesterWarning = document.getElementById("semester-warning"), welcomeMessageName = document.getElementById("welcome-message-name"), welcomeMessageDetails = document.getElementById("welcome-message-details"), coursesContainer = document.getElementById("courses-container"), sectionsBtn = document.getElementById("sections-btn"), pdfBtn = document.getElementById("pdf-btn"), messageModal = document.getElementById("message-modal"), messageText = document.getElementById("message-text");
+    const detailsView = document.getElementById("details-view"), detailsViewTitle = document.getElementById("details-view-title"), detailsViewList = document.getElementById("details-view-list"), backToCoursesBtn = document.getElementById("back-to-courses-btn");
+    const timerDisplay = document.getElementById('timer-display'), startPauseTimerBtn = document.getElementById('start-pause-timer-btn'), resetTimerBtn = document.getElementById('reset-timer-btn');
+    
+    const pointsDisplay = document.getElementById('points-display');
+    const pointsNotification = document.getElementById('points-notification');
+    const coursesBtn = document.getElementById('courses-btn');
+    const coursesIcon = document.getElementById('courses-icon');
+    const coursesLockedModal = document.getElementById('courses-locked-modal');
+    const lectureContentModal = document.getElementById('lecture-content-modal');
+    const lectureContentDiv = document.getElementById('lecture-content');
+    
+    const redirectModal = document.getElementById('redirect-modal');
+    const timerElement = document.getElementById('redirect-timer');
+    const pointingArrow = document.getElementById('pointing-arrow');
+    
+    let timerInterval;
+    let timerSeconds = 0;
+    let isTimerRunning = false;
+    let countdownInterval;
+    let currentView = 'subjects'; 
+    
+    // --- Arrow Animation Functions ---
+    function showAndAnimateArrow() {
+        const targetElement = document.getElementById('courses-btn');
+        if (!targetElement || !pointingArrow) return;
+
+        const targetRect = targetElement.getBoundingClientRect();
+        const targetX = targetRect.left + (targetRect.width / 2);
+        const targetY = targetRect.top - 50;
+
+        pointingArrow.style.top = '20vh';
+        pointingArrow.style.left = '50vw';
+        pointingArrow.classList.remove('pointing-animation');
+        targetElement.classList.remove('highlight-nav-item');
+
+        pointingArrow.classList.add('show');
+
+        setTimeout(() => {
+            pointingArrow.style.top = `${targetY}px`;
+            pointingArrow.style.left = `${targetX}px`;
+        }, 100);
+
+        setTimeout(() => {
+            pointingArrow.classList.add('pointing-animation');
+            targetElement.classList.add('highlight-nav-item'); // Highlight target
+        }, 1600); // MODIFIED: Slower animation timeout
+    }
+
+    function hideArrow() {
+        const targetElement = document.getElementById('courses-btn');
+        if (pointingArrow) {
+            pointingArrow.classList.remove('show');
+            pointingArrow.classList.remove('pointing-animation');
+        }
+        if(targetElement){
+            targetElement.classList.remove('highlight-nav-item'); // Remove highlight
+        }
+    }
+
+    function getPoints() { return parseInt(localStorage.getItem('moraUserPoints') || '0', 10); }
+    function showPointsNotification() { pointsNotification.classList.add('show'); setTimeout(() => { pointsNotification.classList.remove('show'); }, 1500); }
+    function addPoints(amount) { let currentPoints = getPoints(); currentPoints += amount; localStorage.setItem('moraUserPoints', currentPoints); pointsDisplay.textContent = currentPoints; showPointsNotification(); updateCoursesButtonState(); }
+    function updateCoursesButtonState() { const currentPoints = getPoints(); if (currentPoints >= POINTS_TO_UNLOCK) { coursesBtn.classList.remove('locked'); coursesIcon.className = 'fas fa-crown'; } else { coursesBtn.classList.add('locked'); coursesIcon.className = 'fas fa-lock'; } }
+    function setLanguage(lang) { htmlEl.lang = lang; htmlEl.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.querySelectorAll('[data-key]').forEach(el => { const key = el.dataset.key; if (translations[lang]?.[key]) { if (key === 'courses_locked_msg') { el.innerHTML = translations[lang][key]; } else { el.textContent = translations[lang][key]; } } }); localStorage.setItem('moraLectureHubLang', lang); updateMajors(); updateActiveUI(); }
+    function setSetting(type, value) { if (type === 'theme') { localStorage.setItem('moraLectureHubTheme', value.name); body.style.setProperty('--accent-color', value.accent); body.style.setProperty('--accent-glow', value.glow); body.style.setProperty('--accent-hover', value.hover); } else if (type === 'mode') { body.className = value; localStorage.setItem('moraLectureHubMode', value); } updateActiveUI(); }
+    function populateThemeButtons() { const themeContainer = document.getElementById('theme-switcher'); themeContainer.innerHTML = ''; themes.forEach(theme => { const btn = document.createElement('button'); btn.className = 'theme-btn'; btn.title = theme.name; btn.innerHTML = `<span class="theme-swatch" style="background-color:${theme.accent};"></span> <span>${theme.name}</span>`; btn.addEventListener('click', () => setSetting('theme', theme)); themeContainer.appendChild(btn); }); }
+    function updateActiveUI() { const lang = localStorage.getItem('moraLectureHubLang') || 'ar'; document.querySelectorAll('#lang-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); const themeName = localStorage.getItem('moraLectureHubTheme') || 'Forest'; document.querySelectorAll('#theme-switcher .theme-btn').forEach(btn => btn.classList.toggle('active', btn.title === themeName)); const mode = localStorage.getItem('moraLectureHubMode') || 'mode-dark'; document.querySelectorAll('#mode-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode)); }
+    function showMessageModal(message) { messageText.textContent = message; messageModal.classList.add('active'); }
+    function updateMajors() { const selectedYear = yearSelect.value; const lang = htmlEl.lang || 'ar'; majorSelect.innerHTML = `<option value="" disabled selected>${translations[lang].major_placeholder}</option>`; if (selectedYear === '1' || selectedYear === '2') { majorSelect.innerHTML += `<option value="أعمال دولية" data-key="major_option_1">${translations[lang].major_option_1}</option><option value="نظم معلومات" data-key="major_option_2">${translations[lang].major_option_2}</option>`; } else if (selectedYear === '3' || selectedYear === '4') { majorSelect.innerHTML += `<option value="محاسبة مالية" data-key="major_option_3">${translations[lang].major_option_3}</option><option value="علوم مالية ومصرفية" data-key="major_option_4">${translations[lang].major_option_4}</option><option value="نظم معلومات" data-key="major_option_2">${translations[lang].major_option_2}</option>`; } }
+    
+    function initializeApp() {
+        const lang = localStorage.getItem('moraLectureHubLang') || 'ar';
+        setLanguage(lang);
+        const themeName = localStorage.getItem('moraLectureHubTheme') || 'Forest';
+        const theme = themes.find(t => t.name === themeName) || themes[0];
+        setSetting('theme', theme);
+        const mode = localStorage.getItem('moraLectureHubMode') || 'mode-dark';
+        setSetting('mode', mode);
+        pointsDisplay.textContent = getPoints();
+        updateCoursesButtonState();
+        checkRatedStatus();
+        const storedData = localStorage.getItem('moraLectureHubUser');
+        if (storedData) {
+            loadingPage.classList.add('active');
+            setTimeout(() => {
+                populateMainPage(JSON.parse(storedData));
+                loadingPage.classList.remove('active');
+                mainPage.classList.add('active');
+            }, 2500);
+        } else {
+            loadingPage.classList.remove('active');
+            loginPage.classList.add('active');
+            updateMajors();
+        }
+    }
+    function populateMainPage(userData) {
+        const lang = htmlEl.lang || 'ar';
+        const semesterText = translations[lang][`semester_${userData.semester}`];
+        const yearText = translations[lang][`year_${userData.year}`];
+        
+        const majorText = userData.major; 
+        const subjects = coursesData[userData.year]?.[userData.major]?.[userData.semester];
+        welcomeMessageName.textContent = `${translations[lang].welcome_back}${userData.name}`;
+        welcomeMessageDetails.textContent = `${majorText} - ${yearText} - ${semesterText}`;
+        coursesContainer.innerHTML = "";
+        if (subjects && subjects.length > 0) {
+            subjects.forEach((subject, index) => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `<i class="fas ${getIconForCourse(subject)}"></i><h3>${subject}</h3>`;
+                card.style.animationDelay = `${0.1 * index}s`;
+                card.addEventListener('click', () => showLectureDetails(subject));
+                coursesContainer.appendChild(card);
+            });
+        }
+        currentView = 'subjects';
+    }
+    function getIconForCourse(e) { const t = e.toLowerCase(); return t.includes("محاسبة") || t.includes("مالية") || t.includes("تكاليف") || t.includes("ضريبية") ? "fa-calculator" : t.includes("اقتصاد") ? "fa-chart-line" : t.includes("قانون") ? "fa-gavel" : t.includes("إدارة") || t.includes("اعمال") || t.includes("سلوك") || t.includes("تسويق") ? "fa-briefcase" : t.includes("حاسب") || t.includes("معلومات") || t.includes("بيانات") || t.includes("برامج") || t.includes("شبكات") ? "fa-laptop-code" : t.includes("رياضيات") || t.includes("احصاء") || t.includes("كمية") ? "fa-square-root-alt" : t.includes("لغة") || t.includes("اتصال") ? "fa-language" : t.includes("حقوق") ? "fa-landmark" : t.includes("مصرفية") || t.includes("بنوك") ? "fa-university" : "fa-book-open"; }
+    function getCurrentUserData() { return JSON.parse(localStorage.getItem('moraLectureHubUser')); }
+    function getCurrentUserSubjects(userData) { if (!userData) return []; return coursesData[userData.year]?.[userData.major]?.[userData.semester] || []; }
+    
+    function showLectureContentModal(content) { lectureContentDiv.innerHTML = content; lectureContentModal.classList.add('active'); }
+    function showLectureDetails(courseTitle) {
+        const lang = htmlEl.lang || 'ar';
+        detailsViewTitle.textContent = courseTitle;
+        detailsViewList.innerHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            const item = document.createElement('div');
+            item.className = 'detail-item';
+            item.style.animationDelay = `${i * 0.05}s`;
+            item.innerHTML = `<span>${translations[lang].lecture} ${i}</span> <i class="fas fa-lock lock-icon"></i>`;
+            item.addEventListener('click', () => showMessageModal(`${translations[lang].lecture_msg} - ${translations[lang].about_dev}`));
+            
+            detailsViewList.appendChild(item);
+        }
+        mainPage.classList.add('details-active');
+    }
+    function showPdfList() { const userData = getCurrentUserData(); if (!userData) return; const subjects = getCurrentUserSubjects(userData); const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_pdf; detailsViewList.innerHTML = ''; subjects.forEach((subject, index) => { const item = document.createElement('div'); item.className = 'detail-item'; item.style.animationDelay = `${index * 0.05}s`; item.innerHTML = `<span>${subject}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showMessageModal(translations[lang].pdf_msg)); detailsViewList.appendChild(item); }); mainPage.classList.add('details-active'); }
+    function showSectionList() { const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_sections; detailsViewList.innerHTML = ''; for (let i = 1; i <= 10; i++) { const item = document.createElement('div'); item.className = 'detail-item'; item.style.animationDelay = `${i * 0.05}s`; item.innerHTML = `<span>${translations[lang].section} ${i}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showMessageModal(translations[lang].section_msg)); detailsViewList.appendChild(item); } mainPage.classList.add('details-active'); }
+    
+    function displayVideoCategories() {
+        const lang = htmlEl.lang || 'ar';
+        coursesContainer.innerHTML = ""; 
+        Object.keys(videoCoursesData).forEach((key, index) => {
+            const category = videoCoursesData[key];
+            const card = document.createElement('div');
+            card.className = 'course-card';
+            card.innerHTML = `<i class="${category.icon}"></i><h3>${lang === 'ar' ? category.title_ar : category.title_en}</h3>`;
+            card.style.animationDelay = `${0.1 * index}s`;
+            card.addEventListener('click', () => showVideoList(key));
+            coursesContainer.appendChild(card);
+        });
+        currentView = 'videos';
+    }
+
+    function showVideoList(categoryKey) {
+        const lang = htmlEl.lang || 'ar';
+        const category = videoCoursesData[categoryKey];
+        if (!category) return;
+        detailsViewTitle.textContent = lang === 'ar' ? category.title_ar : category.title_en;
+        detailsViewList.innerHTML = '';
+        category.videos.forEach((video, index) => {
+            const item = document.createElement('div');
+            item.className = 'detail-item';
+            item.style.animationDelay = `${index * 0.05}s`;
+            item.innerHTML = `<span>${video.title}</span> <i class="fas fa-play-circle lock-icon"></i>`;
+            item.addEventListener('click', () => showVideoPlayerModal(video.embed_url));
+            detailsViewList.appendChild(item);
+        });
+        mainPage.classList.add('details-active');
+    }
+
+    function showVideoPlayerModal(embedUrl) {
+        const videoPlayerModal = document.getElementById('video-player-modal');
+        const videoContainer = document.getElementById('video-player-container');
+        if (!videoPlayerModal || !videoContainer) return;
+        videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+        videoPlayerModal.classList.add('active');
+    }
+
+    function formatTime(seconds) { const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); const s = seconds % 60; return [h, m, s].map(v => v < 10 ? "0" + v : v).join(':'); }
+    function updateTimerDisplay() { timerDisplay.textContent = formatTime(timerSeconds); }
+    function startPauseTimer() { const lang = htmlEl.lang || 'ar'; if (isTimerRunning) { clearInterval(timerInterval); startPauseTimerBtn.textContent = translations[lang].timer_start_btn; startPauseTimerBtn.classList.remove('running'); } else { timerDisplay.classList.add('timer-animate-start'); setTimeout(() => timerDisplay.classList.remove('timer-animate-start'), 500); timerInterval = setInterval(() => { timerSeconds++; updateTimerDisplay(); }, 1000); startPauseTimerBtn.textContent = translations[lang].timer_pause_btn; startPauseTimerBtn.classList.add('running'); } isTimerRunning = !isTimerRunning; }
+    function resetTimer() { const lang = htmlEl.lang || 'ar'; timerDisplay.classList.add('timer-animate-reset'); setTimeout(() => timerDisplay.classList.remove('timer-animate-reset'), 400); clearInterval(timerInterval); isTimerRunning = false; timerSeconds = 0; updateTimerDisplay(); startPauseTimerBtn.textContent = translations[lang].timer_start_btn; startPauseTimerBtn.classList.remove('running'); }
+    
+    populateThemeButtons();
+    yearSelect.addEventListener('change', updateMajors);
+    semesterSelect.addEventListener('change', () => { const lang = htmlEl.lang || 'ar'; if (semesterSelect.value === '2') { loginBtn.disabled = true; semesterWarning.textContent = translations[lang].semester_warning_text; } else { loginBtn.disabled = false; semesterWarning.textContent = ''; } });
+    
+    loginForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const lang = htmlEl.lang || 'ar';
+        if (!loginForm.checkValidity()) {
+            showMessageModal(translations[lang].fill_all_fields);
+            return;
+        }
+        const password = document.getElementById('password').value;
+        if (password.length < 8) {
+            showMessageModal(translations[lang].password_error_length);
+            return;
+        }
+        if (!/^(?=.*[a-zA-Z])(?=.*[0-9])/.test(password)) {
+            showMessageModal(translations[lang].password_error_format);
+            return;
+        }
+        const selectedMajorOption = majorSelect.options[majorSelect.selectedIndex];
+        if (!selectedMajorOption || selectedMajorOption.value === "") {
+            showMessageModal(translations[lang].fill_all_fields);
+            return;
+        }
+        
+        const userData = {
+            name: document.getElementById('name').value,
+            year: yearSelect.value,
+            major: selectedMajorOption.value,
+            semester: semesterSelect.value
+        };
+        localStorage.setItem('moraLectureHubUser', JSON.stringify(userData));
+        loginPage.classList.add('exit');
+        setTimeout(() => {
+            loginPage.classList.remove('active');
+            loadingPage.classList.add('active');
+        }, 700);
+        setTimeout(() => {
+            populateMainPage(userData);
+            loadingPage.classList.remove('active');
+            mainPage.classList.add('active');
+        }, 2200);
+    });
+    
+    sectionsBtn.addEventListener('click', showSectionList);
+    pdfBtn.addEventListener('click', showPdfList);
+    backToCoursesBtn.addEventListener('click', () => mainPage.classList.remove('details-active'));
+    
+    document.getElementById('points-counter').addEventListener('click', () => {
+        document.getElementById('points-info-modal').classList.add('active');
+        setTimeout(showAndAnimateArrow, 400);
+    });
+
+    document.getElementById('lang-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.lang) setLanguage(e.target.closest('.settings-btn').dataset.lang); });
+    document.getElementById('mode-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.mode) setSetting('mode', e.target.closest('.settings-btn').dataset.mode); });
+    
+    document.querySelectorAll('[data-modal]').forEach(trigger => { trigger.addEventListener('click', () => { const modalId = trigger.dataset.modal; const modal = document.getElementById(modalId); if(modal) { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); modal.classList.add('active'); if (modalId === 'about-modal') { document.querySelector('.glowing-sponsors').classList.add('animate'); } } }); });
+    
+    document.querySelectorAll('.modal-overlay').forEach(modal => modal.addEventListener('click', e => { 
+        if (e.target === modal || e.target.classList.contains('close-btn') || e.target.classList.contains('modal-close-btn')) { 
+            hideArrow(); 
+            modal.classList.remove('active'); 
+            if(modal.id === 'about-modal') { document.querySelector('.glowing-sponsors').classList.remove('animate'); } 
+            if(modal.id === 'timer-modal') { resetTimer(); }
+            if (modal.id === 'video-player-modal') {
+                const videoContainer = document.getElementById('video-player-container');
+                if (videoContainer) videoContainer.innerHTML = '';
+            }
+        } 
+    }));
+    
+    startPauseTimerBtn.addEventListener('click', startPauseTimer);
+    resetTimerBtn.addEventListener('click', resetTimer);
+    
+    const rateBtn = document.getElementById('rate-app-btn');
+    const blogBtn = document.getElementById('blog-btn');
+    const ratingModal = document.getElementById('rating-modal');
+    const ratingStars = ratingModal.querySelectorAll('.rating-stars i');
+    const blogTextarea = document.getElementById('blog-textarea');
+    const saveBlogBtn = document.getElementById('save-blog-btn');
+    const charCounter = document.getElementById('char-counter');
+    function checkRatedStatus() { if (localStorage.getItem('moraAppRated') === 'true') { rateBtn.style.display = 'none'; blogBtn.style.display = 'flex'; } else { rateBtn.style.display = 'flex'; blogBtn.style.display = 'none'; } }
+    ratingStars.forEach(star => { star.addEventListener('mouseover', () => { for (let i = 0; i < ratingStars.length; i++) { ratingStars[i].classList.toggle('fas', i < star.dataset.value); ratingStars[i].classList.toggle('far', i >= star.dataset.value); } }); star.addEventListener('mouseout', () => { ratingStars.forEach(s => { s.classList.remove('fas'); s.classList.add('far'); }); }); star.addEventListener('click', () => { const lang = htmlEl.lang || 'ar'; localStorage.setItem('moraAppRated', 'true'); ratingModal.classList.remove('active'); showMessageModal(translations[lang].rating_thanks); checkRatedStatus(); document.getElementById('about-modal').classList.add('active'); }); });
+    blogBtn.addEventListener('click', () => { blogTextarea.value = localStorage.getItem('moraAppNote') || ''; charCounter.textContent = `${blogTextarea.value.length} / 1000`; });
+    blogTextarea.addEventListener('input', () => { charCounter.textContent = `${blogTextarea.value.length} / 1000`; });
+    saveBlogBtn.addEventListener('click', () => { const lang = htmlEl.lang || 'ar'; localStorage.setItem('moraAppNote', blogTextarea.value); const originalText = translations[lang].blog_save_btn; saveBlogBtn.textContent = translations[lang].blog_saved_success; saveBlogBtn.classList.add('saved'); setTimeout(() => { saveBlogBtn.textContent = originalText; saveBlogBtn.classList.remove('saved'); }, 2000); });
+    
+    coursesBtn.addEventListener('click', () => {
+        if (coursesBtn.classList.contains('locked')) {
+            coursesLockedModal.classList.add('active');
+        } else {
+            mainPage.classList.remove('details-active');
+            const userData = getCurrentUserData();
+            if (!userData) return;
+            if (currentView === 'subjects') {
+                displayVideoCategories();
+            } else {
+                populateMainPage(userData);
+            }
+        }
+    });
+
+    function showRedirectModal(sourceModalId, actionCallback) {
+        if (sourceModalId) {
+            document.getElementById(sourceModalId)?.classList.remove('active');
+        }
+        let seconds = 3;
+        redirectModal.classList.add('active');
+        timerElement.textContent = seconds;
+        clearInterval(countdownInterval);
+        countdownInterval = setInterval(() => {
+            seconds--;
+            timerElement.textContent = seconds;
+            if (seconds <= 0) {
+                clearInterval(countdownInterval);
+                redirectModal.classList.remove('active');
+                if (typeof actionCallback === 'function') {
+                    actionCallback();
+                }
+            }
+        }, 1000);
+    }
+    
+    document.querySelectorAll('.ai-btn, .social-icons a').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            showRedirectModal(e.target.closest('.modal-overlay').id, () => window.open(link.href, '_blank'));
+        });
+    });
+
+    const platformBtn = document.getElementById('platform-btn');
+    if (platformBtn) {
+        const platformUrl = 'https://tanta-services.online/TantaPortal/index.php';
+        platformBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            showRedirectModal(null, () => window.open(platformUrl, '_blank'));
+        });
+    }
+    
+    initializeApp();
+});
+</script>
+</body>
+</html>
