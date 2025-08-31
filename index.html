@@ -109,6 +109,7 @@
         #semester-warning { color: var(--accent-hover); text-align: center; height: 20px; font-weight: 600; font-size: .8rem; margin-top: -10px; }
         
         /* --- الصفحة الرئيسية --- */
+        /* START: BANNER MODIFICATION */
         .scrolling-banner {
             width: 100%;
             background-color: var(--glass-bg);
@@ -121,6 +122,7 @@
 
         .scrolling-banner p {
             display: inline-block;
+            padding-right: 100%; /* For RTL continuous loop */
             font-size: 0.8rem;
             font-weight: 600;
             animation: scroll-continuous 40s linear infinite;
@@ -131,23 +133,27 @@
             text-fill-color: transparent;
         }
         
-        /* MODIFIED: Banner Animation Direction */
-        [dir="rtl"] .scrolling-banner p {
-            padding-left: 100%;
-        }
         [dir="ltr"] .scrolling-banner p {
+            padding-right: 0;
             padding-left: 100%;
         }
 
+        /* --- THIS IS THE MODIFIED PART --- */
         @keyframes scroll-continuous { 
             0% { transform: translateX(-100%); } 
             100% { transform: translateX(100%); } 
         }
 
+        [dir="ltr"] @keyframes scroll-continuous { 
+            0% { transform: translateX(100%); } 
+            100% { transform: translateX(-100%); } 
+        }
+        /* END: BANNER MODIFICATION */
+
         #main-header { width: 100%; max-width: 900px; padding: 15px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; text-align: right; }
         [dir="ltr"] #main-header { text-align: left; }
         
-        #main-header, .scrolling-banner {
+        #main-header {
             animation: fadeInContent 0.8s 0.2s backwards;
         }
         
@@ -156,8 +162,7 @@
         #welcome-message-name { font-size: 1.2rem; font-weight: 700; }
         #welcome-message-details { font-size: 0.9rem; font-weight: 400; opacity: 0.8; margin-top: 2px; }
         @media (max-width: 480px) { #welcome-message-name { font-size: 1rem; } #welcome-message-details { font-size: 0.8rem; } }
-        #points-counter { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border-color); font-family: 'Orbitron', sans-serif; flex-shrink: 0; cursor: pointer; transition: transform 0.3s ease; }
-        #points-counter:hover { transform: scale(1.05); }
+        #points-counter { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border-color); font-family: 'Orbitron', sans-serif; flex-shrink: 0; }
         #points-counter .fa-star { color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
         #points-display { font-weight: 700; font-size: 1.1rem; color: var(--primary-text-color); }
         #view-wrapper { flex-grow: 1; position: relative; width: 100%; max-width: 900px; }
@@ -197,17 +202,6 @@
         .nav-item:hover { color:var(--accent-hover); }
         .nav-item:active i { color: var(--accent-color); }
         
-        /* NEW: Nav Item Highlight Animation */
-        .nav-item.highlight-nav-item {
-            animation: highlight-pulse 1.5s infinite;
-            border-radius: 8px;
-        }
-        @keyframes highlight-pulse {
-            0% { box-shadow: 0 0 0 0 var(--accent-glow); }
-            70% { box-shadow: 0 0 15px 10px rgba(0,0,0,0); }
-            100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
-        }
-
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:opacity 0.4s ease; padding: 15px; }
         .modal-overlay.active { opacity:1; pointer-events:auto; }
         .modal-content { background:transparent; padding:30px; border-radius:12px; box-shadow: none; width:100%; max-width:550px; position:relative; border:none; transform:scale(0.9); transition:transform 0.4s ease; max-height: 85vh; overflow-y: auto; }
@@ -303,24 +297,21 @@
         @keyframes timerResetEffect { 50% { opacity: 0.4; } }
         @media (max-width: 360px) { #timer-display { font-size: 2.8rem; } #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; } }
         
+        /* --- New/Modified Feature Styles --- */
         #points-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--glass-bg); color: var(--accent-color); padding: 15px 30px; border-radius: 10px; font-size: 1.5rem; font-weight: 700; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; border: 1px solid var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
         #points-notification.show { opacity: 1; transform: translate(-50%, -60%); }
-        
         #courses-locked-modal .modal-content, #lecture-content-modal .modal-content { background: var(--secondary-bg); box-shadow: 0 0 25px rgba(0,0,0,0.5); border: 1px solid var(--border-color); text-align: right; }
         #courses-locked-modal .modal-content { background: transparent; box-shadow: none; border: none; text-align: center; }
         #courses-locked-message { font-size: 1.4rem; font-weight: 600; line-height: 1.7; text-shadow: 0 0 15px rgba(0,0,0,0.7); max-width: 450px; }
         #courses-locked-message .highlight { color: var(--accent-color); font-weight: 700; font-family: 'Orbitron', sans-serif; }
         .dev-credit-modal { margin-top: 25px; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; color: var(--accent-hover); text-shadow: 0 0 8px var(--accent-glow); opacity: 0.9; }
         
-        #points-info-content { text-align: center; max-width: 450px; }
-        #points-info-content p { font-size: 1.2rem; font-weight: 600; line-height: 1.7; text-shadow: 0 0 15px rgba(0,0,0,0.7); margin-bottom: 15px; }
-        #points-info-content .highlight { color: var(--accent-color); font-weight: 700; font-family: 'Orbitron', sans-serif; }
-        
         #lecture-content { line-height: 1.8; }
         #lecture-content h3 { color: var(--accent-color); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--border-color); font-size: 1.5rem; }
         #lecture-content h4 { color: var(--primary-text-color); opacity: 0.9; margin-top: 15px; margin-bottom: 8px; font-size: 1.2rem; }
         #lecture-content p { opacity: 0.85; margin-bottom: 10px; }
         
+        /* START: VIDEO PLAYER MODAL STYLES */
         #video-player-modal .modal-content {
             background: var(--secondary-bg);
             box-shadow: 0 0 25px rgba(0,0,0,0.5);
@@ -343,30 +334,7 @@
             border: none;
             border-radius: 8px;
         }
-
-        /* --- Pointing Arrow Styles --- */
-        #pointing-arrow {
-            position: fixed;
-            z-index: 2000;
-            color: var(--accent-color);
-            font-size: 2.5rem;
-            text-shadow: 0 0 15px var(--accent-glow);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(-50%);
-            /* MODIFIED: Slower arrow animation */
-            transition: opacity 0.4s ease, top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-        }
-        #pointing-arrow.show {
-            opacity: 1;
-        }
-        #pointing-arrow.pointing-animation {
-            animation: point-pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes point-pulse {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(10px); }
-        }
+        /* END: VIDEO PLAYER MODAL STYLES */
 
     </style>
 </head>
@@ -448,7 +416,7 @@
                 <button class="nav-item" id="sections-btn"><i class="fas fa-layer-group"></i><span data-key="nav_sections">السكاشن</span></button>
                 <button class="nav-item" data-modal="ai-modal"><i class="fas fa-robot"></i><span data-key="nav_ai">AI</span></button>
                 <button class="nav-item" id="platform-btn"><i class="fas fa-university"></i><span data-key="nav_platform">المنصة</span></button>
-                <button class="nav-item" id="courses-btn"><i id="courses-icon" class="fas fa-lock"></i><span data-key="nav_courses">كورسات</span></button>
+                <button class="nav-item" id="courses-btn"><i id="courses-icon" class="fas fa-crown"></i><span data-key="nav_courses">كورسات</span></button>
                 <button class="nav-item" data-modal="about-modal"><i class="fas fa-info-circle"></i><span data-key="nav_about">عنا</span></button>
                 <button class="nav-item" data-modal="settings-modal"><i class="fas fa-sliders-h"></i><span data-key="nav_settings">الإعدادات</span></button>
             </div>
@@ -581,24 +549,11 @@
                 </div>
         </div>
     </div>
-
-    <div id="points-info-modal" class="modal-overlay full-screen">
-        <button class="close-btn">×</button>
-        <div id="points-info-content">
-            <p>يجب عليك جمع <span class="highlight">300</span> نقطة لفتح قسم الكورسات الذي يشمل كورسات متنوعة للعمل.</p>
-            <p>عند دخولك لأي محاضرة مفتوحة، تحصل على <span class="highlight">9</span> نقاط.</p>
-        </div>
-    </div>
-
-    <div id="pointing-arrow">
-        <i class="fas fa-hand-point-down"></i>
-    </div>
-
-
-<script>
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
     const coursesData = { '1': { 'أعمال دولية': { '1': ['مبادئ المحاسبة المالية', 'مبادئ الاقتصاد', 'مبادئ القانون', 'لغة أجنبية (1)', 'مبادئ إدارة الأعمال', 'أساسيات الحاسب'], '2': ['محاسبة شركات', 'اقتصاديات التجارة الدولية', 'قانون دولي', 'لغة أجنبية (2)', 'إدارة الموارد البشرية', 'مبادئ التسويق'] }, 'نظم معلومات': { '1': ['طرق ومهارات الاتصال', 'رياضيات الأعمال', 'حقوق الإنسان', 'التفكير الابتكاري', 'السلوك التنظيمي', 'أساسيات الحاسب'], '2': ['مقدمة في نظم المعلومات', 'أساسيات البرمجة', 'رياضيات متقدمة', 'إدارة قواعد البيانات', 'مبادئ الإحصاء', 'لغة إنجليزية فنية'] } }, '2': { 'أعمال دولية': { '1': ['إدارة اللوجستيات وسلاسل الإمداد', 'مبادئ التسويق', 'اقتصاد جزئي', 'محاسبة التكاليف', 'قانون الأعمال'], '2': ['إدارة مالية', 'التسويق الدولي', 'اقتصاد كلي', 'محاسبة إدارية', 'نظم معلومات إدارية'] }, 'نظم معلومات': { '1': ['قانون الأعمال', 'قواعد البيانات (1)', 'إدارة الإنتاج', 'محاسبة شركات', 'تصميم برامج الحاسب'], '2': ['شبكات الحاسب (1)', 'تحليل وتصميم النظم', 'هياكل البيانات', 'بحوث العمليات', 'تطبيقات الإنترنت'] } }, '3': { 'محاسبة مالية': { '1': ['محاسبة ضريبية', 'محاسبة تكاليف متقدمة', 'تطبيقات الحاسب التجارية', 'اقتصاديات المالية العامة', 'الإحصاء التطبيقي', 'حقوق الإنسان'], '2': ['المراجعة الداخلية', 'محاسبة حكومية وقومية', 'نظم تكاليف فعلية', 'مشكلات محاسبية معاصرة', 'دراسات الجدوى'] }, 'علوم مالية ومصرفية': { '1': ['اقتصاديات المصارف', 'قانون المصارف والائتمان', 'تطبيقات الحاسب في المنشآت المالية', 'إدارة المنشآت المالية', 'حقوق الإنسان', 'الإحصاء التطبيقي'], '2': ['الأسواق المالية', 'إدارة المخاطر المالية', 'التحليل المالي', 'عمليات البنوك', 'التأمين وإدارة الخطر'] }, 'نظم معلومات': { '1': ['حقوق الإنسان', 'قواعد البيانات (2)', 'حزم الإحصاء والعمليات', 'محاسبة الضرائب', 'أمن المعلومات'], '2': ['تطوير تطبيقات الويب', 'الذكاء الاصطناعي', 'شبكات الحاسب (2)', 'إدارة المشروعات البرمجية', 'التجارة الإلكترونية'] } }, '4': { 'محاسبة مالية': { '1': ['المحاسبة الإدارية والموازنات', 'المحاسبة الدولية', 'المحاسبة في المنشآت المالية', 'نظم التكاليف', 'مشكلات محاسبية معاصرة', 'بحوث العمليات'], '2': ['مراجعة متقدمة', 'محاسبة البترول والفنادق', 'نظم المعلومات المحاسبية', 'التحليل المالي المتقدم', 'مشروع التخرج'] }, 'علوم مالية ومصرفية': { '1': ['مشكلات مصرفية ومالية معاصرة', 'الهندسة المالية', 'العقود الآجلة والمشتقات المالية', 'التمويل الدولي', 'إدارة المحافظ الاستثمارية'], '2': ['حوكمة الشركات', 'تقييم الأصول', 'استراتيجيات الاستثمار', 'الصيرفة الإسلامية', 'مشروع التخرج'] }, 'نظم معلومات': { '1': ['تأمين الشبكات', 'تنقيب البيانات', 'نظم دعم القرار', 'هندسة البرمجيات', 'إدارة مراكز المعلومات'], '2': ['الحوسبة السحابية', 'تطبيقات الموبايل', 'النظم الخبيرة', 'الجرائم الإلكترونية والتحقيق الرقمي', 'مشروع التخرج'] } } };
     
+    // START: NEW VIDEO COURSES DATA
     const videoCoursesData = {
         'ecommerce': {
             title_ar: 'كورسات التجارة الإلكترونية', title_en: 'E-commerce Courses', icon: 'fas fa-cash-register',
@@ -639,7 +594,9 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         }
     };
+    // END: NEW VIDEO COURSES DATA
 
+    // تم إفراغ هذه الكائنات لضمان أن جميع المحاضرات مغلقة بشكل افتراضي
     const lectureLinks = {};
     const lectureContent = {};
     const translations = { 
@@ -648,7 +605,6 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
     
-    const POINTS_TO_UNLOCK = 300;
     const POINTS_PER_LECTURE = 9;
     const htmlEl = document.documentElement, body = document.body, loadingPage = document.getElementById("loading-page"), loginPage = document.getElementById("login-page"), mainPage = document.getElementById("main-page"), loginForm = document.getElementById("login-form"), yearSelect = document.getElementById("year"), majorSelect = document.getElementById("major"), semesterSelect = document.getElementById("semester"), loginBtn = document.querySelector(".login-btn"), semesterWarning = document.getElementById("semester-warning"), welcomeMessageName = document.getElementById("welcome-message-name"), welcomeMessageDetails = document.getElementById("welcome-message-details"), coursesContainer = document.getElementById("courses-container"), sectionsBtn = document.getElementById("sections-btn"), pdfBtn = document.getElementById("pdf-btn"), messageModal = document.getElementById("message-modal"), messageText = document.getElementById("message-text");
     const detailsView = document.getElementById("details-view"), detailsViewTitle = document.getElementById("details-view-title"), detailsViewList = document.getElementById("details-view-list"), backToCoursesBtn = document.getElementById("back-to-courses-btn");
@@ -664,56 +620,21 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const redirectModal = document.getElementById('redirect-modal');
     const timerElement = document.getElementById('redirect-timer');
-    const pointingArrow = document.getElementById('pointing-arrow');
     
     let timerInterval;
     let timerSeconds = 0;
     let isTimerRunning = false;
     let countdownInterval;
-    let currentView = 'subjects'; 
+    let currentView = 'subjects'; // State for main view: 'subjects' or 'videos'
     
-    // --- Arrow Animation Functions ---
-    function showAndAnimateArrow() {
-        const targetElement = document.getElementById('courses-btn');
-        if (!targetElement || !pointingArrow) return;
-
-        const targetRect = targetElement.getBoundingClientRect();
-        const targetX = targetRect.left + (targetRect.width / 2);
-        const targetY = targetRect.top - 50;
-
-        pointingArrow.style.top = '20vh';
-        pointingArrow.style.left = '50vw';
-        pointingArrow.classList.remove('pointing-animation');
-        targetElement.classList.remove('highlight-nav-item');
-
-        pointingArrow.classList.add('show');
-
-        setTimeout(() => {
-            pointingArrow.style.top = `${targetY}px`;
-            pointingArrow.style.left = `${targetX}px`;
-        }, 100);
-
-        setTimeout(() => {
-            pointingArrow.classList.add('pointing-animation');
-            targetElement.classList.add('highlight-nav-item'); // Highlight target
-        }, 1600); // MODIFIED: Slower animation timeout
-    }
-
-    function hideArrow() {
-        const targetElement = document.getElementById('courses-btn');
-        if (pointingArrow) {
-            pointingArrow.classList.remove('show');
-            pointingArrow.classList.remove('pointing-animation');
-        }
-        if(targetElement){
-            targetElement.classList.remove('highlight-nav-item'); // Remove highlight
-        }
-    }
-
     function getPoints() { return parseInt(localStorage.getItem('moraUserPoints') || '0', 10); }
     function showPointsNotification() { pointsNotification.classList.add('show'); setTimeout(() => { pointsNotification.classList.remove('show'); }, 1500); }
     function addPoints(amount) { let currentPoints = getPoints(); currentPoints += amount; localStorage.setItem('moraUserPoints', currentPoints); pointsDisplay.textContent = currentPoints; showPointsNotification(); updateCoursesButtonState(); }
-    function updateCoursesButtonState() { const currentPoints = getPoints(); if (currentPoints >= POINTS_TO_UNLOCK) { coursesBtn.classList.remove('locked'); coursesIcon.className = 'fas fa-crown'; } else { coursesBtn.classList.add('locked'); coursesIcon.className = 'fas fa-lock'; } }
+    function updateCoursesButtonState() { 
+        // --- MODIFICATION: Always show the unlocked state ---
+        coursesBtn.classList.remove('locked'); 
+        coursesIcon.className = 'fas fa-crown'; 
+    }
     function setLanguage(lang) { htmlEl.lang = lang; htmlEl.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.querySelectorAll('[data-key]').forEach(el => { const key = el.dataset.key; if (translations[lang]?.[key]) { if (key === 'courses_locked_msg') { el.innerHTML = translations[lang][key]; } else { el.textContent = translations[lang][key]; } } }); localStorage.setItem('moraLectureHubLang', lang); updateMajors(); updateActiveUI(); }
     function setSetting(type, value) { if (type === 'theme') { localStorage.setItem('moraLectureHubTheme', value.name); body.style.setProperty('--accent-color', value.accent); body.style.setProperty('--accent-glow', value.glow); body.style.setProperty('--accent-hover', value.hover); } else if (type === 'mode') { body.className = value; localStorage.setItem('moraLectureHubMode', value); } updateActiveUI(); }
     function populateThemeButtons() { const themeContainer = document.getElementById('theme-switcher'); themeContainer.innerHTML = ''; themes.forEach(theme => { const btn = document.createElement('button'); btn.className = 'theme-btn'; btn.title = theme.name; btn.innerHTML = `<span class="theme-swatch" style="background-color:${theme.accent};"></span> <span>${theme.name}</span>`; btn.addEventListener('click', () => setSetting('theme', theme)); themeContainer.appendChild(btn); }); }
@@ -766,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 coursesContainer.appendChild(card);
             });
         }
-        currentView = 'subjects';
+        currentView = 'subjects'; // Set view state
     }
     function getIconForCourse(e) { const t = e.toLowerCase(); return t.includes("محاسبة") || t.includes("مالية") || t.includes("تكاليف") || t.includes("ضريبية") ? "fa-calculator" : t.includes("اقتصاد") ? "fa-chart-line" : t.includes("قانون") ? "fa-gavel" : t.includes("إدارة") || t.includes("اعمال") || t.includes("سلوك") || t.includes("تسويق") ? "fa-briefcase" : t.includes("حاسب") || t.includes("معلومات") || t.includes("بيانات") || t.includes("برامج") || t.includes("شبكات") ? "fa-laptop-code" : t.includes("رياضيات") || t.includes("احصاء") || t.includes("كمية") ? "fa-square-root-alt" : t.includes("لغة") || t.includes("اتصال") ? "fa-language" : t.includes("حقوق") ? "fa-landmark" : t.includes("مصرفية") || t.includes("بنوك") ? "fa-university" : "fa-book-open"; }
     function getCurrentUserData() { return JSON.parse(localStorage.getItem('moraLectureHubUser')); }
@@ -791,9 +712,10 @@ document.addEventListener('DOMContentLoaded', () => {
     function showPdfList() { const userData = getCurrentUserData(); if (!userData) return; const subjects = getCurrentUserSubjects(userData); const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_pdf; detailsViewList.innerHTML = ''; subjects.forEach((subject, index) => { const item = document.createElement('div'); item.className = 'detail-item'; item.style.animationDelay = `${index * 0.05}s`; item.innerHTML = `<span>${subject}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showMessageModal(translations[lang].pdf_msg)); detailsViewList.appendChild(item); }); mainPage.classList.add('details-active'); }
     function showSectionList() { const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_sections; detailsViewList.innerHTML = ''; for (let i = 1; i <= 10; i++) { const item = document.createElement('div'); item.className = 'detail-item'; item.style.animationDelay = `${i * 0.05}s`; item.innerHTML = `<span>${translations[lang].section} ${i}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showMessageModal(translations[lang].section_msg)); detailsViewList.appendChild(item); } mainPage.classList.add('details-active'); }
     
+    // START: VIDEO COURSES FUNCTIONS
     function displayVideoCategories() {
         const lang = htmlEl.lang || 'ar';
-        coursesContainer.innerHTML = ""; 
+        coursesContainer.innerHTML = ""; // Clear existing subjects
         Object.keys(videoCoursesData).forEach((key, index) => {
             const category = videoCoursesData[key];
             const card = document.createElement('div');
@@ -803,15 +725,17 @@ document.addEventListener('DOMContentLoaded', () => {
             card.addEventListener('click', () => showVideoList(key));
             coursesContainer.appendChild(card);
         });
-        currentView = 'videos';
+        currentView = 'videos'; // Set view state
     }
 
     function showVideoList(categoryKey) {
         const lang = htmlEl.lang || 'ar';
         const category = videoCoursesData[categoryKey];
         if (!category) return;
+
         detailsViewTitle.textContent = lang === 'ar' ? category.title_ar : category.title_en;
         detailsViewList.innerHTML = '';
+
         category.videos.forEach((video, index) => {
             const item = document.createElement('div');
             item.className = 'detail-item';
@@ -827,9 +751,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const videoPlayerModal = document.getElementById('video-player-modal');
         const videoContainer = document.getElementById('video-player-container');
         if (!videoPlayerModal || !videoContainer) return;
+
         videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
         videoPlayerModal.classList.add('active');
     }
+    // END: VIDEO COURSES FUNCTIONS
 
     function formatTime(seconds) { const h = Math.floor(seconds / 3600); const m = Math.floor((seconds % 3600) / 60); const s = seconds % 60; return [h, m, s].map(v => v < 10 ? "0" + v : v).join(':'); }
     function updateTimerDisplay() { timerDisplay.textContent = formatTime(timerSeconds); }
@@ -885,26 +811,21 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfBtn.addEventListener('click', showPdfList);
     backToCoursesBtn.addEventListener('click', () => mainPage.classList.remove('details-active'));
     
-    document.getElementById('points-counter').addEventListener('click', () => {
-        document.getElementById('points-info-modal').classList.add('active');
-        setTimeout(showAndAnimateArrow, 400);
-    });
-
     document.getElementById('lang-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.lang) setLanguage(e.target.closest('.settings-btn').dataset.lang); });
     document.getElementById('mode-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.mode) setSetting('mode', e.target.closest('.settings-btn').dataset.mode); });
     
     document.querySelectorAll('[data-modal]').forEach(trigger => { trigger.addEventListener('click', () => { const modalId = trigger.dataset.modal; const modal = document.getElementById(modalId); if(modal) { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); modal.classList.add('active'); if (modalId === 'about-modal') { document.querySelector('.glowing-sponsors').classList.add('animate'); } } }); });
-    
     document.querySelectorAll('.modal-overlay').forEach(modal => modal.addEventListener('click', e => { 
         if (e.target === modal || e.target.classList.contains('close-btn') || e.target.classList.contains('modal-close-btn')) { 
-            hideArrow(); 
             modal.classList.remove('active'); 
             if(modal.id === 'about-modal') { document.querySelector('.glowing-sponsors').classList.remove('animate'); } 
             if(modal.id === 'timer-modal') { resetTimer(); }
+            // START: Stop video when closing modal
             if (modal.id === 'video-player-modal') {
                 const videoContainer = document.getElementById('video-player-container');
-                if (videoContainer) videoContainer.innerHTML = '';
+                if (videoContainer) videoContainer.innerHTML = ''; // This stops the video
             }
+            // END: Stop video when closing modal
         } 
     }));
     
@@ -924,20 +845,19 @@ document.addEventListener('DOMContentLoaded', () => {
     blogTextarea.addEventListener('input', () => { charCounter.textContent = `${blogTextarea.value.length} / 1000`; });
     saveBlogBtn.addEventListener('click', () => { const lang = htmlEl.lang || 'ar'; localStorage.setItem('moraAppNote', blogTextarea.value); const originalText = translations[lang].blog_save_btn; saveBlogBtn.textContent = translations[lang].blog_saved_success; saveBlogBtn.classList.add('saved'); setTimeout(() => { saveBlogBtn.textContent = originalText; saveBlogBtn.classList.remove('saved'); }, 2000); });
     
+    // START: NEW COURSES BUTTON LOGIC
     coursesBtn.addEventListener('click', () => {
-        if (coursesBtn.classList.contains('locked')) {
-            coursesLockedModal.classList.add('active');
+        mainPage.classList.remove('details-active'); // Close details view if open
+        const userData = getCurrentUserData();
+        if (!userData) return;
+
+        if (currentView === 'subjects') {
+            displayVideoCategories();
         } else {
-            mainPage.classList.remove('details-active');
-            const userData = getCurrentUserData();
-            if (!userData) return;
-            if (currentView === 'subjects') {
-                displayVideoCategories();
-            } else {
-                populateMainPage(userData);
-            }
+            populateMainPage(userData);
         }
     });
+    // END: NEW COURSES BUTTON LOGIC
 
     function showRedirectModal(sourceModalId, actionCallback) {
         if (sourceModalId) {
