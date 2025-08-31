@@ -206,7 +206,20 @@
         .close-btn { position:absolute; top:15px; right:15px; background:none; border:none; color:var(--primary-text-color); font-size:1.8rem; cursor:pointer; transition:all 0.3s ease; text-shadow: 0 0 5px #000; z-index: 1001;}
         .close-btn:hover { color: var(--accent-color); transform: rotate(90deg); }
         
-        .modal-overlay.full-screen { flex-direction: column; gap: 8px; }
+        /* ---====================================--- */
+        /* ---      START: MODIFICATION FOR OVERFLOW      --- */
+        /* ---====================================--- */
+        .modal-overlay.full-screen {
+            flex-direction: column;
+            gap: 8px;
+            overflow-y: auto; /* Allow vertical scrolling if content is too long */
+            padding: 60px 15px 30px 15px; /* Add padding to prevent content from being hidden */
+            justify-content: flex-start; /* Align content to the top */
+        }
+        /* ---====================================--- */
+        /* ---      END: MODIFICATION FOR OVERFLOW      --- */
+        /* ---====================================--- */
+
         .full-screen > * { animation: fadeInContent 0.6s 0.2s backwards; }
         .full-screen .close-btn { top: 25px; right: 25px; }
         .full-screen h3 { font-size: 1.6rem; text-shadow: 0 0 10px var(--accent-glow); text-align: center; }
@@ -221,48 +234,40 @@
         
         .modal-actions-list { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; margin-top: 30px; align-items: center; }
         
-        /* ---====================================--- */
-        /* ---     START: MODIFIED BUTTON STYLES    --- */
-        /* ---====================================--- */
         .modal-action-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 12px;
             width: 100%;
-            max-width: 260px; /* Reduced max-width */
-            padding: 10px 20px; /* Reduced padding */
-            font-size: 0.95rem; /* Reduced font size */
+            max-width: 260px;
+            padding: 10px 20px;
+            font-size: 0.95rem;
             font-weight: 600;
-            border-radius: 10px; /* Changed border-radius */
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.3s ease; /* Simplified transition */
-            background: rgba(255, 255, 255, 0.05); /* Transparent background */
-            border: none; /* Removed border */
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
             text-shadow: 0 0 5px rgba(0,0,0,0.5);
         }
 
         .modal-action-btn:hover {
-            transform: translateY(-4px) scale(1.03); /* Enhanced hover transform */
-            background: rgba(255, 255, 255, 0.1); /* Brighter background on hover */
+            transform: translateY(-4px) scale(1.03);
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .modal-action-btn i { color: inherit !important; }
 
-        /* Individual button colors (text only) */
         #rate-app-btn { color: var(--accent-color); }
         #blog-btn { color: #c37cff; }
         #privacy-policy-btn { color: #49e3c0; }
         #timer-btn { color: #f37b12; }
         
-        /* Individual hover effects (text shadow glow) */
         #rate-app-btn:hover { text-shadow: 0 0 10px var(--accent-glow); }
         #blog-btn:hover { text-shadow: 0 0 10px rgba(195, 124, 255, 0.6); }
         #privacy-policy-btn:hover { text-shadow: 0 0 10px rgba(73, 227, 192, 0.6); }
         #timer-btn:hover { text-shadow: 0 0 10px rgba(243, 123, 18, 0.6); }
-        /* ---====================================--- */
-        /* ---      END: MODIFIED BUTTON STYLES     --- */
-        /* ---====================================--- */
         
         .sponsors-title { font-size: 1.2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 15px; margin-top: 15px; text-shadow: 0 0 8px var(--accent-glow); }
         .sponsors-list { list-style: none; padding: 0; margin: 0 0 20px 0; line-height: 1.8; font-size: 1.1rem; text-align: center; }
@@ -383,18 +388,12 @@
             50% { transform: translateX(-50%) translateY(10px); }
         }
 
-        /* ---====================================--- */
-        /* ---      MODIFICATIONS FOR RESPONSIVENESS      --- */
-        /* ---====================================--- */
-
-        /* For smaller phones */
         @media (max-width: 480px) {
             #welcome-message-name { font-size: 1rem; }
             #welcome-message-details { font-size: 0.8rem; }
             .institute-name { font-size: 0.9rem; }
         }
 
-        /* For very small phones */
         @media (max-width: 360px) {
             .nav-item span { font-size: 0.6rem; }
             #timer-display { font-size: 2.8rem; }
