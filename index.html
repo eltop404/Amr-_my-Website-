@@ -23,10 +23,12 @@
         body.mode-light { --primary-bg: #f0f2f5; --secondary-bg: #ffffff; --glass-bg: rgba(255, 255, 255, 0.85); --primary-text-color: #1c1e21; --border-color: rgba(0,0,0, 0.2); }
         body.mode-oled { --primary-bg: #000000; --secondary-bg: #111111; --glass-bg: rgba(17, 17, 17, 0.75); --primary-text-color: #e1e1ff; --border-color: rgba(255,255,255, 0.2); }
         body.mode-gold-black { --primary-bg: #000000; --secondary-bg: #1a1a1a; --glass-bg: rgba(26, 26, 26, 0.75); --primary-text-color: #f0e6d2; --border-color: rgba(212, 175, 55, 0.3); --accent-color: #d4af37; --accent-glow: rgba(212, 175, 55, 0.4); --accent-hover: #b89b31; }
+        
         /* --- التنسيقات العامة --- */
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
         html { scroll-behavior: smooth; }
-        body { background-color: var(--primary-bg); color: var(--primary-text-color); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; height: 100vh; overflow: hidden; }
+        body { background-color: var(--primary-bg); color: var(--primary-text-color); transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease; min-height: 100vh; overflow: hidden; }
+        
         /* --- خلفية متحركة --- */
         .animated-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; overflow: hidden; background: var(--primary-bg); }
         .glow-element { position: absolute; border-radius: 50%; filter: blur(150px); animation: pulse 15s infinite alternate; }
@@ -41,6 +43,7 @@
         
         #login-page { padding: 20px; justify-content: center; gap: 25px; } 
         #main-page { padding-top: 0; }
+
         /* --- شاشة التحميل --- */
         #loading-page { justify-content: center; align-items: center; }
         .loading-text { font-size: 1.6rem; font-weight: 700; color: var(--primary-text-color); margin-bottom: 30px; text-shadow: 0 0 10px var(--accent-glow); animation: subtleGlow 2.5s infinite alternate ease-in-out; padding: 0 15px; text-align: center; }
@@ -50,7 +53,7 @@
         .loading-bar { width: 100%; height: 100%; background: linear-gradient(90deg, transparent, var(--accent-color), transparent); background-size: 200% 100%; border-radius: 5px; animation: loading-progress 1.8s linear infinite; }
         @keyframes loading-progress { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         
-        /* --- واجهة تسجيل الدخول (التصميم الجديد والمحسن) --- */
+        /* --- واجهة تسجيل الدخول --- */
         .login-box {
             position: relative;
             width: 100%;
@@ -62,16 +65,13 @@
             animation: slideInUp 0.8s cubic-bezier(0.25, 1, 0.5, 1) backwards;
         }
         @keyframes slideInUp { from { opacity: 0; transform: translateY(50px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
-        /* --- خطوط الإطار المتحركة الاحترافية (مُعدل) --- */
         .login-box span { position: absolute; display: block; }
-        
         .login-box span:nth-child(1) { top: 0; left: -100%; width: 100%; height: 2px; background: linear-gradient(90deg, transparent, var(--accent-color)); animation: animate-top 6s linear infinite; }
         @keyframes animate-top { 0% { left: -100%; } 100% { left: 100%; } }
         .login-box span:nth-child(2), .login-box span:nth-child(4) { display: none; }
         .login-box span:nth-child(3) { bottom: 0; right: -100%; width: 100%; height: 2px; background: linear-gradient(270deg, transparent, var(--accent-color)); animation: animate-bottom 6s linear infinite; animation-delay: 3s; }
         @keyframes animate-bottom { 0% { right: -100%; } 100% { right: 100%; } }
         #login-form { width: 100%; display: flex; flex-direction: column; gap: 25px; }
-        
         #animated-login-title { font-family: 'Cairo', sans-serif; font-size: 1.6rem; text-align: center; color: var(--primary-text-color); margin-bottom: 25px; font-weight: 700; text-shadow: 0 0 12px var(--accent-glow); animation: fadeInContent 1s 0.2s backwards; }
         @keyframes fadeInContent { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         #animated-login-title::after { content: '\f234'; font-family: 'Font Awesome 6 Free'; font-weight: 900; display: inline-block; margin-right: 10px; font-size: 1.5rem; vertical-align: middle; color: var(--accent-color); text-shadow: 0 0 15px var(--accent-glow); animation: fadeInContent 1s 0.4s backwards; }
@@ -87,19 +87,16 @@
         .input-group label { position: absolute; top: 12px; right: 5px; color: var(--primary-text-color); opacity: 0.7; pointer-events: none; transition: all 0.3s ease; }
         [dir=ltr] .input-group label { right: auto; left: 5px; }
         .input-group input, .input-group select { width:100%; padding: 12px 5px; background: transparent; border: none; border-bottom: 2px solid var(--border-color); color: var(--primary-text-color); font-size: 1rem; transition: border-color 0.3s ease; }
-        
         .input-group input:-webkit-autofill, .input-group input:-webkit-autofill:hover, .input-group input:-webkit-autofill:focus, .input-group input:-webkit-autofill:active { -webkit-text-fill-color: var(--primary-text-color) !important; -webkit-box-shadow: 0 0 0 30px #0c0f18 inset !important; background-color: transparent !important; }
         .input-group input:focus + label, .input-group input:not(:placeholder-shown) + label { top: -14px; font-size: 0.8rem; opacity: 1; color: var(--accent-color); }
         .input-group input:focus, .input-group select:focus { outline: none; border-bottom-color: var(--accent-color); }
         .input-group input::placeholder { color: transparent; }
         
         .password-hint { font-size: 0.8rem; text-align: center; color: var(--primary-text-color); opacity: 0.7; margin-top: -15px; animation: fadeInContent 1s 1.0s backwards; }
-        
         .input-group select { color: var(--primary-text-color); opacity: 0.7; }
         .input-group select:valid { opacity: 1; }
         .input-group select option { background-color: var(--secondary-bg); color: var(--primary-text-color); }
         .input-group select option[value=""][disabled] { display: none; }
-        
         .input-group select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e1e1ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 13L5 8l6-5'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left .75rem center; background-size: 12px; -webkit-appearance: none; appearance: none; padding-right: 35px; }
         [dir=ltr] .input-group select { background-position: right .75rem center; padding-right: 5px; padding-left: 35px; }
         
@@ -118,7 +115,6 @@
             overflow: hidden;
             white-space: nowrap;
         }
-
         .scrolling-banner p {
             display: inline-block;
             font-size: 0.8rem;
@@ -131,16 +127,16 @@
             text-fill-color: transparent;
         }
         
-        [dir="rtl"] .scrolling-banner p { padding-left: 100%; }
-        [dir="ltr"] .scrolling-banner p { padding-left: 100%; }
-
+        [dir="rtl"] .scrolling-banner p, [dir="ltr"] .scrolling-banner p {
+            padding-left: 100%;
+        }
         @keyframes scroll-continuous { 
             0% { transform: translateX(-100%); } 
             100% { transform: translateX(100%); } 
         }
 
-        #main-header { width: 100%; max-width: 900px; padding: 15px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; text-align: right; gap: 15px; }
-        [dir="ltr"] #main-header { text-align: left; flex-direction: row-reverse; }
+        #main-header { width: 100%; max-width: 900px; padding: 15px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; text-align: right; }
+        [dir="ltr"] #main-header { text-align: left; }
         
         #main-header, .scrolling-banner {
             animation: fadeInContent 0.8s 0.2s backwards;
@@ -150,19 +146,20 @@
         .header-content { flex-grow: 1; padding: 0 15px; }
         #welcome-message-name { font-size: 1.2rem; font-weight: 700; }
         #welcome-message-details { font-size: 0.9rem; font-weight: 400; opacity: 0.8; margin-top: 2px; }
-        @media (max-width: 480px) { #welcome-message-name { font-size: 1rem; } #welcome-message-details { font-size: 0.8rem; } }
         #points-counter { display: flex; align-items: center; gap: 8px; background: var(--glass-bg); padding: 5px 12px; border-radius: 50px; border: 1px solid var(--border-color); font-family: 'Orbitron', sans-serif; flex-shrink: 0; cursor: pointer; transition: transform 0.3s ease; }
         #points-counter:hover { transform: scale(1.05); }
         #points-counter .fa-star { color: #FFD700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.7); }
         #points-display { font-weight: 700; font-size: 1.1rem; color: var(--primary-text-color); }
+        
         #view-wrapper { flex-grow: 1; position: relative; width: 100%; max-width: 900px; }
-        #courses-container, #details-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 0 20px 50px 20px; overscroll-behavior: contain; }
+        #courses-container, #details-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 0 20px 140px 20px; overscroll-behavior: contain; }
         #courses-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
         .course-card { width: 100%; max-width: 350px; background: var(--secondary-bg); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; animation: fadeIn 0.8s forwards; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .course-card:hover { border-color: var(--accent-color); }
         .course-card i { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 5px; }
-        .course-card h3 { font-size: 1.1rem; color: var(--primary-text-color); font-weight: 600; }
+        .course-card h3 { font-size: 1.1rem; color: var(--primary-text-color); font-weight: 600; text-align: center; }
+        
         #details-view { display: flex; flex-direction: column; }
         #details-header { display: flex; align-items: center; gap: 15px; padding-bottom: 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; flex-shrink: 0; }
         #back-to-courses-btn { background: transparent; border: 2px solid var(--border-color); color: var(--primary-text-color); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
@@ -182,39 +179,25 @@
         #main-page.details-active #details-view { opacity: 1; transform: translateY(0); pointer-events: auto; }
         #main-page.details-active #main-header, #main-page.details-active .scrolling-banner { opacity: 0; pointer-events: none; }
         
-        /* --- [جديد] القائمة الجانبية --- */
-        #menu-toggle-btn { background: transparent; border: none; color: var(--primary-text-color); font-size: 1.5rem; cursor: pointer; padding: 10px; z-index: 1001; transition: color 0.3s ease; }
-        #menu-toggle-btn:hover { color: var(--accent-color); }
-
-        #side-nav { position: fixed; top: 0; width: 260px; height: 100%; background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 3000; transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1); display: flex; flex-direction: column; padding-top: 60px; }
-        [dir="rtl"] #side-nav { right: 0; transform: translateX(100%); border-left: 1px solid var(--border-color); }
-        [dir="ltr"] #side-nav { left: 0; transform: translateX(-100%); border-right: 1px solid var(--border-color); }
-        #side-nav.active { transform: translateX(0); }
-
-        #sidenav-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2999; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
-        #sidenav-overlay.active { opacity: 1; pointer-events: auto; }
-
-        #side-nav .nav-group { display: flex; flex-direction: column; justify-content: flex-start; align-items: stretch; height: 100%; gap: 5px; padding: 20px; }
-        #side-nav .nav-item { cursor:pointer; display:flex; flex-direction:row; align-items:center; color:var(--primary-text-color); transition:all 0.3s ease; background: none; border: none; text-decoration: none; justify-content: flex-start; gap: 15px; padding: 12px 15px; border-radius: 8px; }
-        #side-nav .nav-item i { font-size: 1.1rem; margin-bottom: 0; width: 20px; text-align: center; }
-        #side-nav .nav-item span { font-size: 0.95rem; font-weight: 600; }
-        #side-nav .nav-item:hover { color:var(--accent-hover); background: rgba(255,255,255,0.05); }
-        #side-nav .nav-item:active i { color: var(--accent-color); }
-
+        #bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; z-index: 100; padding: 10px 0; background: var(--glass-bg); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--border-color); }
+        .nav-group { display: flex; justify-content: space-around; align-items: center; max-width: 500px; margin: 0 auto; }
+        .nav-item { cursor:pointer; display:flex; flex-direction:column; align-items:center; color:var(--primary-text-color); transition:all 0.3s ease; background: none; border: none; padding: 5px; position: relative; text-decoration: none; flex: 1; }
+        .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: color 0.2s ease, transform 0.2s ease; } 
         #courses-btn.locked .fa-lock { animation: jiggle-lock 2s infinite ease-in-out; }
         @keyframes jiggle-lock { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
+        .nav-item span { font-size: 0.7rem; white-space: nowrap; }
+        .nav-item:hover { color:var(--accent-hover); }
+        .nav-item:active i { color: var(--accent-color); }
         
-        .nav-item.highlight-nav-item, #menu-toggle-btn.highlight-nav-item { animation: highlight-pulse 1.5s infinite; border-radius: 8px; }
-        #menu-toggle-btn.highlight-nav-item { border-radius: 50%; }
+        .nav-item.highlight-nav-item {
+            animation: highlight-pulse 1.5s infinite;
+            border-radius: 8px;
+        }
         @keyframes highlight-pulse {
             0% { box-shadow: 0 0 0 0 var(--accent-glow); }
             70% { box-shadow: 0 0 15px 10px rgba(0,0,0,0); }
             100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); }
         }
-
-        /* --- [جديد] الفوتر --- */
-        .main-footer { position: fixed; bottom: 0; left: 0; width: 100%; padding: 8px 0; text-align: center; z-index: 50; pointer-events: none; }
-        .main-footer p { font-size: 0.8rem; font-weight: 600; color: var(--primary-text-color); opacity: 0.5; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
 
         .modal-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); z-index:1000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:opacity 0.4s ease; padding: 15px; }
         .modal-overlay.active { opacity:1; pointer-events:auto; }
@@ -226,7 +209,7 @@
         .modal-overlay.full-screen { flex-direction: column; gap: 8px; }
         .full-screen > * { animation: fadeInContent 0.6s 0.2s backwards; }
         .full-screen .close-btn { top: 25px; right: 25px; }
-        .full-screen h3 { font-size: 1.6rem; text-shadow: 0 0 10px var(--accent-glow); }
+        .full-screen h3 { font-size: 1.6rem; text-shadow: 0 0 10px var(--accent-glow); text-align: center; }
         .full-screen p { font-size: 1rem; opacity: 0.9; max-width: 500px; text-align: center; }
         
         #about-modal.full-screen .social-icons { display: flex; justify-content: center; gap: 25px; margin-top: 15px; }
@@ -234,7 +217,6 @@
         #about-modal.full-screen .social-icons a:hover { color: var(--accent-color); transform: scale(1.1) translateY(-5px); }
         .dev-credit { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; opacity: 0.9; text-shadow: 0 0 6px var(--accent-glow); }
         .institute-name { font-weight: 600; white-space: nowrap; }
-        @media (max-width: 380px) { .institute-name { font-size: 0.9rem; } }
         .app-version { font-family: 'Orbitron', sans-serif; font-size: 0.8rem; opacity: 0.9; margin-top: 15px; background: var(--glass-bg); border: 1px solid var(--border-color); padding: 4px 12px; border-radius: 50px; display: inline-block; }
         
         .modal-actions-list { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; margin-top: 30px; align-items: center; }
@@ -271,11 +253,6 @@
         #redirect-timer { font-family: 'Orbitron', sans-serif; font-size: 4rem; font-weight: 700; color: var(--accent-color); text-shadow: 0 0 20px var(--accent-glow); animation: timerPulse 1s infinite; }
         @keyframes timerPulse { 50% { transform: scale(1.1); } }
         
-        #theme-switcher { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-        .theme-btn { display: flex; align-items: center; gap: 12px; padding: 10px; background-color: var(--glass-bg); color: var(--primary-text-color); border: 1px solid transparent; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
-        .theme-btn:hover { border-color: var(--accent-color); background: var(--primary-bg); }
-        .theme-btn.active { border-color: var(--accent-color); font-weight: bold; }
-        .theme-swatch { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
         .settings-section { margin-bottom: 25px; }
         .settings-section h4 { padding-bottom: 8px; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); opacity: 0.9; font-weight: 700; }
         .settings-options.vertical-options { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
@@ -283,6 +260,12 @@
         [dir="ltr"] .vertical-options .settings-btn { text-align: left; }
         .vertical-options .settings-btn:hover { border-color: var(--accent-color); background: var(--primary-bg); }
         .vertical-options .settings-btn.active { border-color: var(--accent-color); background-color: var(--glass-bg); font-weight: bold; color: var(--accent-color); text-shadow: 0 0 8px var(--accent-glow); }
+        #theme-switcher { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .theme-btn { display: flex; align-items: center; gap: 12px; padding: 10px; background-color: var(--glass-bg); color: var(--primary-text-color); border: 1px solid transparent; border-radius: 8px; width: 100%; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .theme-btn:hover { border-color: var(--accent-color); background: var(--primary-bg); }
+        .theme-btn.active { border-color: var(--accent-color); font-weight: bold; }
+        .theme-swatch { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
+        
         #privacy-modal p { line-height: 1.6; opacity: 0.9; margin-bottom: 10px; }
         
         .rating-stars { font-size: 2rem; color: var(--accent-color); padding: 20px 0; cursor: pointer; }
@@ -304,12 +287,10 @@
         #timer-controls button { padding: 12px 30px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--border-color); color: var(--primary-text-color); background: transparent; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; min-width: 120px; }
         #timer-controls button:hover { border-color: var(--accent-color); color: var(--accent-color); }
         #timer-controls button#start-pause-timer-btn.running { background: var(--accent-color); color: #05080f; border-color: var(--accent-color); }
-        
         .timer-animate-start { animation: timerPulseEffect 0.5s ease-in-out; }
         .timer-animate-reset { animation: timerResetEffect 0.4s ease-in-out; }
         @keyframes timerPulseEffect { 50% { transform: scale(1.05); text-shadow: 0 0 30px var(--accent-glow); } }
         @keyframes timerResetEffect { 50% { opacity: 0.4; } }
-        @media (max-width: 360px) { #timer-display { font-size: 2.8rem; } #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; } }
         
         #points-notification { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--glass-bg); color: var(--accent-color); padding: 15px 30px; border-radius: 10px; font-size: 1.5rem; font-weight: 700; z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; border: 1px solid var(--accent-color); text-shadow: 0 0 10px var(--accent-glow); }
         #points-notification.show { opacity: 1; transform: translate(-50%, -60%); }
@@ -352,7 +333,6 @@
             border-radius: 8px;
         }
 
-        /* --- Pointing Arrow Styles --- */
         #pointing-arrow {
             position: fixed;
             z-index: 2000;
@@ -364,15 +344,40 @@
             transform: translateX(-50%);
             transition: opacity 0.4s ease, top 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), left 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
         }
-        #pointing-arrow.show {
-            opacity: 1;
-        }
-        #pointing-arrow.pointing-animation {
-            animation: point-pulse 1.5s infinite ease-in-out;
-        }
+        #pointing-arrow.show { opacity: 1; }
+        #pointing-arrow.pointing-animation { animation: point-pulse 1.5s infinite ease-in-out; }
         @keyframes point-pulse {
             0%, 100% { transform: translateX(-50%) translateY(0); }
             50% { transform: translateX(-50%) translateY(10px); }
+        }
+
+        /* ---====================================--- */
+        /* ---      MODIFICATIONS FOR RESPONSIVENESS      --- */
+        /* ---====================================--- */
+
+        /* For smaller phones */
+        @media (max-width: 480px) {
+            #welcome-message-name { font-size: 1rem; }
+            #welcome-message-details { font-size: 0.8rem; }
+            .institute-name { font-size: 0.9rem; }
+            
+            /* MODIFIED: Reduce size of action buttons in About modal */
+            #about-modal .modal-action-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                gap: 10px;
+                max-width: 250px;
+            }
+        }
+
+        /* For very small phones */
+        @media (max-width: 360px) {
+            .nav-item span { font-size: 0.6rem; }
+            #timer-display { font-size: 2.8rem; }
+            #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; }
+            .header-content { padding: 0 10px; }
+            #welcome-message-name { font-size: 0.9rem; }
+            #welcome-message-details { font-size: 0.75rem; }
         }
 
     </style>
@@ -430,7 +435,6 @@
             <p>شكر خاص وتقدير لإدارة المعهد وأعضاء هيئة التدريس على دعمهم المتواصل وجهودهم المبذولة في سبيل عمل هذا التطبيق التعليمي.</p>
         </div>
         <header id="main-header">
-            <button id="menu-toggle-btn" aria-label="Open Menu"><i class="fas fa-bars"></i></button>
             <div id="points-counter">
                 <i class="fas fa-star"></i>
                 <span id="points-display">0</span>
@@ -450,23 +454,18 @@
             </div>
         </div>
 
-        <div class="main-footer">
-            <p>جميع الحقوق محفوظة Mora for Studying 2025</p>
-        </div>
+        <nav id="bottom-nav">
+            <div class="nav-group">
+                <button class="nav-item" id="pdf-btn"><i class="fas fa-file-pdf"></i><span data-key="nav_pdf">كتب</span></button>
+                <button class="nav-item" id="sections-btn"><i class="fas fa-layer-group"></i><span data-key="nav_sections">السكاشن</span></button>
+                <button class="nav-item" data-modal="ai-modal"><i class="fas fa-robot"></i><span data-key="nav_ai">AI</span></button>
+                <button class="nav-item" id="platform-btn"><i class="fas fa-university"></i><span data-key="nav_platform">المنصة</span></button>
+                <button class="nav-item" id="courses-btn"><i id="courses-icon" class="fas fa-lock"></i><span data-key="nav_courses">كورسات</span></button>
+                <button class="nav-item" data-modal="about-modal"><i class="fas fa-info-circle"></i><span data-key="nav_about">عنا</span></button>
+                <button class="nav-item" data-modal="settings-modal"><i class="fas fa-sliders-h"></i><span data-key="nav_settings">الإعدادات</span></button>
+            </div>
+        </nav>
     </div>
-    
-    <div id="sidenav-overlay"></div>
-    <nav id="side-nav">
-        <div class="nav-group">
-            <button class="nav-item" id="pdf-btn"><i class="fas fa-file-pdf"></i><span data-key="nav_pdf">كتب</span></button>
-            <button class="nav-item" id="sections-btn"><i class="fas fa-layer-group"></i><span data-key="nav_sections">السكاشن</span></button>
-            <button class="nav-item" data-modal="ai-modal"><i class="fas fa-robot"></i><span data-key="nav_ai">AI</span></button>
-            <button class="nav-item" id="platform-btn"><i class="fas fa-university"></i><span data-key="nav_platform">المنصة</span></button>
-            <button class="nav-item" id="courses-btn"><i id="courses-icon" class="fas fa-lock"></i><span data-key="nav_courses">كورسات</span></button>
-            <button class="nav-item" data-modal="about-modal"><i class="fas fa-info-circle"></i><span data-key="nav_about">عنا</span></button>
-            <button class="nav-item" data-modal="settings-modal"><i class="fas fa-sliders-h"></i><span data-key="nav_settings">الإعدادات</span></button>
-        </div>
-    </nav>
 
     <div id="points-notification">+9 نقاط</div>
 
@@ -496,7 +495,7 @@
         <div class="modal-actions-list">
             <button id="rate-app-btn" class="modal-action-btn" data-modal="rating-modal" data-key="rate_app_btn"><i class="fas fa-star"></i> قيم التطبيق</button>
             <button id="blog-btn" class="modal-action-btn" data-modal="blog-modal" data-key="blog_btn" style="display: none;"><i class="fas fa-feather-alt"></i> مدونتي</button>
-            <button id="timer-btn" class="modal-action-btn" data-modal="timer-modal" data-key="timer_btn"><i class="fas fa-stopwatch"></i> مؤقت المذاكرة</button>
+            <button id="timer-btn" class="modal-action-btn" data-modal="timer-modal" data-key="timer_btn"><i class="fas fa-stopwatch"></i> تايمر</button>
             <button id="privacy-policy-btn" class="modal-action-btn" data-modal="privacy-modal" data-key="privacy_policy_btn"><i class="fas fa-shield-alt"></i> سياسة الخصوصية</button>
         </div>
     </div>
@@ -563,7 +562,7 @@
     <div id="timer-modal" class="modal-overlay">
         <div class="modal-content" id="timer-container">
             <button class="close-btn">×</button>
-            <h3 data-key="timer_title">مؤقت المذاكرة</h3>
+            <h3 data-key="timer_title">تايمر</h3>
             <div id="timer-display">00:00:00</div>
             <div id="timer-controls">
                 <button id="start-pause-timer-btn" data-key="timer_start_btn">بدء</button>
@@ -656,8 +655,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const lectureLinks = {};
     const lectureContent = {};
     const translations = { 
-        ar: { login_title: "Mora Studying", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_hint: "يجب أن تتكون من 8+ حروف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", login_btn: "سجل الان", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.2", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", lecture_msg: "سوف يتم اضافتها قريبا", section_msg: "سوف يتم اضافتها قريبا", pdf_msg: "سوف يتم اضافتها قريبا", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين بياناتك بشكل آمن على جهازك المحلي ولا يتم رفعها إلى أي خوادم خارجية.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "مؤقت المذاكرة", timer_title: "مؤقت المذاكرة", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات في مجالات متنوعة منها البرمجة والتجارة الإلكترونية وغيرها. لفتح هذا القسم يجب عليك جمع <span class='highlight'>300</span> نقطة من خلال دخولك للمحاضرات المفتوحة داخل التطبيق.", dev_credit_text: "تطوير: Amr Lotfy" }, 
-        en: { login_title: "Mora Studying", name_placeholder: "Enter your name", password_label: "Password", password_hint: "Must be 8+ characters with letters and numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", login_btn: "Register Now", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.2", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", lecture_msg: "Will be added soon", section_msg: "Will be added soon", pdf_msg: "Will be added soon", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. Your data is stored securely on your local device and is not uploaded to any external servers.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Study Timer", timer_title: "Study Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains courses in various fields like programming, e-commerce, etc. To unlock this section, you need to collect <span class='highlight'>300</span> points by attending open lectures within the app.", dev_credit_text: "Developed by: Amr Lotfy" } 
+        ar: { login_title: "Mora Studying", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_hint: "يجب أن تتكون من 8+ حروف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", login_btn: "سجل الان", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.2", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", lecture_msg: "سوف يتم اضافتها قريبا", section_msg: "سوف يتم اضافتها قريبا", pdf_msg: "سوف يتم اضافتها قريبا", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين بياناتك بشكل آمن على جهازك المحلي ولا يتم رفعها إلى أي خوادم خارجية.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title: "تايمر", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات في مجالات متنوعة منها البرمجة والتجارة الإلكترونية وغيرها. لفتح هذا القسم يجب عليك جمع <span class='highlight'>300</span> نقطة من خلال دخولك للمحاضرات المفتوحة داخل التطبيق.", dev_credit_text: "تطوير: Amr Lotfy" }, 
+        en: { login_title: "Mora Studying", name_placeholder: "Enter your name", password_label: "Password", password_hint: "Must be 8+ characters with letters and numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", login_btn: "Register Now", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.2", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", lecture_msg: "Will be added soon", section_msg: "Will be added soon", pdf_msg: "Will be added soon", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. Your data is stored securely on your local device and is not uploaded to any external servers.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title: "Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains courses in various fields like programming, e-commerce, etc. To unlock this section, you need to collect <span class='highlight'>300</span> points by attending open lectures within the app.", dev_credit_text: "Developed by: Amr Lotfy" } 
     };
     const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
     
@@ -679,20 +678,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerElement = document.getElementById('redirect-timer');
     const pointingArrow = document.getElementById('pointing-arrow');
     
-    // NEW: Sidenav elements
-    const menuToggleBtn = document.getElementById('menu-toggle-btn');
-    const sideNav = document.getElementById('side-nav');
-    const sidenavOverlay = document.getElementById('sidenav-overlay');
-
     let timerInterval;
     let timerSeconds = 0;
     let isTimerRunning = false;
     let countdownInterval;
     let currentView = 'subjects'; 
     
-    // MODIFIED: Arrow now points to menu toggle button
+    // --- Arrow Animation Functions ---
     function showAndAnimateArrow() {
-        const targetElement = document.getElementById('menu-toggle-btn');
+        const targetElement = document.getElementById('courses-btn');
         if (!targetElement || !pointingArrow) return;
 
         const targetRect = targetElement.getBoundingClientRect();
@@ -717,9 +711,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1600);
     }
 
-    // MODIFIED: Arrow hide logic targets menu toggle button
     function hideArrow() {
-        const targetElement = document.getElementById('menu-toggle-btn');
+        const targetElement = document.getElementById('courses-btn');
         if (pointingArrow) {
             pointingArrow.classList.remove('show');
             pointingArrow.classList.remove('pointing-animation');
@@ -994,23 +987,6 @@ document.addEventListener('DOMContentLoaded', () => {
             showRedirectModal(null, () => window.open(platformUrl, '_blank'));
         });
     }
-
-    // NEW: Sidenav logic
-    function closeSideNav() {
-        sideNav.classList.remove('active');
-        sidenavOverlay.classList.remove('active');
-    }
-    menuToggleBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        sideNav.classList.toggle('active');
-        sidenavOverlay.classList.toggle('active');
-    });
-    sidenavOverlay.addEventListener('click', closeSideNav);
-    sideNav.addEventListener('click', (e) => {
-        if (e.target.closest('.nav-item')) {
-            closeSideNav();
-        }
-    });
     
     initializeApp();
 });
