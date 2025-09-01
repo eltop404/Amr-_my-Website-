@@ -41,7 +41,7 @@
         .page.active { opacity: 1; pointer-events: auto; }
         .page.exit { opacity: 0; transform: none; }
         
-        #login-page { gap: 20px; padding: 20px; overflow: hidden; } 
+        #login-page { gap: 20px; padding: 20px; overflow-y: auto; /* للسماح بالتمرير على الشاشات الصغيرة جداً */ } 
         #main-page { padding-top: 0; justify-content: flex-start; }
 
         /* --- شاشة التحميل --- */
@@ -58,7 +58,7 @@
             flex-direction: column;
             align-items: center;
             gap: 15px;
-            margin-bottom: 40px;
+            margin-bottom: 30px; /* [تم التعديل] تقليل المسافة السفلية */
             text-align: center;
             transition: opacity 0.5s ease, transform 0.5s ease;
         }
@@ -92,13 +92,13 @@
             background: transparent;
             padding: 15px;
             width: 100%;
-            max-width: 300px; /* -- [تم التعديل] -- تم تصغير حجم الإطار هنا */
+            max-width: 300px;
             display: none;
             flex-direction: column;
             align-items: center;
             position: relative;
         }
-        .auth-view { gap: 25px; animation: fadeInContent 0.8s backwards; max-width: 350px; } /* الحفاظ على حجم فورمات التسجيل */
+        .auth-view { gap: 20px; animation: fadeInContent 0.8s backwards; max-width: 350px; } /* [تم التعديل] تقليل المسافة بين العناصر */
         .auth-choice-container { gap: 20px; justify-content: center; }
         .auth-view.active, .auth-choice-container.active { display: flex; }
         
@@ -139,7 +139,7 @@
         [dir="ltr"] .back-to-choice-btn { right: auto; left: 10px; }
         .back-to-choice-btn:hover { opacity: 1; color: var(--accent-color); transform: scale(1.1); }
         
-        .auth-form { width: 100%; display: flex; flex-direction: column; gap: 25px; }
+        .auth-form { width: 100%; display: flex; flex-direction: column; gap: 20px; /* [تم التعديل] تقليل المسافة بين الحقول */ }
         .auth-title { font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight:900; text-align: center; color: var(--primary-text-color); margin-bottom: 20px; margin-top:10px; text-shadow: 0 0 15px var(--accent-glow); }
         
         @keyframes fadeInContent { from { opacity: 0; transform: translateY(0); } to { opacity: 1; transform: translateY(0); } }
@@ -220,6 +220,7 @@
         }
 
         /* --- تنسيقات البانر المتحرك --- */
+        /* الكود يضمن أن البانر يظهر فقط عند تفعيل الصفحة الرئيسية */
         .scrolling-banner { 
             width: 100%; 
             background-color: var(--glass-bg); 
@@ -399,7 +400,8 @@
         #points-info-content { text-align: center; max-width: 450px; }
         #points-info-content p { font-size: 1.2rem; font-weight: 600; line-height: 1.7; text-shadow: 0 0 15px rgba(0,0,0,0.7); margin-bottom: 15px; }
         #points-info-content .highlight { color: var(--accent-color); font-weight: 700; font-family: 'Orbitron', sans-serif; }
-        #lecture-content { line-height: 1.9; text-shadow: 0 2px 10px rgba(0,0,0,0.9); padding: 0 15px; }
+        #lecture-content { line-height: 1.9; text-shadow: 0 2px 10px rgba(0,0,0,0.9); padding: 0 15px; text-align: right; }
+        [dir="ltr"] #lecture-content { text-align: left; }
         #lecture-content h3 { color: var(--accent-color); margin-bottom: 25px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); font-size: 1.8rem; text-shadow: 0 0 15px var(--accent-glow), 0 0 5px rgba(0,0,0,0.7); }
         #lecture-content h4 { color: var(--primary-text-color); opacity: 0.95; margin-top: 20px; margin-bottom: 10px; font-size: 1.3rem; font-weight: 700; }
         #lecture-content p { opacity: 0.9; margin-bottom: 15px; font-size: 1.1rem; }
@@ -430,6 +432,7 @@
             50% { transform: translateX(-50%) translateY(10px); }
         }
         
+        /* Media Queries for Responsive Design */
         @media (max-width: 480px) { #welcome-message-name { font-size: 1rem; } #welcome-message-details { font-size: 0.8rem; } .institute-name { font-size: 0.9rem; } #points-notification { font-size: 2.8rem; } }
         @media (max-width: 360px) { .nav-item span { font-size: 0.6rem; } #timer-display { font-size: 2.8rem; } #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; } .header-content { padding: 0 10px; } #welcome-message-name { font-size: 0.9rem; } #welcome-message-details { font-size: 0.75rem; } }
     </style>
@@ -491,7 +494,7 @@
                          <i class="fas fa-eye password-toggle"></i>
                     </div>
                 </div>
-                <p class="password-hint" data-key="password_copy_hint">يجب عليك نسخ كلمة المرور لاستخدامها في تسجيل الدخول.</p>
+                <p class="password-hint" data-key="password_format_hint">يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.</p>
                 
                 <div class="captcha-container-numeric">
                     <canvas id="captcha-canvas" width="120" height="40"></canvas>
@@ -502,8 +505,8 @@
                     </div>
                 </div>
                 <div id="semester-warning"></div>
+                 <button type="submit" form="create-account-form" class="submit-btn" data-key="register_btn">سجل الآن</button>
             </form>
-            <button type="submit" form="create-account-form" class="submit-btn" data-key="register_btn">سجل الآن</button>
         </div>
         
         <div class="auth-view" id="login-view">
@@ -521,8 +524,8 @@
                          <i class="fas fa-eye password-toggle"></i>
                      </div>
                  </div>
+                  <button type="submit" form="login-form" class="submit-btn" data-key="login_btn_main">دخول</button>
              </form>
-             <button type="submit" form="login-form" class="submit-btn" data-key="login_btn_main">دخول</button>
         </div>
     </div>
     
@@ -599,7 +602,7 @@
     <div id="blog-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><h3 data-key="blog_title">مدونتي الشخصية</h3><textarea id="blog-textarea" placeholder="اكتب ملاحظاتك هنا..." maxlength="1000"></textarea><div class="blog-actions"><span id="char-counter">0 / 1000</span><button id="save-blog-btn" data-key="blog_save_btn">حفظ</button></div></div></div>
     <div id="timer-modal" class="modal-overlay"><div class="modal-content" id="timer-container"><button class="close-btn">×</button><h3 data-key="timer_title">تايمر</h3><div id="timer-display">00:00:00</div><div id="timer-controls"><button id="start-pause-timer-btn" data-key="timer_start_btn">بدء</button><button id="reset-timer-btn" data-key="timer_reset_btn">إعادة ضبط</button></div></div></div>
     <div id="courses-locked-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><p id="courses-locked-message" data-key="courses_locked_msg"></p><p class="dev-credit-modal" data-key="dev_credit_text">تطوير: Amr Lotfy</p></div></div>
-    <div id="lecture-content-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><div id="lecture-content"></div></div></div>
+    <div id="lecture-content-modal" class="modal-overlay full-screen"><div class="modal-content" style="max-width: 800px;"><button class="close-btn">×</button><div id="lecture-content"></div></div></div>
     <div id="video-player-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><div id="video-player-container"></div></div></div>
     <div id="points-info-modal" class="modal-overlay full-screen"><div class="modal-content"><button class="close-btn">×</button><div id="points-info-content"><p>يجب عليك جمع <span class="highlight">250</span> نقطة لفتح قسم الكورسات الذي يشمل كورسات متنوعة للعمل.</p><p>عند دخولك لأي محاضرة، تحصل على <span class="highlight">9</span> نقاط.</p></div></div></div>
     <div id="pointing-arrow"><i class="fas fa-hand-point-down"></i></div>
@@ -611,9 +614,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const videoCoursesData = { 'ecommerce': { title_ar: 'كورسات التجارة الإلكترونية', title_en: 'E-commerce Courses', icon: 'fas fa-cash-register', videos: [ { title: 'كورس التجارة الالكترونية الكامل', embed_url: 'https://www.youtube.com/embed/h0unhODkj40' }, { title: 'دليلك الشامل لتبدأ في التجارة الالكترونية', embed_url: 'https://www.youtube.com/embed/ICFXS5WIS3Y' }, { title: 'أسرار التجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/q2f_BVSVeHQ' }, { title: 'كورس شامل للتجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/v46BIS_ICiA' } ] }, 'graphic-design': { title_ar: 'كورسات الجرافيك ديزاين', title_en: 'Graphic Design Courses', icon: 'fas fa-palette', videos: [ { title: 'كورس جرافيك ديزاين كامل', embed_url: 'https://www.youtube.com/embed/va-MZOPrJ0s' }, { title: 'تعلم الفوتوشوب في فيديو واحد', embed_url: 'https://www.youtube.com/embed/4IJPI0d7STI' }, { title: 'تعلم اليستريتور في فيديو واحد', embed_url: 'https://www.youtube.com/embed/WlTsKiVwZAM' } ] }, 'video-editing': { title_ar: 'كورسات المونتاج', title_en: 'Video Editing Courses', icon: 'fas fa-film', videos: [ { title: 'كورس مونتاج كامل ببرنامج واحد', embed_url: 'https://www.youtube.com/embed/qKtUjfolUOM' }, { title: 'تعلم المونتاج باستخدام أدوبي بريمير', embed_url: 'https://www.youtube.com/embed/8iGvUZKeLeU' } ] }, 'data-analysis': { title_ar: 'كورسات تحليل البيانات', title_en: 'Data Analysis Courses', icon: 'fas fa-chart-pie', videos: [ { title: 'كورس تحليل البيانات الكامل', embed_url: 'https://www.youtube.com/embed/nXdkuxAj7tg' }, { title: 'تحليل البيانات باستخدام اكسل', embed_url: 'https://www.youtube.com/embed/z7nN0hZ_PtQ' } ] }, 'ai': { title_ar: 'كورسات الذكاء الاصطناعي', title_en: 'Artificial Intelligence Courses', icon: 'fas fa-brain', videos: [ { title: 'كورس الذكاء الاصطناعي', embed_url: 'https://www.youtube.com/embed/oDmyhjwAYXk' }, { title: 'تعلم الذكاء الاصطناعي في 6 ساعات', embed_url: 'https://www.youtube.com/embed/Rp5VnXnWMLk' } ] } };
     
+    // [تم التعديل] تحديث نص كلمة المرور
     const translations = { 
-        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_copy_hint: "يجب عليك نسخ كلمة المرور لاستخدامها في تسجيل الدخول.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title: "تايمر", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى." }, 
-        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_copy_hint: "You must copy the password to use it for logging in.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title: "Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again." } 
+        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_format_hint: "يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title: "تايمر", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى." }, 
+        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_format_hint: "Must be 8+ characters and contain letters/numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title: "Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again." } 
     };
     const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
     
@@ -683,7 +687,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                               ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                                 ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (loginAnimationCanvas.width / 7) * (loginAnimationCanvas.height / 7)) {
                     opacityValue = 1 - (distance / 20000);
                     loginAnimationCtx.strokeStyle = `rgba(${accentRgb}, ${opacityValue})`;
@@ -858,32 +862,114 @@ document.addEventListener('DOMContentLoaded', () => {
     function getIconForCourse(e) { const t = e.toLowerCase(); return t.includes("محاسبة") || t.includes("مالية") || t.includes("تكاليف") || t.includes("ضريبية") ? "fa-calculator" : t.includes("اقتصاد") ? "fa-chart-line" : t.includes("قانون") ? "fa-gavel" : t.includes("إدارة") || t.includes("اعمال") || t.includes("سلوك") || t.includes("تسويق") ? "fa-briefcase" : t.includes("حاسب") || t.includes("معلومات") || t.includes("بيانات") || t.includes("برامج") || t.includes("شبكات") ? "fa-laptop-code" : t.includes("رياضيات") || t.includes("احصاء") || t.includes("كمية") ? "fa-square-root-alt" : t.includes("لغة") || t.includes("اتصال") ? "fa-language" : t.includes("حقوق") ? "fa-landmark" : t.includes("مصرفية") || t.includes("بنوك") ? "fa-university" : "fa-book-open"; }
     function getCurrentUserData() { const username = getCurrentUsername(); if(!username) return null; return getUsersDB()[username]?.profile; }
     function getCurrentUserSubjects(userData) { if (!userData) return []; return coursesData[userData.year]?.[userData.major]?.[userData.semester] || []; }
-    function showContentLockedModal(type) { const lang = htmlEl.lang || 'ar'; const messageKey = `locked_${type}_msg`; lockedMessageP.textContent = translations[lang][messageKey] || 'Content will be added soon..'; coursesLockedModal.classList.add('active'); }
     
-    function handleLectureClick(courseTitle, lectureIndex, itemElement) {
-        showContentLockedModal('lecture');
+    // --- MODIFIED CONTENT FUNCTIONS ---
+    function generatePlaceholderContent(title, subtitle) {
+        return `
+            <h3>${title} - ${subtitle}</h3>
+            <h4>مقدمة</h4>
+            <p>في هذا الجزء، نستعرض المبادئ الأساسية للمادة. تعتبر هذه المفاهيم حجر الزاوية لفهم الموضوعات الأكثر تقدماً التي سيتم تناولها لاحقاً. من الضروري التركيز على المصطلحات والتعريفات الأولية لضمان بناء أساس متين.</p>
+            <h4>الفصل الأول: المفاهيم الأساسية</h4>
+            <p>يتناول هذا الفصل النظريات الرئيسية التي تشكل إطار المادة. سنناقش التطور التاريخي للمجال، وأهم العلماء والمساهمين، وكيف أثرت أبحاثهم على فهمنا الحالي. كما سنتطرق إلى التطبيقات العملية الأولى لهذه النظريات.</p>
+            <p>من الأمثلة على ذلك، نظرية (س) التي وضعها العالم (ص)، والتي غيرت بشكل جذري طريقة تعاملنا مع المشكلات في هذا المجال. سيتم تحليل هذه النظرية بالتفصيل، مع عرض دراسات حالة توضح تطبيقاتها العملية.</p>
+            <h4>الفصل الثاني: التحليل والتطبيق</h4>
+            <p>بعد إرساء الأساس النظري، ننتقل الآن إلى الجانب التحليلي. يتطلب هذا الجزء مهارات التفكير النقدي وتطبيق المفاهيم التي تعلمناها على سيناريوهات واقعية. سيتم تزويد الطلاب بمجموعة من الأدوات والتقنيات التحليلية التي ستساعدهم على تقييم المواقف المعقدة واتخاذ قرارات مستنيرة.</p>
+            <p>سنقوم بحل عدة تمارين ومسائل تطبيقية بشكل جماعي لضمان استيعاب الجميع للطرق الصحيحة للتحليل. يعتبر هذا الجزء من أهم أجزاء المنهج، حيث يربط بين النظرية والتطبيق الفعلي.</p>
+            <h4>خاتمة ومراجعة</h4>
+            <p>في الختام، نلخص النقاط الرئيسية التي تمت تغطيتها. من المهم مراجعة جميع الفصول والتأكد من فهم العلاقات بين الموضوعات المختلفة. الاستعداد الجيد للامتحانات يتطلب ليس فقط حفظ المعلومات، بل فهمها بعمق والقدرة على تطبيقها.</p>
+        `;
     }
-    
+
+    function handleLectureClick(courseTitle, lectureIndex, itemElement) {
+        const username = getCurrentUsername();
+        if (!username) return;
+
+        const lectureId = `${courseTitle}-lecture-${lectureIndex}`;
+        let viewedLectures = getUserData(username, 'viewedLectures') || [];
+
+        if (!viewedLectures.includes(lectureId)) {
+            addPoints(9);
+            viewedLectures.push(lectureId);
+            setUserData(username, 'viewedLectures', viewedLectures);
+            itemElement.classList.remove('locked');
+            itemElement.classList.add('unlocked');
+            itemElement.querySelector('.lock-icon').className = 'fas fa-check-circle lock-icon';
+        }
+
+        const lang = htmlEl.lang || 'ar';
+        const lectureContent = generatePlaceholderContent(courseTitle, `${translations[lang].lecture} ${lectureIndex}`);
+        const lectureContentModal = document.getElementById('lecture-content-modal');
+        document.getElementById('lecture-content').innerHTML = lectureContent;
+        lectureContentModal.classList.add('active');
+    }
+
+    function handleSectionClick(sectionIndex) {
+        const lang = htmlEl.lang || 'ar';
+        const sectionContent = generatePlaceholderContent(translations[lang].nav_sections, `${translations[lang].section} ${sectionIndex}`);
+        const lectureContentModal = document.getElementById('lecture-content-modal');
+        document.getElementById('lecture-content').innerHTML = sectionContent;
+        lectureContentModal.classList.add('active');
+    }
+
+    function handlePdfClick(subjectTitle) {
+        // Using a placeholder PDF link. Replace with actual links if available.
+        window.open('https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', '_blank');
+    }
+
     function showLectureDetails(courseTitle) { 
         const lang = htmlEl.lang || 'ar';
         const username = getCurrentUsername();
-        
+        const viewedLectures = getUserData(username, 'viewedLectures') || [];
+
         detailsViewTitle.textContent = courseTitle; 
         detailsViewList.innerHTML = ''; 
         for (let i = 1; i <= 10; i++) { 
-            const lectureId = `${courseTitle}-${i}`;
+            const lectureId = `${courseTitle}-lecture-${i}`;
+            const isViewed = viewedLectures.includes(lectureId);
             const item = document.createElement('div'); 
-            item.className = 'detail-item locked';
+            item.className = isViewed ? 'detail-item unlocked' : 'detail-item locked';
             item.style.animationDelay = `${i * 0.05}s`; 
-            item.innerHTML = `<span>${translations[lang].lecture} ${i}</span> <i class="fas fa-lock lock-icon"></i>`; 
+            item.innerHTML = `<span>${translations[lang].lecture} ${i}</span> <i class="fas ${isViewed ? 'fa-check-circle' : 'fa-lock'} lock-icon"></i>`; 
             item.addEventListener('click', () => handleLectureClick(courseTitle, i, item)); 
             detailsViewList.appendChild(item); 
         } 
         mainPage.classList.add('details-active'); 
     }
     
-    function showPdfList() { const userData = getCurrentUserData(); if (!userData) return; const subjects = getCurrentUserSubjects(userData); const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_pdf; detailsViewList.innerHTML = ''; subjects.forEach((subject, index) => { const item = document.createElement('div'); item.className = 'detail-item locked'; item.style.animationDelay = `${index * 0.05}s`; item.innerHTML = `<span>${subject}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showContentLockedModal('pdf')); detailsViewList.appendChild(item); }); mainPage.classList.add('details-active'); }
-    function showSectionList() { const lang = htmlEl.lang || 'ar'; detailsViewTitle.textContent = translations[lang].nav_sections; detailsViewList.innerHTML = ''; for (let i = 1; i <= 10; i++) { const item = document.createElement('div'); item.className = 'detail-item locked'; item.style.animationDelay = `${i * 0.05}s`; item.innerHTML = `<span>${translations[lang].section} ${i}</span> <i class="fas fa-lock lock-icon"></i>`; item.addEventListener('click', () => showContentLockedModal('section')); detailsViewList.appendChild(item); } mainPage.classList.add('details-active'); }
+    function showPdfList() {
+        const userData = getCurrentUserData(); if (!userData) return;
+        const subjects = getCurrentUserSubjects(userData);
+        const lang = htmlEl.lang || 'ar';
+        detailsViewTitle.textContent = translations[lang].nav_pdf;
+        detailsViewList.innerHTML = '';
+        subjects.forEach((subject, index) => {
+            const item = document.createElement('div');
+            item.className = 'detail-item unlocked';
+            item.style.animationDelay = `${index * 0.05}s`;
+            item.innerHTML = `<span>${subject}</span> <i class="fas fa-file-pdf lock-icon"></i>`;
+            item.addEventListener('click', () => handlePdfClick(subject));
+            detailsViewList.appendChild(item);
+        });
+        mainPage.classList.add('details-active');
+    }
+
+    function showSectionList() {
+        const lang = htmlEl.lang || 'ar';
+        detailsViewTitle.textContent = translations[lang].nav_sections;
+        detailsViewList.innerHTML = '';
+        for (let i = 1; i <= 10; i++) {
+            const item = document.createElement('div');
+            item.className = 'detail-item unlocked';
+            item.style.animationDelay = `${i * 0.05}s`;
+            item.innerHTML = `<span>${translations[lang].section} ${i}</span> <i class="fas fa-chalkboard-teacher lock-icon"></i>`;
+            item.addEventListener('click', () => handleSectionClick(i));
+            detailsViewList.appendChild(item);
+        }
+        mainPage.classList.add('details-active');
+    }
+
+    // --- END MODIFIED CONTENT FUNCTIONS ---
+
     function displayVideoCategories() { const lang = htmlEl.lang || 'ar'; coursesContainer.innerHTML = ""; Object.keys(videoCoursesData).forEach((key, index) => { const category = videoCoursesData[key]; const card = document.createElement('div'); card.className = 'course-card'; card.innerHTML = `<i class="${category.icon}"></i><h3>${lang === 'ar' ? category.title_ar : category.title_en}</h3>`; card.style.animationDelay = `${0.1 * index}s`; card.addEventListener('click', () => showVideoList(key)); coursesContainer.appendChild(card); }); currentView = 'videos'; }
     function showVideoList(categoryKey) { const lang = htmlEl.lang || 'ar'; const category = videoCoursesData[categoryKey]; if (!category) return; detailsViewTitle.textContent = lang === 'ar' ? category.title_ar : category.title_en; detailsViewList.innerHTML = ''; category.videos.forEach((video, index) => { const item = document.createElement('div'); item.className = 'detail-item'; item.style.animationDelay = `${index * 0.05}s`; item.innerHTML = `<span>${video.title}</span> <i class="fas fa-play-circle lock-icon"></i>`; item.addEventListener('click', () => showVideoPlayerModal(video.embed_url)); detailsViewList.appendChild(item); }); mainPage.classList.add('details-active'); }
     function showVideoPlayerModal(embedUrl) { const videoPlayerModal = document.getElementById('video-player-modal'); const videoContainer = document.getElementById('video-player-container'); if (!videoPlayerModal || !videoContainer) return; videoContainer.innerHTML = `<iframe src="${embedUrl}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`; videoPlayerModal.classList.add('active'); }
@@ -894,7 +980,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     populateThemeButtons();
     yearSelect.addEventListener('change', updateMajors);
-    semesterSelect.addEventListener('change', () => { const lang = htmlEl.lang || 'ar'; const submitBtn = document.querySelector('#create-account-form + .submit-btn'); if (semesterSelect.value === '2') { submitBtn.disabled = true; semesterWarning.textContent = translations[lang].semester_warning_text; } else { submitBtn.disabled = false; semesterWarning.textContent = ''; } });
+    semesterSelect.addEventListener('change', () => { const lang = htmlEl.lang || 'ar'; const submitBtn = document.querySelector('#create-account-form .submit-btn'); if (semesterSelect.value === '2') { submitBtn.disabled = true; semesterWarning.textContent = translations[lang].semester_warning_text; } else { submitBtn.disabled = false; semesterWarning.textContent = ''; } });
     
     createAccountChoiceBtn.addEventListener('click', () => showAuthView('create'));
     loginChoiceBtn.addEventListener('click', () => {
