@@ -228,7 +228,6 @@
         }
 
         /* --- تنسيقات البانر المتحرك --- */
-        /* [تم التعديل] الكود يضمن أن البانر يظهر فقط عند تفعيل الصفحة الرئيسية */
         .scrolling-banner { 
             width: 100%; 
             background-color: var(--glass-bg); 
@@ -243,9 +242,23 @@
         #main-page.active .scrolling-banner {
             opacity: 1;
         }
-        .scrolling-banner p { display: inline-block; font-size: 0.8rem; font-weight: 600; animation: scroll-continuous 40s linear infinite; background: linear-gradient(90deg, var(--accent-hover), #e1e1ff, var(--accent-hover)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-fill-color: transparent; }
+        .scrolling-banner p { 
+            display: inline-block; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            background: linear-gradient(90deg, var(--accent-hover), #e1e1ff, var(--accent-hover)); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            background-clip: text; 
+            text-fill-color: transparent; 
+        }
+        /* [تم التعديل] تحريك البانر فقط عند تفعيل الصفحة الرئيسية */
+        #main-page.active .scrolling-banner p {
+            animation: scroll-continuous 40s linear infinite;
+        }
         [dir="rtl"] .scrolling-banner p, [dir="ltr"] .scrolling-banner p { padding-left: 100%; }
         @keyframes scroll-continuous { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        
         #main-header { width: 100%; max-width: 900px; padding: 15px 20px 25px 20px; display: flex; justify-content: space-between; align-items: center; text-align: right; }
         [dir="ltr"] #main-header { text-align: left; }
         #main-header { animation: fadeInContent 0.8s 0.2s backwards; transition: opacity 0.4s ease; }
@@ -693,7 +706,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                 ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                                   ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (loginAnimationCanvas.width / 7) * (loginAnimationCanvas.height / 7)) {
                     opacityValue = 1 - (distance / 20000);
                     loginAnimationCtx.strokeStyle = `rgba(${accentRgb}, ${opacityValue})`;
@@ -870,39 +883,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function getCurrentUserSubjects(userData) { if (!userData) return []; return coursesData[userData.year]?.[userData.major]?.[userData.semester] || []; }
     function showContentLockedModal(type) { const lang = htmlEl.lang || 'ar'; const messageKey = `locked_${type}_msg`; lockedMessageP.textContent = translations[lang][messageKey] || 'Content will be added soon..'; coursesLockedModal.classList.add('active'); }
     
+    // [تم التعديل] إيقاف منح النقاط للمحتوى غير المتاح حاليًا
     function handleLectureClick(courseTitle, lectureIndex, itemElement) {
-        const username = getCurrentUsername();
-        if (!username) return;
-
-        let viewedLectures = getUserData(username, 'viewedLectures') || [];
-        const lectureId = `${courseTitle}-${lectureIndex}`;
-
-        if (!viewedLectures.includes(lectureId)) {
-            addPoints(9);
-            viewedLectures.push(lectureId);
-            setUserData(username, 'viewedLectures', viewedLectures);
-            itemElement.classList.remove('locked');
-            itemElement.classList.add('unlocked');
-            itemElement.querySelector('.lock-icon').className = 'fas fa-check-circle lock-icon';
-        }
+        // لا يتم منح أي نقاط هنا، فقط يتم عرض الرسالة.
+        // سيتم إضافة منطق النقاط لاحقًا عند إضافة المحتوى الفعلي.
         showContentLockedModal('lecture');
     }
 
+    // [تم التعديل] إيقاف منح النقاط للمحتوى غير المتاح حاليًا
     function handleSectionClick(sectionIndex, itemElement) {
-        const username = getCurrentUsername();
-        if (!username) return;
-
-        let viewedSections = getUserData(username, 'viewedSections') || [];
-        const sectionId = `section-${sectionIndex}`;
-
-        if (!viewedSections.includes(sectionId)) {
-            addPoints(9);
-            viewedSections.push(sectionId);
-            setUserData(username, 'viewedSections', viewedSections);
-            itemElement.classList.remove('locked');
-            itemElement.classList.add('unlocked');
-            itemElement.querySelector('.lock-icon').className = 'fas fa-check-circle lock-icon';
-        }
+        // لا يتم منح أي نقاط هنا، فقط يتم عرض الرسالة.
         showContentLockedModal('section');
     }
 
@@ -913,8 +903,9 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsViewTitle.textContent = courseTitle; 
         detailsViewList.innerHTML = ''; 
         for (let i = 1; i <= 10; i++) { 
+            // بما أنه لا يوجد محتوى حاليًا، فستظل جميع المحاضرات مقفلة دائمًا
             const lectureId = `${courseTitle}-${i}`;
-            const viewedLectures = getUserData(username, 'viewedLectures') || [];
+            const viewedLectures = []; // getUserData(username, 'viewedLectures') || []; // تم إيقاف التحقق مؤقتًا
             const isUnlocked = viewedLectures.includes(lectureId);
             
             const item = document.createElement('div'); 
@@ -938,8 +929,9 @@ document.addEventListener('DOMContentLoaded', () => {
         detailsViewTitle.textContent = translations[lang].nav_sections; 
         detailsViewList.innerHTML = ''; 
         for (let i = 1; i <= 10; i++) { 
+            // بما أنه لا يوجد محتوى حاليًا، فستظل جميع السكاشن مقفلة دائمًا
             const sectionId = `section-${i}`;
-            const viewedSections = getUserData(username, 'viewedSections') || [];
+            const viewedSections = []; // getUserData(username, 'viewedSections') || []; // تم إيقاف التحقق مؤقتًا
             const isUnlocked = viewedSections.includes(sectionId);
             
             const item = document.createElement('div'); 
