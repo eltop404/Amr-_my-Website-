@@ -101,7 +101,7 @@
         .auth-choice-container { gap: 20px; justify-content: center; }
         .auth-view.active, .auth-choice-container.active { display: flex; }
 
-        /* [تم التعديل] تحسين أنيميشن ظهور صفحة الدخول */
+        /* تحسين أنيميشن ظهور صفحة الدخول */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
@@ -110,7 +110,7 @@
         .auth-choice-container.active #create-account-choice-btn { animation: fadeInUp 0.7s 0.3s backwards; }
         .auth-choice-container.active #login-choice-btn { animation: fadeInUp 0.7s 0.5s backwards; }
         
-        /* [تم التعديل] تعديل تصميم شاشة إنشاء الحساب */
+        /* تعديل تصميم شاشة إنشاء الحساب */
         #create-account-view { max-width: 340px; }
         #create-account-form { gap: 18px; }
         #create-account-view .auth-title { margin-bottom: 15px; margin-top: 5px; }
@@ -174,7 +174,7 @@
         [dir=ltr] .password-toggle { left: auto; right: 10px; }
         .password-toggle:hover { opacity: 1; color: var(--accent-color); }
         
-        /* [تمت الإضافة] تصميم اقتراح كلمة المرور */
+        /* تصميم اقتراح كلمة المرور */
         #password-suggestion-container { position: relative; height: 0; margin-top: 5px; }
         #password-suggestion {
             position: absolute;
@@ -289,7 +289,7 @@
             background-clip: text; 
             text-fill-color: transparent; 
         }
-        /* [تم التعديل] تحريك البانر فقط عند تفعيل الصفحة الرئيسية */
+        /* تحريك البانر فقط عند تفعيل الصفحة الرئيسية */
         #main-page.active .scrolling-banner p {
             animation: scroll-continuous 40s linear infinite;
         }
@@ -386,12 +386,12 @@
         #blog-btn { color: #c37cff; }
         #privacy-policy-btn { color: #49e3c0; }
         #timer-btn { color: #f37b12; }
-        #logout-btn, #clear-data-btn { color: #ff4d4d; } /* [تم التعديل] */
+        #logout-btn, #clear-data-btn { color: #ff4d4d; }
         #rate-app-btn:hover { text-shadow: 0 0 10px var(--accent-glow); }
         #blog-btn:hover { text-shadow: 0 0 10px rgba(195, 124, 255, 0.6); }
         #privacy-policy-btn:hover { text-shadow: 0 0 10px rgba(73, 227, 192, 0.6); }
         #timer-btn:hover { text-shadow: 0 0 10px rgba(243, 123, 18, 0.6); }
-        #logout-btn:hover, #clear-data-btn:hover { text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); } /* [تم التعديل] */
+        #logout-btn:hover, #clear-data-btn:hover { text-shadow: 0 0 10px rgba(255, 77, 77, 0.6); }
         .sponsors-title { font-size: 1.2rem; font-weight: 700; color: var(--accent-color); margin-bottom: 15px; margin-top: 15px; text-shadow: 0 0 8px var(--accent-glow); }
         .sponsors-list { list-style: none; padding: 0; margin: 0 0 20px 0; line-height: 1.8; font-size: 1.1rem; text-align: center; }
         .glowing-sponsors li { font-weight: 600; color: #fff; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); animation: pulse-glow 3s infinite alternate, fadeInSponsor 0.6s backwards; transition: transform 0.3s ease, text-shadow 0.3s ease; }
@@ -842,7 +842,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateThemeButtons() { const themeContainer = document.getElementById('theme-switcher'); themeContainer.innerHTML = ''; themes.forEach(theme => { const btn = document.createElement('button'); btn.className = 'theme-btn'; btn.title = theme.name; btn.innerHTML = `<span class="theme-swatch" style="background-color:${theme.accent};"></span> <span>${theme.name}</span>`; btn.addEventListener('click', () => setSetting('theme', theme)); themeContainer.appendChild(btn); }); }
-    function updateActiveUI() { const lang = localStorage.getItem('moraLectureHubLang') || 'ar'; document.querySelectorAll('#lang-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); const themeName = localStorage.getItem('moraLectureHubTheme') || 'Forest'; document.querySelectorAll('#theme-switcher .theme-btn').forEach(btn => btn.classList.toggle('active', btn.title === themeName)); const mode = localStorage.getItem('moraLectureHubMode') || 'mode-dark'; document.querySelectorAll('#mode-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode)); }
+    function updateActiveUI() { const lang = localStorage.getItem('moraLectureHubLang') || 'ar'; document.querySelectorAll('#lang-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang)); const themeName = localStorage.getItem('moraLectureHubTheme') || 'Forest'; const theme = themes.find(t => t.name === themeName) || themes[0]; document.querySelectorAll('#theme-switcher .theme-btn').forEach(btn => btn.classList.toggle('active', btn.title === themeName)); const mode = localStorage.getItem('moraLectureHubMode') || 'mode-dark'; document.querySelectorAll('#mode-switcher .settings-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode)); }
     function showAuthMessage(messageKey) { const lang = htmlEl.lang || 'ar'; authMessage.textContent = translations[lang][messageKey]; authMessage.style.display = 'block'; setTimeout(() => { authMessage.style.display = 'none'; }, 2500); }
     function updateMajors() { const selectedYear = yearSelect.value; const lang = htmlEl.lang || 'ar'; majorSelect.innerHTML = `<option value="" disabled selected>${translations[lang].major_placeholder}</option>`; if (selectedYear === '1' || selectedYear === '2') { majorSelect.innerHTML += `<option value="أعمال دولية" data-key="major_option_1">${translations[lang].major_option_1}</option><option value="نظم معلومات" data-key="major_option_2">${translations[lang].major_option_2}</option>`; } else if (selectedYear === '3' || selectedYear === '4') { majorSelect.innerHTML += `<option value="محاسبة مالية" data-key="major_option_3">${translations[lang].major_option_3}</option><option value="علوم مالية ومصرفية" data-key="major_option_4">${translations[lang].major_option_4}</option><option value="نظم معلومات" data-key="major_option_2">${translations[lang].major_option_2}</option>`; } }
     
@@ -1054,7 +1054,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // [تمت الإضافة] منطق اقتراح كلمة المرور
+    // --- [تم التعديل] منطق اقتراح كلمة المرور ---
     const loginPasswordInput = document.getElementById('login-password');
     const loginNameInput = document.getElementById('login-name');
     const suggestionContainer = document.getElementById('password-suggestion-container');
@@ -1074,10 +1074,12 @@ document.addEventListener('DOMContentLoaded', () => {
             
             setTimeout(() => { suggestionEl.classList.add('show'); }, 10);
 
-            suggestionEl.addEventListener('click', () => {
+            // تم التغيير من 'click' إلى 'mousedown' لمنع التعارض مع حدث 'blur'
+            suggestionEl.addEventListener('mousedown', (e) => {
+                e.preventDefault(); // هذا يمنع حقل الإدخال من فقدان التركيز
                 loginPasswordInput.value = user.password;
                 suggestionEl.classList.remove('show');
-            }, { once: true });
+            });
         }
     });
 
@@ -1085,9 +1087,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const suggestionEl = document.getElementById('password-suggestion');
         if (suggestionEl) {
             suggestionEl.classList.remove('show');
+            // نعطي وقتاً بسيطاً قبل إزالة العنصر تماماً للسماح لحدث الضغط بالحدوث
             setTimeout(() => { if(suggestionContainer) suggestionContainer.innerHTML = ''; }, 300);
         }
     });
+    // --- نهاية التعديل ---
 
     sectionsBtn.addEventListener('click', showSectionList);
     pdfBtn.addEventListener('click', showPdfList);
@@ -1141,7 +1145,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function showRedirectModal(sourceModalId, actionCallback, customMessage) { const sourceModal = document.getElementById(sourceModalId); if (sourceModal) sourceModal.classList.remove('active'); const lang = htmlEl.lang || 'ar'; const redirectMessageEl = redirectModal.querySelector('.redirect-message'); redirectMessageEl.textContent = customMessage || translations[lang].redirect_msg; let seconds = 3; redirectModal.classList.add('active'); timerElement.textContent = seconds; clearInterval(countdownInterval); countdownInterval = setInterval(() => { seconds--; timerElement.textContent = seconds; if (seconds <= 0) { clearInterval(countdownInterval); redirectModal.classList.remove('active'); if (typeof actionCallback === 'function') actionCallback(); } }, 1000); }
     document.getElementById('logout-btn').addEventListener('click', () => { const lang = htmlEl.lang || 'ar'; showRedirectModal('about-modal', logout, translations[lang].logout_msg); });
     
-    // [تمت الإضافة] منطق زر محو البيانات
     document.getElementById('clear-data-btn').addEventListener('click', () => {
         const lang = htmlEl.lang || 'ar';
         const confirmMsg = translations[lang].clear_data_confirm;
