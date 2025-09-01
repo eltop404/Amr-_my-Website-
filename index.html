@@ -489,6 +489,23 @@
             50% { transform: translateX(-50%) translateY(10px); }
         }
         
+        /* === الجزء المضاف === */
+        /* --- تنسيق عرض المواد على الشاشات الكبيرة --- */
+        @media (min-width: 768px) {
+            #courses-container {
+                flex-direction: row; /* تغيير الاتجاه إلى أفقي */
+                flex-wrap: wrap; /* السماح للعناصر بالالتفاف لسطر جديد */
+                justify-content: center; /* توسيط العناصر أفقيًا */
+                gap: 20px; /* زيادة المسافة بين البطاقات */
+            }
+
+            .course-card {
+                /* سيبقى العرض الأقصى 280 بكسل كما هو، مما يخلق شبكة متجاوبة */
+                width: 280px; /* تحديد عرض ثابت لكل بطاقة لضمان التناسق */
+            }
+        }
+        /* === نهاية الجزء المضاف === */
+
         /* Media Queries for Responsive Design */
         @media (max-width: 480px) { #welcome-message-name { font-size: 1rem; } #welcome-message-details { font-size: 0.8rem; } .institute-name { font-size: 0.9rem; } #points-notification { font-size: 2.8rem; } }
         @media (max-width: 360px) { .nav-item span { font-size: 0.6rem; } #timer-display { font-size: 2.8rem; } #timer-controls button { padding: 10px 20px; font-size: 1rem; min-width: 100px; } .header-content { padding: 0 10px; } #welcome-message-name { font-size: 0.9rem; } #welcome-message-details { font-size: 0.75rem; } }
