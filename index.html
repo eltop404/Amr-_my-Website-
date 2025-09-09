@@ -44,7 +44,7 @@
         #login-page { gap: 20px; padding: 20px; overflow-y: auto; } 
         #main-page { padding-top: 0; justify-content: flex-start; }
 
-        /* === شاشة التحميل المحسّنة (الجزء المعدل) === */
+        /* === شاشة التحميل المحسّنة === */
         #loading-page {
             gap: 20px;
         }
@@ -81,7 +81,7 @@
             position: absolute;
             top: 0;
             left: 0;
-            transform: rotate(-90deg); /* البدء من الأعلى */
+            transform: rotate(-90deg);
         }
         #loading-page .progress-ring__circle-bg {
             stroke: var(--border-color);
@@ -90,7 +90,7 @@
             stroke: var(--accent-color);
             stroke-linecap: round;
             animation: progress-stroke 2s linear infinite;
-            stroke-dasharray: 339.29; /* 2 * PI * 54 */
+            stroke-dasharray: 339.29;
             stroke-dashoffset: 339.29;
         }
         @keyframes progress-stroke {
@@ -113,7 +113,6 @@
             to { opacity: 1; transform: scale(1.02); }
         }
         
-        /* --- START: NEW WAIT MESSAGE STYLE --- */
         #loading-page #wait-message {
             font-family: 'Orbitron', sans-serif;
             font-size: 1.1rem;
@@ -124,7 +123,7 @@
             letter-spacing: 1px;
             margin-top: 10px;
             animation: fadeInOutWait 2s infinite alternate ease-in-out;
-            animation-delay: 1.5s; /* MODIFIED: Changed delay from 0.5s to 1.5s */
+            animation-delay: 1.5s;
         }
 
         @keyframes fadeInOutWait {
@@ -137,7 +136,6 @@
                 transform: translateY(-5px);
             }
         }
-        /* --- END: NEW WAIT MESSAGE STYLE --- */
 
         /* --- واجهة تسجيل الدخول --- */
         .login-header {
@@ -173,7 +171,6 @@
             opacity: 0.9;
         }
 
-        /* حاويات الدخول الشفافة */
         .auth-choice-container, .auth-view {
             background: transparent;
             padding: 15px;
@@ -188,7 +185,6 @@
         .auth-choice-container { gap: 20px; justify-content: center; }
         .auth-view.active, .auth-choice-container.active { display: flex; }
 
-        /* تحسين أنيميشن ظهور صفحة الدخول */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
@@ -197,12 +193,10 @@
         .auth-choice-container.active #create-account-choice-btn { animation: fadeInUp 0.7s 0.3s backwards; }
         .auth-choice-container.active #login-choice-btn { animation: fadeInUp 0.7s 0.5s backwards; }
         
-        /* تعديل تصميم شاشة إنشاء الحساب */
         #create-account-view { max-width: 340px; }
         #create-account-form { gap: 18px; }
         #create-account-view .auth-title { margin-bottom: 15px; margin-top: 5px; }
 
-        /* --- تصميم الأزرار الشفاف والمضيء --- */
         .auth-btn {
             position: relative;
             width: 100%;
@@ -227,7 +221,6 @@
             text-shadow: 0 0 5px #fff, 0 0 12px var(--accent-hover), 0 0 22px var(--accent-glow);
         }
 
-        /* زر الرجوع */
         .back-to-choice-btn {
             position: absolute;
             top: 10px; right: 10px;
@@ -261,7 +254,6 @@
         [dir=ltr] .password-toggle { left: auto; right: 10px; }
         .password-toggle:hover { opacity: 1; color: var(--accent-color); }
         
-        /* تصميم اقتراح كلمة المرور */
         #password-suggestion-container { position: relative; height: 0; margin-top: 5px; }
         #password-suggestion {
             position: absolute;
@@ -289,7 +281,7 @@
             font-family: 'Orbitron', sans-serif;
             color: var(--accent-color);
             margin: 0 5px;
-            direction: ltr; /* Ensure password appears correctly */
+            direction: ltr;
             display: inline-block;
         }
 
@@ -301,7 +293,6 @@
         .input-group select { background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23e1e1ff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M11 13L5 8l6-5'/%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: left .75rem center; background-size: 12px; -webkit-appearance: none; appearance: none; padding-right: 35px; }
         [dir=ltr] .input-group select { background-position: right .75rem center; padding-right: 5px; padding-left: 35px; }
         
-        /* زر تسجيل شفاف ومشع بدون إطار --- بتصميم مستقبلي */
         .submit-btn {
             width: 100%;
             padding: 14px 20px;
@@ -376,7 +367,6 @@
             background-clip: text; 
             text-fill-color: transparent; 
         }
-        /* تحريك البانر فقط عند تفعيل الصفحة الرئيسية */
         #main-page.active .scrolling-banner p {
             animation: scroll-continuous 40s linear infinite;
         }
@@ -397,7 +387,7 @@
         #view-wrapper { flex-grow: 1; position: relative; width: 100%; max-width: 900px; }
         #courses-container, #details-view { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow-y: auto; padding: 20px 20px 140px 20px; overscroll-behavior: contain; }
         #courses-container { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .course-card { opacity: 0; /* يبدأ شفافًا للتحريك */ width: 100%; max-width: 280px; background: var(--secondary-bg); padding: 15px;  border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; animation: fadeIn 0.8s forwards; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s ease, transform 0.2s ease; }
+        .course-card { opacity: 0; width: 100%; max-width: 280px; background: var(--secondary-bg); padding: 15px;  border-radius: 12px; border: 1px solid var(--border-color); cursor: pointer; animation: fadeIn 0.8s forwards; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s ease, transform 0.2s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .course-card:hover { border-color: var(--accent-color); transform: translateY(-3px); }
         .course-card i { font-size: 1.8rem; color: var(--accent-color); margin-bottom: 5px; }
@@ -425,7 +415,7 @@
         .nav-group { display: flex; justify-content: space-around; align-items: center; max-width: 500px; margin: 0 auto; }
         .nav-item { cursor:pointer; display:flex; flex-direction:column; align-items:center; color:var(--primary-text-color); transition:all 0.3s ease; background: none; border: none; padding: 5px; position: relative; text-decoration: none; flex: 1; }
         .nav-item i { font-size: 1.2rem; margin-bottom: 4px; transition: color 0.2s ease, transform 0.2s ease; } 
-        #courses-btn.locked .fa-lock { animation: jiggle-lock 2s infinite ease-in-out; }
+        #courses-btn.locked .fa-lock, #meetings-btn .fa-lock { animation: jiggle-lock 2.5s infinite ease-in-out; }
         @keyframes jiggle-lock { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-8deg); } 40% { transform: rotate(8deg); } 60% { transform: rotate(-5deg); } 80% { transform: rotate(5deg); } }
         .nav-item span { font-size: 0.7rem; white-space: nowrap; }
         .nav-item:hover { color:var(--accent-hover); }
@@ -444,6 +434,25 @@
         .full-screen .close-btn { top: 25px; right: 25px; }
         .full-screen h3 { font-size: 1.6rem; text-shadow: 0 0 10px var(--accent-glow); text-align: center; }
         .full-screen p { font-size: 1rem; opacity: 0.9; max-width: 500px; text-align: center; }
+        
+        /* === START: MEETINGS MODAL STYLES === */
+        #meetings-locked-modal .modal-content { text-align: center; }
+        #meetings-locked-modal .meetings-locked-main-text {
+            font-size: 1.6rem;
+            font-weight: 700;
+            line-height: 1.7;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.9), 0 0 12px var(--accent-glow);
+            max-width: 500px;
+            margin-bottom: 15px;
+        }
+        #meetings-locked-modal .meetings-locked-sub-text {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 25px;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.8);
+        }
+        /* === END: MEETINGS MODAL STYLES === */
+
         #about-modal .modal-content { display: flex; flex-direction: column; align-items: center; }
         #about-modal .modal-content > h3 { order: 1; }
         #about-modal .modal-content > .institute-name { order: 2; }
@@ -553,30 +562,6 @@
         #video-player-container { position: relative; width: 100%; height: 0; padding-bottom: 56.25%; }
         #video-player-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; border-radius: 8px; }
 
-        /* --- تنسيق السهم المتحرك --- */
-        #pointing-arrow {
-            position: fixed;
-            z-index: 2000;
-            color: var(--accent-color);
-            font-size: 2.5rem;
-            text-shadow: 0 0 15px var(--accent-glow);
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(-50%); /* للتوسيط الأفقي */
-            transition: opacity 0.4s ease; /* الانتقال عند الإظهار والإخفاء فقط */
-        }
-        #pointing-arrow.show {
-            opacity: 1;
-        }
-        #pointing-arrow.pointing-animation {
-            animation: point-pulse 1.5s infinite ease-in-out;
-        }
-        @keyframes point-pulse {
-            0%, 100% { transform: translateX(-50%) translateY(0); }
-            50% { transform: translateX(-50%) translateY(10px); }
-        }
-        
-        /* حركة ظهور البطاقات الجديدة */
         @keyframes fadeInUpCard {
             from {
                 opacity: 0;
@@ -588,34 +573,27 @@
             }
         }
         
-        /* --- تنسيق عرض المواد على الشاشات الكبيرة --- */
         @media (min-width: 768px) {
             #courses-container {
-                /* استخدام Flexbox لتوسيط العناصر بمرونة */
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 25px; /* مسافة واضحة بين البطاقات المضيئة */
-                max-width: 800px; /* تحديد عرض أقصى للحاوية */
-                margin: 0 auto; /* توسيط الحاوية في الصفحة */
+                gap: 25px;
+                max-width: 800px;
+                margin: 0 auto;
             }
 
             .course-card {
-                width: 300px; /* عرض أكبر للبطاقة على الشاشات الكبيرة */
+                width: 300px;
                 max-width: 300px;
-                
-                /* التأثير المضيء */
                 box-shadow: 0 0 15px -2px var(--accent-glow);
-                border: 1px solid var(--border-color); /* إعادة الإطار ليتناسب مع التوهج */
-                border-radius: 12px; /* إعادة الحواف الدائرية */
-                transition: transform 0.3s ease, box-shadow 0.3s ease; /* حركة ناعمة للتأثيرات */
-                
-                /* تطبيق حركة الظهور التدريجي */
+                border: 1px solid var(--border-color);
+                border-radius: 12px;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
                 animation: fadeInUpCard 0.6s forwards;
             }
             
             .course-card:hover {
-                 /* تكثيف التوهج ورفع البطاقة عند التمرير */
                 transform: translateY(-5px) scale(1.03);
                 box-shadow: 0 0 25px 0px var(--accent-color);
             }
@@ -734,6 +712,7 @@
         <div class="scrolling-banner">
             <p>شكر خاص وتقدير لإدارة المعهد وأعضاء هيئة التدريس على دعمهم المتواصل وجهودهم المبذولة في سبيل عمل هذا التطبيق التعليمي.</p>
         </div>
+
         <header id="main-header">
             <div id="points-counter">
                 <i class="fas fa-star"></i>
@@ -755,6 +734,7 @@
         <nav id="bottom-nav">
             <div class="nav-group">
                 <button class="nav-item" id="pdf-btn"><i class="fas fa-file-pdf"></i><span data-key="nav_pdf">كتب</span></button>
+                <button class="nav-item" id="meetings-btn"><i class="fas fa-lock"></i><span data-key="nav_meetings">ميتنج</span></button>
                 <button class="nav-item" id="sections-btn"><i class="fas fa-layer-group"></i><span data-key="nav_sections">السكاشن</span></button>
                 <button class="nav-item" data-modal="ai-modal"><i class="fas fa-robot"></i><span data-key="nav_ai">AI</span></button>
                 <button class="nav-item" id="platform-btn"><i class="fas fa-university"></i><span data-key="nav_platform">المنصة</span></button>
@@ -801,22 +781,28 @@
     <div id="rating-modal" class="modal-overlay"><div class="modal-content" style="text-align: center;"><button class="close-btn">×</button><h3 data-key="rating_title">قيم تجربتك</h3><div class="rating-stars"><i class="far fa-star" data-value="1"></i><i class="far fa-star" data-value="2"></i><i class="far fa-star" data-value="3"></i><i class="far fa-star" data-value="4"></i><i class="far fa-star" data-value="5"></i></div></div></div>
     <div id="blog-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><h3 data-key="blog_title">مدونتي الشخصية</h3><textarea id="blog-textarea" placeholder="اكتب ملاحظاتك هنا..." maxlength="1000"></textarea><div class="blog-actions"><span id="char-counter">0 / 1000</span><button id="save-blog-btn" data-key="blog_save_btn">حفظ</button></div></div></div>
     <div id="timer-modal" class="modal-overlay"><div class="modal-content" id="timer-container"><button class="close-btn">×</button><h3 data-key="timer_title">تايمر</h3><div id="timer-display">00:00:00</div><div id="timer-controls"><button id="start-pause-timer-btn" data-key="timer_start_btn">بدء</button><button id="reset-timer-btn" data-key="timer_reset_btn">إعادة ضبط</button></div></div></div>
-    <div id="courses-locked-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><p id="courses-locked-message" data-key="courses_locked_msg"></p><p class="dev-credit-modal" data-key="dev_credit_text">تطوير: Amr Lotfy</p></div></div>
+    <div id="courses-locked-modal" class="modal-overlay full-screen"><div class="modal-content"><button class="close-btn">×</button><p id="courses-locked-message" data-key="courses_locked_msg"></p><p class="dev-credit-modal" data-key="dev_credit_text">تطوير: Amr Lotfy</p></div></div>
     <div id="lecture-content-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><div id="lecture-content"></div></div></div>
     <div id="video-player-modal" class="modal-overlay"><div class="modal-content"><button class="close-btn">×</button><div id="video-player-container"></div></div></div>
     <div id="points-info-modal" class="modal-overlay full-screen"><div class="modal-content"><button class="close-btn">×</button><div id="points-info-content"><p>يجب عليك جمع <span class="highlight">250</span> نقطة لفتح قسم الكورسات الذي يشمل كورسات متنوعة للعمل.</p><p>عند دخولك لأي محاضرة، تحصل على <span class="highlight">9</span> نقاط.</p></div></div></div>
-    <div id="pointing-arrow"><i class="fas fa-hand-point-down"></i></div>
-
-
-<script>
+    
+    <div id="meetings-locked-modal" class="modal-overlay full-screen">
+        <div class="modal-content">
+            <button class="close-btn">×</button>
+            <p class="meetings-locked-main-text" data-key="meetings_locked_main"></p>
+            <p class="meetings-locked-sub-text" data-key="meetings_locked_sub"></p>
+            <p class="dev-credit-modal" data-key="dev_credit_text"></p>
+        </div>
+    </div>
+    <script>
 document.addEventListener('DOMContentLoaded', () => {
     const coursesData = { '1': { 'أعمال دولية': { '1': ['مبادئ المحاسبة المالية', 'مبادئ الاقتصاد', 'مبادئ القانون', 'لغة أجنبية (1)', 'مبادئ إدارة الأعمال', 'أساسيات الحاسب'], '2': ['محاسبة شركات', 'اقتصاديات التجارة الدولية', 'قانون دولي', 'لغة أجنبية (2)', 'إدارة الموارد البشرية', 'مبادئ التسويق'] }, 'نظم معلومات': { '1': ['طرق ومهارات الاتصال', 'رياضيات الأعمال', 'حقوق الإنسان', 'التفكير الابتكاري', 'السلوك التنظيمي', 'أساسيات الحاسب'], '2': ['مقدمة في نظم المعلومات', 'أساسيات البرمجة', 'رياضيات متقدمة', 'إدارة قواعد البيانات', 'مبادئ الإحصاء', 'لغة إنجليزية فنية'] } }, '2': { 'أعمال دولية': { '1': ['إدارة اللوجستيات وسلاسل الإمداد', 'مبادئ التسويق', 'اقتصاد جزئي', 'محاسبة التكاليف', 'قانون الأعمال'], '2': ['إدارة مالية', 'التسويق الدولي', 'اقتصاد كلي', 'محاسبة إدارية', 'نظم معلومات إدارية'] }, 'نظم معلومات': { '1': ['قانون الأعمال', 'قواعد البيانات (1)', 'إدارة الإنتاج', 'محاسبة شركات', 'تصميم برامج الحاسب'], '2': ['شبكات الحاسب (1)', 'تحليل وتصميم النظم', 'هياكل البيانات', 'بحوث العمليات', 'تطبيقات الإنترنت'] } }, '3': { 'محاسبة مالية': { '1': ['محاسبة ضريبية', 'محاسبة تكاليف متقدمة', 'تطبيقات الحاسب التجارية', 'اقتصاديات المالية العامة', 'الإحصاء التطبيقي', 'حقوق الإنسان'], '2': ['المراجعة الداخلية', 'محاسبة حكومية وقومية', 'نظم تكاليف فعلية', 'مشكلات محاسبية معاصرة', 'دراسات الجدوى'] }, 'علوم مالية ومصرفية': { '1': ['اقتصاديات المصارف', 'قانون المصارف والائتمان', 'تطبيقات الحاسب في المنشآت المالية', 'إدارة المنشآت المالية', 'حقوق الإنسان', 'الإحصاء التطبيقي'], '2': ['الأسواق المالية', 'إدارة المخاطر المالية', 'التحليل المالي', 'عمليات البنوك', 'التأمين وإدارة الخطر'] }, 'نظم معلومات': { '1': ['حقوق الإنسان', 'قواعد البيانات (2)', 'حزم الإحصاء والعمليات', 'محاسبة الضرائب', 'أمن المعلومات'], '2': ['تطوير تطبيقات الويب', 'الذكاء الاصطناعي', 'شبكات الحاسب (2)', 'إدارة المشروعات البرمجية', 'التجارة الإلكترونية'] } }, '4': { 'محاسبة مالية': { '1': ['المحاسبة الإدارية والموازنات', 'المحاسبة الدولية', 'المحاسبة في المنشآت المالية', 'نظم التكاليف', 'مشكلات محاسبية معاصرة', 'بحوث العمليات'], '2': ['مراجعة متقدمة', 'محاسبة البترول والفنادق', 'نظم المعلومات المحاسبية', 'التحليل المالي المتقدم', 'مشروع التخرج'] }, 'علوم مالية ومصرفية': { '1': ['مشكلات مصرفية ومالية معاصرة', 'الهندسة المالية', 'العقود الآجلة والمشتقات المالية', 'التمويل الدولي', 'إدارة المحافظ الاستثمارية'], '2': ['حوكمة الشركات', 'تقييم الأصول', 'استراتيجيات الاستثمار', 'الصيرفة الإسلامية', 'مشروع التخرج'] }, 'نظم معلومات': { '1': ['تأمين الشبكات', 'تنقيب البيانات', 'نظم دعم القرار', 'هندسة البرمجيات', 'إدارة مراكز المعلومات'], '2': ['الحوسبة السحابية', 'تطبيقات الموبايل', 'النظم الخبيرة', 'الجرائم الإلكترونية والتحقيق الرقمي', 'مشروع التخرج'] } } };
     
     const videoCoursesData = { 'ecommerce': { title_ar: 'كورسات التجارة الإلكترونية', title_en: 'E-commerce Courses', icon: 'fas fa-cash-register', videos: [ { title: 'كورس التجارة الالكترونية الكامل', embed_url: 'https://www.youtube.com/embed/h0unhODkj40' }, { title: 'دليلك الشامل لتبدأ في التجارة الالكترونية', embed_url: 'https://www.youtube.com/embed/ICFXS5WIS3Y' }, { title: 'أسرار التجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/q2f_BVSVeHQ' }, { title: 'كورس شامل للتجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/v46BIS_ICiA' } ] }, 'graphic-design': { title_ar: 'كورسات الجرافيك ديزاين', title_en: 'Graphic Design Courses', icon: 'fas fa-palette', videos: [ { title: 'كورس جرافيك ديزاين كامل', embed_url: 'https://www.youtube.com/embed/va-MZOPrJ0s' }, { title: 'تعلم الفوتوشوب في فيديو واحد', embed_url: 'https://www.youtube.com/embed/4IJPI0d7STI' }, { title: 'تعلم اليستريتور في فيديو واحد', embed_url: 'https://www.youtube.com/embed/WlTsKiVwZAM' } ] }, 'video-editing': { title_ar: 'كورسات المونتاج', title_en: 'Video Editing Courses', icon: 'fas fa-film', videos: [ { title: 'كورس مونتاج كامل ببرنامج واحد', embed_url: 'https://www.youtube.com/embed/qKtUjfolUOM' }, { title: 'تعلم المونتاج باستخدام أدوبي بريمير', embed_url: 'https://www.youtube.com/embed/8iGvUZKeLeU' } ] }, 'data-analysis': { title_ar: 'كورسات تحليل البيانات', title_en: 'Data Analysis Courses', icon: 'fas fa-chart-pie', videos: [ { title: 'كورس تحليل البيانات الكامل', embed_url: 'https://www.youtube.com/embed/nXdkuxAj7tg' }, { title: 'تحليل البيانات باستخدام اكسل', embed_url: 'https://www.youtube.com/embed/z7nN0hZ_PtQ' } ] }, 'ai': { title_ar: 'كورسات الذكاء الاصطناعي', title_en: 'Artificial Intelligence Courses', icon: 'fas fa-brain', videos: [ { title: 'كورس الذكاء الاصطناعي', embed_url: 'https://www.youtube.com/embed/oDmyhjwAYXk' }, { title: 'تعلم الذكاء الاصطناعي في 6 ساعات', embed_url: 'https://www.youtube.com/embed/Rp5VnXnWMLk' } ] } };
     
     const translations = { 
-        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_format_hint: "يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title: "تايمر", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى.", clear_data_btn: "محو البيانات", clear_data_confirm: "هل أنت متأكد من رغبتك في محو جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.", password_suggestion_text: "استخدام كلمة المرور:" }, 
-        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_format_hint: "Must be 8+ characters and contain letters/numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title: "Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again.", clear_data_btn: "Clear Data", clear_data_confirm: "Are you sure you want to clear all data? This action cannot be undone.", password_suggestion_text: "Use password:" } 
+        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_format_hint: "يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", nav_meetings: "ميتنج", meetings_locked_main: "عند شرح أي مادة، سوف يتم فتح هذا القسم", meetings_locked_sub: "خاص بالفرقة الثانية شعبة اعمال ونظم", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title: "تايمر", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى.", clear_data_btn: "محو البيانات", clear_data_confirm: "هل أنت متأكد من رغبتك في محو جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.", password_suggestion_text: "استخدام كلمة المرور:" }, 
+        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_format_hint: "Must be 8+ characters and contain letters/numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", nav_meetings: "Meetings", meetings_locked_main: "This section will be opened when a subject is being explained.", meetings_locked_sub: "For second year, business and systems divisions.", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title: "Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again.", clear_data_btn: "Clear Data", clear_data_confirm: "Are you sure you want to clear all data? This action cannot be undone.", password_suggestion_text: "Use password:" } 
     };
     const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
     
@@ -844,8 +830,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const redirectModal = document.getElementById('redirect-modal'), timerElement = document.getElementById('redirect-timer');
     const pointsNotification = document.getElementById('points-notification');
     
-    const pointsCounter = document.getElementById('points-counter');
-    const pointingArrow = document.getElementById('pointing-arrow');
+    const meetingsBtn = document.getElementById('meetings-btn');
+    const meetingsLockedModal = document.getElementById('meetings-locked-modal');
 
     let timerInterval, countdownInterval, timerSeconds = 0, isTimerRunning = false, currentView = 'subjects'; 
 
@@ -886,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                                     ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (loginAnimationCanvas.width / 7) * (loginAnimationCanvas.height / 7)) {
                     opacityValue = 1 - (distance / 20000);
                     loginAnimationCtx.strokeStyle = `rgba(${accentRgb}, ${opacityValue})`;
@@ -946,7 +932,7 @@ document.addEventListener('DOMContentLoaded', () => {
         pointsDisplay.textContent = currentPoints;
         
         pointsNotification.classList.remove('show');
-        void pointsNotification.offsetWidth; // Trigger reflow
+        void pointsNotification.offsetWidth;
         pointsNotification.classList.add('show');
         
         updateCoursesButtonState();
@@ -972,7 +958,6 @@ document.addEventListener('DOMContentLoaded', () => {
             body.style.setProperty('--accent-glow', value.glow); 
             body.style.setProperty('--accent-hover', value.hover); 
             if(loginPage.classList.contains('active')) {
-                // Re-initialize particles with the new color
                 setupLoginAnimation();
             }
         } else if (type === 'mode') { 
@@ -989,7 +974,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function generateNumericCaptcha() {
         const ctx = captchaCanvas.getContext('2d');
-        captchaText = Math.random().toString().substring(2, 8); // 6-digit number
+        captchaText = Math.random().toString().substring(2, 8);
         const text_color = getComputedStyle(body).getPropertyValue('--primary-text-color');
         
         ctx.clearRect(0, 0, captchaCanvas.width, captchaCanvas.height);
@@ -1028,9 +1013,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const themeName = localStorage.getItem('moraLectureHubTheme') || 'Forest'; const theme = themes.find(t => t.name === themeName) || themes[0]; setSetting('theme', theme);
         const mode = localStorage.getItem('moraLectureHubMode') || 'mode-dark'; setSetting('mode', mode);
         
-        loadingPage.classList.add('active'); // Always show loading page first
+        loadingPage.classList.add('active');
         
-        setTimeout(() => { // Wait for 3 seconds before deciding what to show
+        setTimeout(() => {
             const loggedInUser = getCurrentUsername();
             if (loggedInUser) {
                 const db = getUsersDB();
@@ -1039,14 +1024,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     populateMainPage(userData);
                     loadingPage.classList.remove('active');
                     mainPage.classList.add('active');
-                    return; // Stop execution here if logged in
+                    return;
                 }
             }
-            // If not logged in or user data is invalid, show login page
             loadingPage.classList.remove('active');
             loginPage.classList.add('active');
             showAuthView('choice');
-        }, 3000); // 3-second delay
+        }, 3000);
     }
     
     function showAuthView(viewName) {
@@ -1195,8 +1179,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!user || user.password !== password) { showAuthMessage('auth_error_wrong_pass'); return; }
         localStorage.setItem(CURRENT_USER_KEY, name); localStorage.setItem(LAST_USER_KEY, name);
         loginPage.classList.add('exit');
-        setTimeout(() => { loginPage.classList.remove('active', 'exit'); loadingPage.classList.add('active'); }, 700);
-        setTimeout(() => { populateMainPage(user.profile); loadingPage.classList.remove('active'); mainPage.classList.add('active'); }, 3000); // MODIFIED: 2200 to 3000
+        setTimeout(() => { 
+            loginPage.classList.remove('active', 'exit'); 
+            loadingPage.classList.add('active'); 
+            setTimeout(() => {
+                populateMainPage(user.profile); 
+                loadingPage.classList.remove('active'); 
+                mainPage.classList.add('active');
+            }, 3000);
+        }, 700);
     });
 
     captchaRefreshBtn.addEventListener('click', generateNumericCaptcha);
@@ -1212,7 +1203,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- منطق اقتراح كلمة المرور ---
     const loginPasswordInput = document.getElementById('login-password');
     const loginNameInput = document.getElementById('login-name');
     const suggestionContainer = document.getElementById('password-suggestion-container');
@@ -1220,20 +1210,16 @@ document.addEventListener('DOMContentLoaded', () => {
     loginPasswordInput.addEventListener('focus', () => {
         const username = loginNameInput.value;
         if (!username) return;
-
         const db = getUsersDB();
         const user = db[username];
-
         if (user && user.password) {
             const lang = htmlEl.lang || 'ar';
             const suggestionText = translations[lang].password_suggestion_text;
             suggestionContainer.innerHTML = `<div id="password-suggestion">${suggestionText} <span class="password-value">${user.password}</span></div>`;
             const suggestionEl = document.getElementById('password-suggestion');
-            
             setTimeout(() => { suggestionEl.classList.add('show'); }, 10);
-
             suggestionEl.addEventListener('mousedown', (e) => {
-                e.preventDefault(); // يمنع حقل الإدخال من فقدان التركيز
+                e.preventDefault();
                 loginPasswordInput.value = user.password;
                 suggestionEl.classList.remove('show');
             });
@@ -1252,19 +1238,10 @@ document.addEventListener('DOMContentLoaded', () => {
     pdfBtn.addEventListener('click', showPdfList);
     backToCoursesBtn.addEventListener('click', () => mainPage.classList.remove('details-active'));
     
-    pointsCounter.addEventListener('click', () => {
-        const coursesBtnRect = coursesBtn.getBoundingClientRect();
-        pointingArrow.style.left = `${coursesBtnRect.left + coursesBtnRect.width / 2}px`;
-        pointingArrow.style.top = `${coursesBtnRect.top - 40}px`; // 40px فوق الزر
-        pointingArrow.classList.add('show', 'pointing-animation');
-        
-        setTimeout(() => {
-            pointingArrow.classList.remove('show', 'pointing-animation');
-        }, 4000);
-
-        document.getElementById('points-info-modal').classList.add('active');
+    meetingsBtn.addEventListener('click', () => {
+        meetingsLockedModal.classList.add('active');
     });
-    
+
     document.getElementById('lang-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.lang) setLanguage(e.target.closest('.settings-btn').dataset.lang); });
     document.getElementById('mode-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.mode) setSetting('mode', e.target.closest('.settings-btn').dataset.mode); });
     document.querySelectorAll('[data-modal]').forEach(trigger => { trigger.addEventListener('click', () => { const modalId = trigger.dataset.modal; const modal = document.getElementById(modalId); if(modal) { document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); modal.classList.add('active'); if (modalId === 'about-modal') document.querySelector('.glowing-sponsors').classList.add('animate'); } }); });
@@ -1317,7 +1294,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.ai-btn, .social-icons a').forEach(link => { link.addEventListener('click', (e) => { e.preventDefault(); const parentModal = e.target.closest('.modal-overlay'); showRedirectModal(parentModal ? parentModal.id : null, () => window.open(link.href, '_blank')); }); });
     document.getElementById('platform-btn').addEventListener('click', (e) => { e.preventDefault(); showRedirectModal(null, () => window.open('https://tanta-services.online/TantaPortal/index.php', '_blank')); });
     
-    // Initialize animation and app
     setupLoginAnimation();
     animateLoginBackground();
     window.addEventListener('resize', setupLoginAnimation);
