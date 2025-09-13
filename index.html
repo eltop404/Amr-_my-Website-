@@ -644,7 +644,7 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             color: var(--primary-text-color);
-            padding: 25px 35px;
+            padding: 20px 25px;
             border-radius: 15px;
             text-align: center;
             z-index: 2000;
@@ -652,17 +652,37 @@
             pointer-events: none;
             transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 90%;
-            max-width: 500px;
+            max-width: 450px;
+        }
+        #points-info-toast .close-toast-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--primary-text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.7;
+            line-height: 1;
+        }
+        #points-info-toast .close-toast-btn:hover {
+            color: var(--accent-color);
+            transform: scale(1.1);
+            opacity: 1;
         }
         #points-info-toast.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
+            pointer-events: auto;
         }
         #points-info-toast .points-info-main-text {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: 600;
-            line-height: 1.8;
+            line-height: 1.7;
             text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            margin: 0;
         }
         #points-info-toast .highlight {
             color: var(--accent-color);
@@ -673,7 +693,7 @@
             display: block;
             margin-top: 15px;
             font-family: 'Orbitron', sans-serif;
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--accent-hover);
             opacity: 0.8;
             text-shadow: 0 0 8px var(--accent-glow);
@@ -979,7 +999,10 @@
         </div>
     </div>
     
-    <div id="points-info-toast"></div>
+    <div id="points-info-toast">
+        <button class="close-toast-btn">&times;</button>
+        <div id="points-info-toast-content"></div>
+    </div>
     <div id="pointing-arrow"></div>
 
     <script>
@@ -1025,6 +1048,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const timerLiveText = document.getElementById('timer-live-text');
     const pointsCounter = document.getElementById('points-counter');
     const pointsInfoToast = document.getElementById('points-info-toast');
+    const pointsInfoToastContent = document.getElementById('points-info-toast-content');
+    const closeToastBtn = pointsInfoToast.querySelector('.close-toast-btn');
     const pointingArrow = document.getElementById('pointing-arrow');
     
     let timerInterval;
@@ -1034,6 +1059,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const breakDuration = 5 * 60;
     let timeRemaining = workDuration;
     let cycleCount = 1;
+    let pointsToastTimeout;
     // END: TIMER & NEW UI ELEMENTS
     
     const pointsDisplay = document.getElementById('points-display'), coursesBtn = document.getElementById('courses-btn'), coursesIcon = document.getElementById('courses-icon'), coursesLockedModal = document.getElementById('courses-locked-modal'), lockedMessageP = document.getElementById('courses-locked-message');
@@ -1082,7 +1108,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                                     ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (loginAnimationCanvas.width / 7) * (loginAnimationCanvas.height / 7)) {
                     opacityValue = 1 - (distance / 20000);
                     loginAnimationCtx.strokeStyle = `rgba(${accentRgb}, ${opacityValue})`;
@@ -1159,7 +1185,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    function setLanguage(lang) { htmlEl.lang = lang; htmlEl.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.querySelectorAll('[data-key]').forEach(el => { const key = el.dataset.key; if (translations[lang]?.[key]) { if (key === 'courses_locked_msg' || key === 'points_info_short') { el.innerHTML = translations[lang][key]; } else { el.textContent = translations[lang][key]; } } }); localStorage.setItem('moraLectureHubLang', lang); updateMajors(); updateActiveUI(); }
+    function setLanguage(lang) { htmlEl.lang = lang; htmlEl.dir = lang === 'ar' ? 'rtl' : 'ltr'; document.querySelectorAll('[data-key]').forEach(el => { const key = el.dataset.key; if (translations[lang]?.[key]) { if (key === 'courses_locked_msg' || key === 'points_info_main') { el.innerHTML = translations[lang][key]; } else { el.textContent = translations[lang][key]; } } }); localStorage.setItem('moraLectureHubLang', lang); updateMajors(); updateActiveUI(); }
     
     function setSetting(type, value) { 
         if (type === 'theme') { 
@@ -1542,7 +1568,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pointsCounter.addEventListener('click', () => {
         const lang = htmlEl.lang || 'ar';
-        pointsInfoToast.innerHTML = `
+        pointsInfoToastContent.innerHTML = `
             <p class="points-info-main-text">${translations[lang].points_info_main}</p>
             <span class="dev-credit-toast">${translations[lang].points_info_dev_credit}</span>
         `;
@@ -1553,10 +1579,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pointingArrow.style.top = `${coursesBtnRect.top - 50}px`;
         pointingArrow.classList.add('show');
         
-        setTimeout(() => {
+        clearTimeout(pointsToastTimeout);
+        pointsToastTimeout = setTimeout(() => {
             pointsInfoToast.classList.remove('show');
             pointingArrow.classList.remove('show');
         }, 4000);
+    });
+
+    closeToastBtn.addEventListener('click', () => {
+        clearTimeout(pointsToastTimeout);
+        pointsInfoToast.classList.remove('show');
+        pointingArrow.classList.remove('show');
     });
 
     document.getElementById('lang-switcher').addEventListener('click', e => { if (e.target.closest('.settings-btn')?.dataset.lang) setLanguage(e.target.closest('.settings-btn').dataset.lang); });
