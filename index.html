@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -534,7 +534,7 @@
         #save-blog-btn:hover { background: var(--accent-hover); transform: scale(1.05); }
         #save-blog-btn.saved { background-color: #28a745; }
         
-        /* === START: CINEMATIC TIMER STYLES === */
+        /* === START: CINEMATIC & TRANSPARENT TIMER STYLES === */
         #timer-modal.modal-overlay {
             background: rgba(0,0,0,0.5);
             backdrop-filter: blur(5px);
@@ -552,7 +552,7 @@
             text-align: center;
             max-width: 380px;
             position: relative;
-            background: transparent;
+            background: transparent; /* No frame */
             padding: 20px;
             border-radius: 15px;
             opacity: 0;
@@ -562,8 +562,14 @@
             opacity: 1;
         }
         @keyframes cinematic-timer-fade-in {
-            from { opacity: 0; transform: translateY(40px) scale(0.9); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         #timer-modal .close-btn { z-index: 5; }
         #timer-display { 
@@ -584,7 +590,7 @@
         #timer-controls button { padding: 12px 30px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--border-color); color: var(--primary-text-color); background: transparent; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; min-width: 120px; }
         #timer-controls button:hover { border-color: var(--accent-color); color: var(--accent-color); box-shadow: 0 0 15px -5px var(--accent-glow); }
         #timer-controls button#start-pause-timer-btn.running { background: var(--accent-color); color: #05080f; border-color: var(--accent-color); }
-        /* === END: CINEMATIC TIMER STYLES === */
+        /* === END: CINEMATIC & TRANSPARENT TIMER STYLES === */
         
         /* === START: BACKGROUND TIMER & POINTS INFO STYLES === */
         #timer-live-indicator {
@@ -608,6 +614,24 @@
             50% { transform: scale(1.2); opacity: 1; }
             100% { transform: scale(0.9); opacity: 0.8; }
         }
+        
+        #timer-live-text {
+            position: absolute;
+            top: 18px;
+            left: 35px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #ff4d4d;
+            text-shadow: 0 0 5px #ff4d4d;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 102;
+        }
+        #timer-live-text.active {
+            opacity: 0.9;
+        }
 
         #points-info-toast {
             position: fixed;
@@ -620,31 +644,43 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
             color: var(--primary-text-color);
-            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
             padding: 25px 35px;
             border-radius: 15px;
-            font-size: 1.4rem;
-            font-weight: 600;
             text-align: center;
             z-index: 2000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            max-width: 90%;
-            line-height: 1.8;
+            transition: opacity 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 90%;
+            max-width: 500px;
         }
         #points-info-toast.show {
             opacity: 1;
             transform: translate(-50%, -50%) scale(1);
+        }
+        #points-info-toast .points-info-main-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            line-height: 1.8;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
         }
         #points-info-toast .highlight {
             color: var(--accent-color);
             font-family: 'Orbitron', sans-serif;
             text-shadow: 0 0 10px var(--accent-glow);
         }
+        #points-info-toast .dev-credit-toast {
+            display: block;
+            margin-top: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--accent-hover);
+            opacity: 0.8;
+            text-shadow: 0 0 8px var(--accent-glow);
+        }
         #pointing-arrow {
             position: fixed;
-            z-index: 2000;
+            z-index: 2001; /* Higher than toast */
             width: 30px;
             height: 30px;
             opacity: 0;
@@ -839,11 +875,12 @@
 
     <div id="main-page" class="page">
         <div class="scrolling-banner">
-            <p>شكر خاص وتقدير لإدارة المعهد وأعضاء هيئة التدريس على دعمهم المتواصل وجهودهم المبذولة في سبيل عمل هذا التطبيق التعليمي.</p>
+            <p>شكر خاص وتقدير لإدارة المعهد وأعضاء هيئة التدريس على دعمهم المتواصل وجهودهم المبذولة في سبيل عمل هذا الويب سايت التعليمي.</p>
         </div>
 
         <header id="main-header">
             <div id="timer-live-indicator"></div>
+            <p id="timer-live-text" data-key="timer_live_text">جارٍ الآن</p>
             <div id="points-counter">
                 <i class="fas fa-star"></i>
                 <span id="points-display">0</span>
@@ -952,8 +989,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const videoCoursesData = { 'ecommerce': { title_ar: 'كورسات التجارة الإلكترونية', title_en: 'E-commerce Courses', icon: 'fas fa-cash-register', videos: [ { title: 'كورس التجارة الالكترونية الكامل', embed_url: 'https://www.youtube.com/embed/h0unhODkj40' }, { title: 'دليلك الشامل لتبدأ في التجارة الالكترونية', embed_url: 'https://www.youtube.com/embed/ICFXS5WIS3Y' }, { title: 'أسرار التجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/q2f_BVSVeHQ' }, { title: 'كورس شامل للتجارة الإلكترونية', embed_url: 'https://www.youtube.com/embed/v46BIS_ICiA' } ] }, 'graphic-design': { title_ar: 'كورسات الجرافيك ديزاين', title_en: 'Graphic Design Courses', icon: 'fas fa-palette', videos: [ { title: 'كورس جرافيك ديزاين كامل', embed_url: 'https://www.youtube.com/embed/va-MZOPrJ0s' }, { title: 'تعلم الفوتوشوب في فيديو واحد', embed_url: 'https://www.youtube.com/embed/4IJPI0d7STI' }, { title: 'تعلم اليستريتور في فيديو واحد', embed_url: 'https://www.youtube.com/embed/WlTsKiVwZAM' } ] }, 'video-editing': { title_ar: 'كورسات المونتاج', title_en: 'Video Editing Courses', icon: 'fas fa-film', videos: [ { title: 'كورس مونتاج كامل ببرنامج واحد', embed_url: 'https://www.youtube.com/embed/qKtUjfolUOM' }, { title: 'تعلم المونتاج باستخدام أدوبي بريمير', embed_url: 'https://www.youtube.com/embed/8iGvUZKeLeU' } ] }, 'data-analysis': { title_ar: 'كورسات تحليل البيانات', title_en: 'Data Analysis Courses', icon: 'fas fa-chart-pie', videos: [ { title: 'كورس تحليل البيانات الكامل', embed_url: 'https://www.youtube.com/embed/nXdkuxAj7tg' }, { title: 'تحليل البيانات باستخدام اكسل', embed_url: 'https://www.youtube.com/embed/z7nN0hZ_PtQ' } ] }, 'ai': { title_ar: 'كورسات الذكاء الاصطناعي', title_en: 'Artificial Intelligence Courses', icon: 'fas fa-brain', videos: [ { title: 'كورس الذكاء الاصطناعي', embed_url: 'https://www.youtube.com/embed/oDmyhjwAYXk' }, { title: 'تعلم الذكاء الاصطناعي في 6 ساعات', embed_url: 'https://www.youtube.com/embed/Rp5VnXnWMLk' } ] } };
     
     const translations = { 
-        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_format_hint: "يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", nav_meetings: "ميتنج", meetings_locked_main: "عند شرح أي مادة، سوف يتم فتح هذا القسم", meetings_locked_sub: "خاص بالفرقة الثانية شعبة اعمال ونظم", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title_pomodoro: "تايمر التركيز", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى.", clear_data_btn: "محو البيانات", clear_data_confirm: "هل أنت متأكد من رغبتك في محو جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.", password_suggestion_text: "استخدام كلمة المرور:", pomodoro_mode_work: "جلسة تركيز", pomodoro_mode_break: "وقت الاستراحة", pomodoro_cycles: "الجولة:", pomodoro_desc: "استخدم تقنية بومودورو لتنظيم وقتك وزيادة تركيزك، عبر جلسات عمل واستراحة متناوبة.", pomodoro_work_done: "أحسنت صنعًا! انتهت جلسة التركيز. شكرًا لالتزامك.", pomodoro_break_done: "انتهت استراحتك. لنعد إلى التركيز!", points_info_short: "لفتح قسم الكورسات، يجب عليك جمع <span class='highlight'>250</span> نقطة. كل محاضرة تشاهدها تمنحك <span class='highlight'>9</span> نقاط." }, 
-        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_format_hint: "Must be 8+ characters and contain letters/numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", nav_meetings: "Meetings", meetings_locked_main: "This section will be opened when a subject is being explained.", meetings_locked_sub: "For second year, business and systems divisions.", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title_pomodoro: "Focus Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again.", clear_data_btn: "Clear Data", clear_data_confirm: "Are you sure you want to clear all data? This action cannot be undone.", password_suggestion_text: "Use password:", pomodoro_mode_work: "Focus Session", pomodoro_mode_break: "Break Time", pomodoro_cycles: "Round:", pomodoro_desc: "Use the Pomodoro Technique to organize your time and increase focus through alternating work and break sessions.", pomodoro_work_done: "Excellent work! Focus session complete. Thank you for your commitment.", pomodoro_break_done: "Your break is over. Let's get back to it!", points_info_short: "To unlock the Courses section, you must collect <span class='highlight'>250</span> points. Each lecture you attend gives you <span class='highlight'>9</span> points." } 
+        ar: { login_choice_btn: "تسجيل الدخول", create_account_btn: "إنشاء حساب", create_account_title: "إنشاء حساب جديد", register_btn: "سجل الآن", login_title_main: "تسجيل الدخول", login_btn_main: "دخول", name_placeholder: "ادخل اسمك", password_label: "كلمة السر", password_format_hint: "يجب أن لا تقل عن 8 حروف وتحتوي على أحرف وأرقام.", year_placeholder: "الفرقة", year_1: "الأولى", year_2: "الثانية", year_3: "الثالثة", year_4: "الرابعة", major_placeholder: "اختر الفرقة أولاً...", major_label: "الشعبة", major_option_1: "أعمال دولية", major_option_2: "نظم معلومات", major_option_3: "محاسبة مالية", major_option_4: "علوم مالية ومصرفية", semester_label: "الفصل الدراسي", semester_1: "الفصل الدراسي الأول", semester_2: "الفصل الدراسي الثاني", semester_warning_text: "سيتم فتح هذا الفصل في الميعاد المحدد له", welcome_back: "مرحباً يـ ", nav_pdf: "كتب", nav_sections: "السكاشن", nav_ai: "AI", nav_platform: "المنصة", nav_settings: "الإعدادات", nav_about: "عنا", nav_courses: "كورسات", nav_meetings: "ميتنج", meetings_locked_main: "عند شرح أي مادة، سوف يتم فتح هذا القسم", meetings_locked_sub: "خاص بالفرقة الثانية شعبة اعمال ونظم", close_btn: "إغلاق", settings_title: "الإعدادات", settings_lang: "اللغة", settings_theme: "الثيم اللوني", settings_mode: "الوضع", mode_dark: "داكن", mode_light: "فاتح", mode_oled: "ليلي", mode_gold_black: "ذهبي", about_title: "Mora for Studying", about_desc: "خاص بالمعهد العالي للحاسبات والمعلومات بطنطا", app_version: "الاصدار 10.0", about_dev: "تم التطوير بواسطه Amr lotfy.", sponsors_title: "تحت رعاية", ai_title: "اختر مساعدك الذكي", platform_title: "روابط المنصة التعليمية", redirect_dev: "تطوير: Amr Lotfy", redirect_msg: "...جاري تحويلك الآن", fill_all_fields: "الرجاء ملء جميع الحقول", password_error_length: "كلمة السر يجب أن تكون 8 أحرف على الأقل", password_error_format: "كلمة السر يجب أن تحتوي على أحرف وأرقام", lecture: "المحاضرة", section: "سيكشن", pdf: "ملف", privacy_policy_btn: "سياسة الخصوصية", privacy_title: "سياسة الخصوصية", privacy_content: "نحن في Mora for Studying نأخذ خصوصيتك على محمل الجد. البيانات التي يتم جمعها عند التسجيل (مثل الاسم، الفرقة، الشعبة) تُستخدم فقط لتخصيص تجربتك التعليمية وعرض المواد الدراسية المناسبة لك. نحن لا نشارك هذه المعلومات مع أي طرف ثالث. يتم تخزين جميع بيانات حسابك بشكل آمن على جهازك المحلي.", loading_text: "متنساش تصلي علي النبي", rate_app_btn: "قيم التطبيق", rating_title: "قيم تجربتك", rating_thanks: "شكراً لتقييمك!", blog_btn: "مدونتي", blog_title: "مدونتي الشخصية", blog_save_btn: "حفظ", blog_saved_success: "تم الحفظ!", timer_btn: "تايمر", timer_title_pomodoro: "تايمر التركيز", timer_start_btn: "بدء", timer_pause_btn: "إيقاف مؤقت", timer_reset_btn: "إعادة ضبط", courses_title: "كورسات مقترحة", courses_locked_msg: "هذا القسم يحتوي علي كورسات مجانية متنوعة تؤهلك للعمل عبر الانترنت. لفتح هذا القسم يجب عليك جمع <span class='highlight'>250</span> نقطة من خلال دخولك للمحاضرات.", dev_credit_text: "تطوير: Amr Lotfy", logout_btn: "تسجيل الخروج", logout_msg: "جاري تسجيل خروجك...", locked_lecture_msg: "سوف يتم اضافة المحاضرات قريبا..", locked_section_msg: "سوف يتم اضافة السكاشن قريبا..", locked_pdf_msg: "سوف يتم اضافة الكتب قريبا..", auth_error_no_account: "يجب انشاء حساب لاختيار الفرقة والشعبة", auth_error_user_exists: "هذا الاسم مستخدم بالفعل", auth_error_wrong_pass: "كلمة المرور غير صحيحة", captcha_enter_code: "أدخل الرمز", captcha_error: "الرمز غير صحيح، حاول مرة أخرى.", clear_data_btn: "محو البيانات", clear_data_confirm: "هل أنت متأكد من رغبتك في محو جميع البيانات؟ لا يمكن التراجع عن هذا الإجراء.", password_suggestion_text: "استخدام كلمة المرور:", pomodoro_mode_work: "جلسة تركيز", pomodoro_mode_break: "وقت الاستراحة", pomodoro_cycles: "الجولة:", pomodoro_desc: "استخدم تقنية بومودورو لتنظيم وقتك وزيادة تركيزك، عبر جلسات عمل واستراحة متناوبة.", pomodoro_work_done: "أحسنت صنعًا! انتهت جلسة التركيز. شكرًا لالتزامك.", pomodoro_break_done: "انتهت استراحتك. لنعد إلى التركيز!", points_info_main: "لكل محاضرة تدخلها مكافأة <span class='highlight'>9 نقاط</span>، اجمع <span class='highlight'>250</span> نقطة لفتح قسم الكورسات.", points_info_dev_credit: "تطوير: Amr Lotfy", timer_live_text: "جارٍ الآن" }, 
+        en: { login_choice_btn: "Log In", create_account_btn: "Create Account", create_account_title: "Create New Account", register_btn: "Register Now", login_title_main: "Log In", login_btn_main: "Enter", name_placeholder: "Enter your name", password_label: "Password", password_format_hint: "Must be 8+ characters and contain letters/numbers.", year_placeholder: "Year", year_1: "First", year_2: "Second", year_3: "Third", year_4: "Fourth", major_placeholder: "Select year first...", major_label: "Division", major_option_1: "International Business", major_option_2: "Information Systems", major_option_3: "Financial Accounting", major_option_4: "Financial & Banking Sciences", semester_label: "Semester", semester_1: "First Semester", semester_2: "Second Semester", semester_warning_text: "This semester will be opened at its scheduled time", welcome_back: "Welcome, ", nav_pdf: "Books", nav_sections: "Sections", nav_ai: "AI", nav_platform: "Platform", nav_settings: "Settings", nav_about: "About", nav_courses: "Courses", nav_meetings: "Meetings", meetings_locked_main: "This section will be opened when a subject is being explained.", meetings_locked_sub: "For second year, business and systems divisions.", close_btn: "Close", settings_title: "Settings", settings_lang: "Language", settings_theme: "Color Theme", settings_mode: "Mode", mode_dark: "Dark", mode_light: "Light", mode_oled: "OLED", mode_gold_black: "Gold", about_title: "Mora for Studying", about_desc: "Exclusive for the Higher Institute for Computers and Information in Tanta", app_version: "Version 10.0", about_dev: "Developed by Amr lotfy.", sponsors_title: "Under the sponsorship of", ai_title: "Choose your AI assistant", platform_title: "Educational Platform Links", redirect_dev: "Developed by: Amr Lotfy", redirect_msg: "Redirecting you now...", fill_all_fields: "Please fill all fields", password_error_length: "Password must be at least 8 characters long", password_error_format: "Password must contain letters and numbers", lecture: "Lecture", section: "Section", pdf: "PDF", privacy_policy_btn: "Privacy Policy", privacy_title: "Privacy Policy", privacy_content: "At Mora for Studying, we take your privacy seriously. The data collected upon registration (such as name, year, and division) is used solely to personalize your educational experience and display the appropriate course materials. We do not share this information with any third parties. All your account data is stored securely on your local device.", loading_text: "Remember to send blessings upon the Prophet", rate_app_btn: "Rate App", rating_title: "Rate Your Experience", rating_thanks: "Thanks for your feedback!", blog_btn: "My Blog", blog_title: "My Personal Blog", blog_save_btn: "Save", blog_saved_success: "Saved!", timer_btn: "Timer", timer_title_pomodoro: "Focus Timer", timer_start_btn: "Start", timer_pause_btn: "Pause", timer_reset_btn: "Reset", courses_title: "Suggested Courses", courses_locked_msg: "This section contains free and diverse courses to qualify you for online work. To unlock this section, you must collect <span class='highlight'>250</span> points by attending lectures.", dev_credit_text: "Developed by: Amr Lotfy", logout_btn: "Logout", logout_msg: "Logging you out...", locked_lecture_msg: "Lectures will be added soon..", locked_section_msg: "Sections will be added soon..", locked_pdf_msg: "Books will be added soon..", auth_error_no_account: "You must create an account to select year and major", auth_error_user_exists: "This username is already taken", auth_error_wrong_pass: "Incorrect password", captcha_enter_code: "Enter the code", captcha_error: "Incorrect code, please try again.", clear_data_btn: "Clear Data", clear_data_confirm: "Are you sure you want to clear all data? This action cannot be undone.", password_suggestion_text: "Use password:", pomodoro_mode_work: "Focus Session", pomodoro_mode_break: "Break Time", pomodoro_cycles: "Round:", pomodoro_desc: "Use the Pomodoro Technique to organize your time and increase focus through alternating work and break sessions.", pomodoro_work_done: "Excellent work! Focus session complete. Thank you for your commitment.", pomodoro_break_done: "Your break is over. Let's get back to it!", points_info_main: "Earn <span class='highlight'>9 points</span> for every lecture you attend. Collect <span class='highlight'>250</span> points to unlock the Courses section.", points_info_dev_credit: "Developed by: Amr Lotfy", timer_live_text: "Live" } 
     };
     const themes = [ { name: 'Forest', accent: '#00ff7f', glow: 'rgba(0,255,127,0.4)', hover: '#33ff99' }, { name: 'Cosmic', accent: '#be5cff', glow: 'rgba(190,92,255,0.4)', hover: '#d89aff' }, { name: 'Solar', accent: '#ff8c00', glow: 'rgba(255,140,0,0.4)', hover: '#ffa500' }, { name: 'Ocean', accent: '#00bfff', glow: 'rgba(0,191,255,0.4)', hover: '#1e90ff' }, { name: 'Crimson', accent: '#dc143c', glow: 'rgba(220,20,60,0.4)', hover: '#ff4500' }, { name: 'Cyber', accent: '#00FFFF', glow: 'rgba(0,255,255,0.4)', hover: '#7DFDFE' }, { name: 'Rose', accent: '#FF66CC', glow: 'rgba(255,102,204,0.4)', hover: '#FFB6C1' }, { name: 'Gold', accent: '#FFD700', glow: 'rgba(255,215,0,0.4)', hover: '#F0E68C' }, { name: 'Magenta', accent: '#ff00ff', glow: 'rgba(255,0,255,0.4)', hover: '#e600e6' } ];
     
@@ -985,6 +1022,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pomodoroMode = document.getElementById('pomodoro-mode');
     const pomodoroCycles = document.getElementById('pomodoro-cycles');
     const timerLiveIndicator = document.getElementById('timer-live-indicator');
+    const timerLiveText = document.getElementById('timer-live-text');
     const pointsCounter = document.getElementById('points-counter');
     const pointsInfoToast = document.getElementById('points-info-toast');
     const pointingArrow = document.getElementById('pointing-arrow');
@@ -1044,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', () => {
         for (let a = 0; a < particlesArray.length; a++) {
             for (let b = a; b < particlesArray.length; b++) {
                 let distance = ((particlesArray[a].x - particlesArray[b].x) * (particlesArray[a].x - particlesArray[b].x)) +
-                                     ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
+                                       ((particlesArray[a].y - particlesArray[b].y) * (particlesArray[a].y - particlesArray[b].y));
                 if (distance < (loginAnimationCanvas.width / 7) * (loginAnimationCanvas.height / 7)) {
                     opacityValue = 1 - (distance / 20000);
                     loginAnimationCtx.strokeStyle = `rgba(${accentRgb}, ${opacityValue})`;
@@ -1329,8 +1367,10 @@ document.addEventListener('DOMContentLoaded', () => {
             startPauseTimerBtn.textContent = translations[lang].timer_start_btn;
             startPauseTimerBtn.classList.remove('running');
             timerLiveIndicator.classList.remove('active');
+            timerLiveText.classList.remove('active');
         } else {
             timerLiveIndicator.classList.add('active');
+            timerLiveText.classList.add('active');
             timerInterval = setInterval(() => {
                 timeRemaining--;
                 updateTimerDisplay();
@@ -1354,6 +1394,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     startPauseTimerBtn.textContent = translations[lang].timer_start_btn;
                     startPauseTimerBtn.classList.remove('running');
                     timerLiveIndicator.classList.remove('active');
+                    timerLiveText.classList.remove('active');
                     
                     if (completedState === 'work') {
                         showAuthMessage('pomodoro_work_done'); 
@@ -1382,6 +1423,7 @@ document.addEventListener('DOMContentLoaded', () => {
         startPauseTimerBtn.textContent = translations[lang].timer_start_btn;
         startPauseTimerBtn.classList.remove('running');
         timerLiveIndicator.classList.remove('active');
+        timerLiveText.classList.remove('active');
     }
     // END: POMODORO TIMER FUNCTIONS
 
@@ -1500,7 +1542,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pointsCounter.addEventListener('click', () => {
         const lang = htmlEl.lang || 'ar';
-        pointsInfoToast.innerHTML = translations[lang].points_info_short;
+        pointsInfoToast.innerHTML = `
+            <p class="points-info-main-text">${translations[lang].points_info_main}</p>
+            <span class="dev-credit-toast">${translations[lang].points_info_dev_credit}</span>
+        `;
         pointsInfoToast.classList.add('show');
 
         const coursesBtnRect = coursesBtn.getBoundingClientRect();
