@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mora For Studying - Final Version</title>
+    <meta name="theme-color" content="#0d0d1a">
+    <link rel="manifest" href="manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -83,17 +85,12 @@
         .admin-panel { animation: fade-in-up 0.5s ease forwards; }
         .admin-panel .glass-effect, #admin-polls-list > div, #active-students-list > div { animation: fade-in-up 0.5s ease-out backwards; }
 
+
         .subject-card { background-color: rgba(16, 26, 42, 0.75); border: 1px solid rgba(var(--primary-glow-rgb), 0.5); box-shadow: 0 0 15px rgba(var(--primary-glow-rgb), 0.2); transition: all 0.3s ease-out; cursor: grab; }
         .subject-card:active { cursor: grabbing; }
         .footer-text { color: rgba(226, 232, 240, 0.6); text-shadow: 0 0 8px rgba(var(--primary-glow-rgb), 0.5); font-weight: 600; letter-spacing: 0.5px; }
         .captcha-spinner { width: 100%; height: 100%; border: 2px solid #888; border-top-color: #eee; border-radius: 50%; animation: captcha-spin 1s linear infinite; }
         #captcha-canvas { border-radius: 0.5rem; }
-
-        /* Custom Toggle Switch */
-        .toggle-switch-bg { cursor: pointer; display: inline-block; width: 52px; height: 28px; background-color: rgba(100, 116, 139, 0.5); border-radius: 9999px; position: relative; transition: background-color 0.2s ease-in-out; }
-        .toggle-switch-handle { position: absolute; top: 2px; left: 2px; width: 24px; height: 24px; background-color: white; border-radius: 50%; transition: transform 0.2s ease-in-out; }
-        input:checked + .toggle-switch-bg { background-color: var(--primary-glow); }
-        input:checked + .toggle-switch-bg .toggle-switch-handle { transform: translateX(24px); }
     </style>
 </head>
 <body class="w-full h-screen">
@@ -286,38 +283,21 @@
                      
                      <div id="settings-panel" class="admin-panel hidden">
                          <h2 class="text-3xl font-bold mb-6">إعدادات الموقع</h2>
-                         <div class="space-y-6 max-w-md">
-                             <div class="glass-effect p-6 rounded-lg">
-                                 <div class="flex items-center justify-between">
-                                    <span class="font-bold">تفعيل قسم الميتنج</span>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="meeting-toggle" class="sr-only peer">
-                                        <div class="toggle-switch-bg peer"><div class="toggle-switch-handle"></div></div>
-                                    </label>
-                                 </div>
-                                 <div id="meeting-url-container" class="hidden mt-4">
-                                    <input type="url" id="meeting-url-input" placeholder="ادخل رابط الميتنج هنا" class="w-full rounded-lg input-field">
-                                 </div>
+                         <div class="space-y-4 max-w-md">
+                             <div class="glass-effect p-6 rounded-lg space-y-4">
+                                 <label class="flex items-center justify-between cursor-pointer"><span class="font-bold">تفعيل قسم الميتنج</span><input type="checkbox" id="meeting-toggle" class="form-checkbox h-5 w-5 text-[var(--primary-glow)] rounded"></label>
+                                 <div id="meeting-url-container" class="hidden"><input type="url" id="meeting-url-input" placeholder="ادخل رابط الميتنج هنا" class="w-full rounded-lg input-field"></div>
                              </div>
                              <div class="glass-effect p-6 rounded-lg space-y-4">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-bold">تفعيل قسم الكورسات</span>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="courses-toggle" class="sr-only peer">
-                                        <div class="toggle-switch-bg peer"><div class="toggle-switch-handle"></div></div>
-                                    </label>
-                                </div>
-                                <hr class="border-slate-700/50">
-                                <div class="flex items-center justify-between">
+                                <label class="flex items-center justify-between cursor-pointer"><span class="font-bold">تفعيل قسم الكورسات (أساسي)</span><input type="checkbox" id="courses-toggle" class="form-checkbox h-5 w-5 text-[var(--primary-glow)] rounded"></label>
+                                <hr class="border-slate-700">
+                                <label class="flex items-center justify-between cursor-pointer">
                                     <div>
-                                        <span class="font-bold text-yellow-400">تفعيل العرض الترويجي</span>
-                                        <p class="text-xs text-slate-400">فتح الكورسات للجميع مؤقتاً.</p>
+                                        <span class="font-bold text-yellow-400">تفعيل العرض الترويجي للكورسات</span>
+                                        <p class="text-xs text-slate-400">فتح الكورسات للجميع مؤقتًا بغض النظر عن النقاط.</p>
                                     </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="courses-promo-toggle" class="sr-only peer">
-                                        <div class="toggle-switch-bg peer"><div class="toggle-switch-handle"></div></div>
-                                    </label>
-                                </div>
+                                    <input type="checkbox" id="courses-promo-toggle" class="form-checkbox h-5 w-5 text-yellow-400 rounded">
+                                </label>
                              </div>
                          </div>
                          <div class="max-w-md mt-6">
@@ -350,6 +330,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, doc, addDoc, getDocs, query, where, onSnapshot, deleteDoc, updateDoc, orderBy, serverTimestamp, getDoc, setDoc, limit, runTransaction, writeBatch, collectionGroup } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getMessaging, getToken, onMessage } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-messaging.js";
         
         const firebaseConfig = { apiKey: "AIzaSyB92ooyA5_tTx1BLDp2EWmqxHuJQ3zqah4", authDomain: "mora-for-studying.firebaseapp.com", projectId: "mora-for-studying", storageBucket: "mora-for-studying.appspot.com", messagingSenderId: "213416531900", appId: "1:213416531900:web:2e4d8bd2a9e1a4e814bdb9" };
         const app = initializeApp(firebaseConfig);
@@ -670,6 +651,7 @@
             listenToSiteSettings(); 
             listenForNotifications();
             listenForActivePoll();
+            setupPushNotifications();
         }
 
         async function updateRateNavButton() {
@@ -869,7 +851,7 @@
                 document.getElementById('meeting-url-input').value = settings.meetingUrl || '';
                 document.getElementById('courses-toggle').checked = settings.coursesActive ?? true;
                 document.getElementById('courses-promo-toggle').checked = settings.coursesPromoActive || false;
-                document.getElementById('meeting-url-container').classList.toggle('hidden', !settings.meetingActive);
+                if (settings.meetingActive) document.getElementById('meeting-url-container').classList.remove('hidden');
                 
                 const meetLinkInput = document.getElementById('meet-link-input');
                 const statusIndicator = document.getElementById('stream-status-indicator');
@@ -1214,7 +1196,24 @@
                 document.getElementById('modal-title').textContent = '';
             }
         });
-        
+
+        async function setupPushNotifications() {
+            if ('serviceWorker' in navigator) {
+                try {
+                    await navigator.serviceWorker.register('./firebase-messaging-sw.js');
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        const messaging = getMessaging(app);
+                        const fcmToken = await getToken(messaging, { vapidKey: "ضع مفتاح VAPID KEY الخاص بك هنا" }); 
+                        if (fcmToken && currentUser && currentUser.id) {
+                            await updateDoc(doc(db, "users", currentUser.id), { fcmToken: fcmToken });
+                        }
+                    }
+                } catch (error) {
+                    console.error('Service Worker registration or FCM setup failed:', error);
+                }
+            }
+        }
     </script>
 </body>
 </html>
