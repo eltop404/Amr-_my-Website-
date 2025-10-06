@@ -508,10 +508,36 @@
             color: var(--text-secondary);
             margin-top: 4px;
         }
+
+        /* === LIVE ATTENDANCE BANNER === */
+        #live-attendance-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #dc2626;
+            color: white;
+            text-align: center;
+            padding: 8px 0;
+            font-weight: bold;
+            z-index: 100;
+            display: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        #live-attendance-banner:hover {
+            background: #ef4444;
+        }
     </style>
 </head>
 <body class="w-full h-screen">
     <div id="app-bg"></div>
+    
+    <!-- Live Attendance Banner -->
+    <div id="live-attendance-banner" onclick="handleLiveAttendanceBannerClick()">
+        🎓 اضغط هنا للدخول وحضور المحاضرة مباشرة!
+    </div>
+
     <div id="app-container" class="w-full h-full relative">
         <!-- Auth Page -->
         <div id="auth-page" class="page justify-center items-end p-4">
@@ -596,6 +622,12 @@
                         <span class="meeting-live-text">مباشر</span>
                     </div>
                 </button>
+                <!-- ✅ NEW: Summarization Button -->
+                <button id="summarize-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2">
+                    <i class="ph-note text-xl"></i>
+                    <span>تلخيص</span>
+                </button>
+                <!-- End New Button -->
                 <button id="digital-card-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-identification-card text-xl"></i><span>بطاقتي</span></button>
                 <button id="privacy-policy-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-shield-check text-xl"></i><span>الخصوصية</span></button>
                 <button data-modal="support-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-headset text-xl"></i><span>الدعم</span></button>
@@ -789,6 +821,7 @@
             { icon: 'ph-chats-teardrop', title: 'آراء الطلاب', text: 'شارك رأيك أو اقرأ آراء زملائك.' },
             { icon: 'ph-megaphone-simple', title: 'استطلاعات', text: 'شارك في استطلاعات الرأي والمناقشات.' },
             { icon: 'ph-video', title: 'ميتنج', text: 'انضم إلى البث المباشر للمحاضرات.' },
+            { icon: 'ph-note', title: 'تلخيص', text: 'لخص محاضراتك واحصل على أسئلة ذكية!' },
             { icon: 'ph-identification-card', title: 'بطاقتي', text: 'عرض بطاقتك الرقمية مع رمز QR.' },
             { icon: 'ph-shield-check', title: 'الخصوصية', text: 'اقرأ سياسة الخصوصية الخاصة بالموقع.' },
             { icon: 'ph-headset', title: 'الدعم', text: 'تواصل مع فريق الدعم الفني.' },
@@ -1193,10 +1226,13 @@
                 siteSettings = doc.data() || { meetingActive: false, coursesActive: true, isLive: false, meetLink: ''};
                 const meetingBtn = document.getElementById('meeting-btn');
                 const indicator = document.getElementById('meeting-live-indicator');
+                const banner = document.getElementById('live-attendance-banner');
                 if (siteSettings.isLive) {
                     indicator.classList.remove('hidden');
+                    banner.style.display = 'block';
                 } else {
                     indicator.classList.add('hidden');
+                    banner.style.display = 'none';
                 }
             }); 
         }
@@ -1239,6 +1275,29 @@
         document.getElementById('courses-btn').addEventListener('click', async () => {
             showCoursesList();
         });
+
+        // ======================= NEW: SUMMARIZE BUTTON =======================
+        document.getElementById('summarize-btn').addEventListener('click', () => {
+            updateUserActivity("يفتح قسم التلخيص");
+            const summarizeHTML = `
+                <div class="text-center p-4">
+                    <i class="ph-note text-5xl text-[var(--primary-glow)] mb-4"></i>
+                    <h3 class="text-xl font-bold mb-3">تلخيص ذكي لمحاضراتك!</h3>
+                    <p class="text-slate-300 mb-6 leading-relaxed">
+                        استخدم تقنية الذكاء الاصطناعي لتلخيص المحاضرات تلقائيًا،<br>
+                        واستخراج أهم النقاط والأسئلة الذكية لمساعدتك في المذاكرة.
+                    </p>
+                    <button id="go-to-summarize-site-btn" class="w-full max-w-xs py-3 rounded-lg font-bold btn-celestial">
+                        توجّه إلى الموقع الآن
+                    </button>
+                </div>
+            `;
+            openModalWithContent('تلخيص المحاضرات', summarizeHTML);
+            document.getElementById('go-to-summarize-site-btn').onclick = () => {
+                handleRedirectWithCountdown('https://notebooklm.google.com/notebook/4537acf2-d026-4183-9a99-e7bb06f3c059', 'جارٍ التوجيه إلى NotebookLM');
+            };
+        });
+
         // ======================= MEETING BUTTON HANDLER =======================
         document.getElementById('meeting-btn').addEventListener('click', async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1283,6 +1342,47 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         });
+
+        // ======================= LIVE ATTENDANCE BANNER CLICK =======================
+        window.handleLiveAttendanceBannerClick = async () => {
+            if (!currentUser || currentUser.isAdmin) return;
+            if (!siteSettings.isLive) return;
+            try {
+                const attendanceRef = collection(db, "attendance");
+                await addDoc(attendanceRef, {
+                    userId: currentUser.id,
+                    userName: currentUser.name,
+                    userYear: currentUser.year,
+                    userDivision: currentUser.division,
+                    timestamp: serverTimestamp(),
+                    meetLink: siteSettings.meetLink || ''
+                });
+                showToast("تم تسجيل حضورك بنجاح!");
+                if (siteSettings.meetLink) {
+                    openModalWithContent("جاري تحويلك الآن...", `
+                        <div class="text-center p-8">
+                            <i class="ph-video text-6xl text-[var(--primary-glow)] mb-4 redirect-modal-icon"></i>
+                            <p class="text-lg">سيتم تحويلك خلال <span id="redirect-countdown" class="font-bold text-xl">3</span> ثوانٍ...</p>
+                        </div>
+                    `);
+                    let count = 3;
+                    const countdownEl = document.getElementById('redirect-countdown');
+                    const interval = setInterval(() => {
+                        count--;
+                        if (countdownEl) countdownEl.textContent = count;
+                        if (count <= 0) {
+                            clearInterval(interval);
+                            document.getElementById('generic-modal').classList.remove('open');
+                            window.open(siteSettings.meetLink, '_blank');
+                        }
+                    }, 1000);
+                }
+            } catch (error) {
+                console.error("Error in banner attendance:", error);
+                showToast("حدث خطأ أثناء تسجيل الحضور.", true);
+            }
+        };
+
         // ======================= POLLS/DISCUSSION FEATURE - بدون حد للكلمات =======================
         async function openPollsView() {
             updateUserActivity("يتصفح الاستطلاعات");
@@ -1927,7 +2027,6 @@
             });
             document.getElementById('start-stream-btn').addEventListener('click', () => setDoc(siteSettingsRef, { isLive: true }, { merge: true }));
             document.getElementById('end-stream-btn').addEventListener('click', () => setDoc(siteSettingsRef, { isLive: false }, { merge: true }));
-
             // ✅ قسم تحميل التطبيق
             const appDownloadsRef = collection(db, "app_downloads");
             onSnapshot(appDownloadsRef, (snapshot) => {
@@ -2110,36 +2209,6 @@
         modalCloseBtn.addEventListener('click', () => {
             if(modalCloseBtn.onclick) modalCloseBtn.onclick();
         });
-
-        // ✅ عند تحميل التطبيق (مثال: زر في الإعدادات أو مكان ما)
-        // هنا نضيف وظيفة تسجيل التنزيل عند النقر على زر "تحميل التطبيق"
-        // لكن بما أن التطبيق ويب، فسنجعله عند فتح صفحة "عنا" أو عند طلب المستخدم التحميل
-        // يمكنك إضافة زر في مكان ما يسمى "تحميل التطبيق" ويستدعي:
-        window.recordAppDownload = async () => {
-            if (!currentUser || currentUser.isAdmin) return;
-            try {
-                let ipAddress = 'N/A';
-                try {
-                    const ipRes = await fetch('https://api.ipify.org?format=json');
-                    if(ipRes.ok) {
-                        const ipData = await ipRes.json();
-                        ipAddress = ipData.ip;
-                    }
-                } catch(e) {}
-                await addDoc(collection(db, "app_downloads"), {
-                    userId: currentUser.id,
-                    userName: currentUser.name,
-                    userYear: currentUser.year,
-                    userDivision: currentUser.division,
-                    ipAddress: ipAddress,
-                    userAgent: navigator.userAgent,
-                    timestamp: serverTimestamp()
-                });
-                showToast("تم تسجيل طلب التحميل! شكرًا لك 🙏");
-            } catch(e) {
-                console.error("Download record error:", e);
-            }
-        };
     </script>
 </body>  
 </html>
