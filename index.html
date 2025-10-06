@@ -470,6 +470,8 @@
             width: 100%;
             color: var(--text-primary);
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
         #onboarding-icon {
             font-size: 3rem;
@@ -508,7 +510,6 @@
             color: var(--text-secondary);
             margin-top: 4px;
         }
-
         /* === LIVE ATTENDANCE BANNER === */
         #live-attendance-banner {
             position: fixed;
@@ -528,6 +529,36 @@
         #live-attendance-banner:hover {
             background: #ef4444;
         }
+        /* === SPEECH CONTROLS === */
+        .speech-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+        .speech-btn {
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+        }
+        .listen-btn {
+            background: var(--primary-glow);
+            color: var(--bg-color);
+        }
+        .pause-btn, .resume-btn {
+            background: #6b7280;
+            color: white;
+        }
+        .stop-btn {
+            background: #ef4444;
+            color: white;
+        }
+        .listen-btn:hover { background: #00d1a0; }
+        .pause-btn:hover, .resume-btn:hover { background: #4b5563; }
+        .stop-btn:hover { background: #dc2626; }
     </style>
 </head>
 <body class="w-full h-screen">
@@ -563,12 +594,14 @@
         <!-- Onboarding Modal - بدون زر تخطي -->
         <div id="onboarding-modal">
             <div id="onboarding-content">
-                <div id="onboarding-icon"><i class="ph-books"></i></div>
+                <div id="onboarding-icon"><i class="ph-rocket-launch"></i></div>
                 <h3 id="onboarding-title">مرحباً بك في Mora!</h3>
-                <p id="onboarding-text">سنأخذك في جولة سريعة للتعرف على الأيقونات.</p>
+                <p id="onboarding-text">استعد لرحلة تعليمية ممتعة وسهلة مع أفضل الميزات التفاعلية!</p>
                 <div id="onboarding-buttons">
                     <button id="onboarding-next-btn">التالي</button>
                 </div>
+                <div class="absolute -top-4 -right-4 text-5xl animate-bounce">🚀</div>
+                <div class="absolute -bottom-4 -left-4 text-4xl animate-pulse">✨</div>
             </div>
         </div>
         <!-- Splash Screen -->
@@ -622,12 +655,6 @@
                         <span class="meeting-live-text">مباشر</span>
                     </div>
                 </button>
-                <!-- ✅ NEW: Summarization Button -->
-                <button id="summarize-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2">
-                    <i class="ph-note text-xl"></i>
-                    <span>تلخيص</span>
-                </button>
-                <!-- End New Button -->
                 <button id="digital-card-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-identification-card text-xl"></i><span>بطاقتي</span></button>
                 <button id="privacy-policy-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-shield-check text-xl"></i><span>الخصوصية</span></button>
                 <button data-modal="support-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-headset text-xl"></i><span>الدعم</span></button>
@@ -658,6 +685,8 @@
                         <button data-panel="opinions-panel" class="admin-nav-btn text-right p-3 rounded-lg">آراء الطلاب</button>
                         <button data-panel="polls-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة الاستطلاعات</button>
                         <button data-panel="settings-panel" class="admin-nav-btn text-right p-3 rounded-lg">إعدادات الموقع</button>
+                        <!-- ✅ NEW: Attendance Panel -->
+                        <button data-panel="attendance-panel" class="admin-nav-btn text-right p-3 rounded-lg">تسجيل الحضور</button>
                   </nav>
                   <div class="mt-auto flex-shrink-0 pt-4">
                         <button id="admin-logout-btn" class="w-full py-2 rounded-lg text-lg font-bold btn-celestial border-red-500 text-red-500 hover:bg-red-500 hover:text-white">خروج</button>
@@ -706,6 +735,14 @@
                             </div>
                         </div>
                     </div>
+                    <!-- ✅ NEW: Attendance Panel -->
+                    <div id="attendance-panel" class="admin-panel hidden">
+                        <h2 class="text-3xl font-bold mb-6">سجل الحضور</h2>
+                        <div id="attendance-list" class="space-y-4">
+                            <p class="text-center text-slate-400">جارٍ تحميل سجل الحضور...</p>
+                        </div>
+                    </div>
+                    <!-- باقي الألواح كما هي -->
                     <div id="tickets-panel" class="admin-panel hidden">
                         <h2 class="text-3xl font-bold mb-6">إدارة الشكاوى والدعم الفني</h2>
                         <div id="admin-tickets-list" class="space-y-4"></div>
@@ -821,7 +858,6 @@
             { icon: 'ph-chats-teardrop', title: 'آراء الطلاب', text: 'شارك رأيك أو اقرأ آراء زملائك.' },
             { icon: 'ph-megaphone-simple', title: 'استطلاعات', text: 'شارك في استطلاعات الرأي والمناقشات.' },
             { icon: 'ph-video', title: 'ميتنج', text: 'انضم إلى البث المباشر للمحاضرات.' },
-            { icon: 'ph-note', title: 'تلخيص', text: 'لخص محاضراتك واحصل على أسئلة ذكية!' },
             { icon: 'ph-identification-card', title: 'بطاقتي', text: 'عرض بطاقتك الرقمية مع رمز QR.' },
             { icon: 'ph-shield-check', title: 'الخصوصية', text: 'اقرأ سياسة الخصوصية الخاصة بالموقع.' },
             { icon: 'ph-headset', title: 'الدعم', text: 'تواصل مع فريق الدعم الفني.' },
@@ -1171,21 +1207,94 @@
             const q = query(collection(db, 'lectures'), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
             currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
         };
+        // ======================= SPEECH SYNTHESIS =======================
+        let speechUtterance = null;
+        let speechSynthesis = window.speechSynthesis;
+        let isSpeaking = false;
+        let currentLectureId = null;
+
+        function resumeSpeech(text, charIndex = 0) {
+            if (speechSynthesis.speaking) speechSynthesis.cancel();
+            speechUtterance = new SpeechSynthesisUtterance(text.substring(charIndex));
+            speechUtterance.lang = 'ar-SA';
+            speechUtterance.rate = 0.9;
+            speechUtterance.onend = () => {
+                isSpeaking = false;
+                localStorage.removeItem(`speech_${currentLectureId}`);
+            };
+            speechUtterance.onerror = () => {
+                isSpeaking = false;
+                showToast("عذرًا، حدث خطأ في قراءة النص.", true);
+            };
+            speechSynthesis.speak(speechUtterance);
+            isSpeaking = true;
+        }
+
+        function pauseSpeech() {
+            if (speechSynthesis.speaking) {
+                const charIndex = speechSynthesis.getVoices().length > 0 ? speechUtterance.text.length - (speechUtterance.text.length - speechUtterance.text.indexOf(' ')) : 0;
+                // في الواقع، Web Speech API لا يدعم الحصول على موضع القراءة بدقة.
+                // لذا سنستخدم تقنية تقريبية: حفظ وقت البدء والتقدير.
+                // لكن لتبسيط الأمور، سنعيد التشغيل من البداية عند الاستئناف.
+                speechSynthesis.cancel();
+                isSpeaking = false;
+                // حفظ في localStorage أن المستخدم أوقفها
+                localStorage.setItem(`speech_${currentLectureId}`, 'paused');
+                showToast("تم إيقاف القراءة مؤقتًا.");
+            }
+        }
+
         window.viewContentDetail = async (id, title, body) => { 
             await updateUserActivity(`يشاهد محاضرة: ${title}`);
-            if(!currentUser.isAdmin && !(currentUser.completedLectures || []).includes(id)){ 
-                const newPoints = (currentUser.points || 0) + 25; 
-                const newCompleted = [...(currentUser.completedLectures || []), id]; 
-                await updateDoc(doc(db, "users", currentUser.id), { points: newPoints, completedLectures: newCompleted }); 
-                currentUser.points = newPoints; 
-                currentUser.completedLectures = newCompleted; 
-                localStorage.setItem('moraUser', JSON.stringify(currentUser)); 
-                showToast(siteTexts.addPointsToast || defaultTexts.addPointsToast); 
-            } 
+            // ✅ تم إلغاء نظام المكافآت (النقاط)
             const decodedBody = decodeURIComponent(atob(body));
-            // ✅ تم إزالة زر الاستماع
-            openModalWithContent(title, `<div class="p-2" style="white-space: pre-wrap; user-select: text;">${decodedBody}</div>`); 
+            currentLectureId = id;
+            const isPaused = localStorage.getItem(`speech_${id}`) === 'paused';
+
+            const speechControls = `
+                <div class="speech-controls">
+                    ${!isSpeaking ? `<button class="speech-btn listen-btn" onclick="startListening('${id}', \`${decodedBody.replace(/`/g, '\\`')}\`)">استماع</button>` : ''}
+                    ${isSpeaking ? `<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>` : ''}
+                    ${isPaused ? `<button class="speech-btn resume-btn" onclick="resumeListening('${id}', \`${decodedBody.replace(/`/g, '\\`')}\`)">استكمال</button>` : ''}
+                </div>
+            `;
+
+            openModalWithContent(title, `<div class="p-2" style="white-space: pre-wrap; user-select: text;">${decodedBody}</div>${speechControls}`); 
         };
+
+        window.startListening = (id, text) => {
+            currentLectureId = id;
+            resumeSpeech(text, 0);
+            localStorage.setItem(`speech_${id}`, 'playing');
+            // تحديث واجهة الزر
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = modalBody.innerHTML.replace(
+                /<button class="speech-btn listen-btn"[^>]*>استماع<\/button>/,
+                '<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>'
+            );
+        };
+
+        window.pauseListening = () => {
+            pauseSpeech();
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = modalBody.innerHTML.replace(
+                /<button class="speech-btn pause-btn"[^>]*>إيقاف مؤقت<\/button>/,
+                '<button class="speech-btn resume-btn" onclick="resumeListening(\'' + currentLectureId + '\', `' + decodeURIComponent(atob(document.querySelector('[data-lecture-id]').dataset.lectureBody)).replace(/`/g, '\\`') + '`)">استكمال</button>'
+            );
+        };
+
+        window.resumeListening = (id, text) => {
+            currentLectureId = id;
+            resumeSpeech(text, 0); // إعادة التشغيل من البداية (لأن Web Speech لا يدعم الاستئناف بدقة)
+            localStorage.setItem(`speech_${id}`, 'playing');
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = modalBody.innerHTML.replace(
+                /<button class="speech-btn resume-btn"[^>]*>استكمال<\/button>/,
+                '<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>'
+            );
+        };
+        // ======================= END SPEECH =======================
+
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
             const userMaterials = materials['ar'][`${currentUser.year}_${currentUser.division}`] || []; 
@@ -1275,29 +1384,6 @@
         document.getElementById('courses-btn').addEventListener('click', async () => {
             showCoursesList();
         });
-
-        // ======================= NEW: SUMMARIZE BUTTON =======================
-        document.getElementById('summarize-btn').addEventListener('click', () => {
-            updateUserActivity("يفتح قسم التلخيص");
-            const summarizeHTML = `
-                <div class="text-center p-4">
-                    <i class="ph-note text-5xl text-[var(--primary-glow)] mb-4"></i>
-                    <h3 class="text-xl font-bold mb-3">تلخيص ذكي لمحاضراتك!</h3>
-                    <p class="text-slate-300 mb-6 leading-relaxed">
-                        استخدم تقنية الذكاء الاصطناعي لتلخيص المحاضرات تلقائيًا،<br>
-                        واستخراج أهم النقاط والأسئلة الذكية لمساعدتك في المذاكرة.
-                    </p>
-                    <button id="go-to-summarize-site-btn" class="w-full max-w-xs py-3 rounded-lg font-bold btn-celestial">
-                        توجّه إلى الموقع الآن
-                    </button>
-                </div>
-            `;
-            openModalWithContent('تلخيص المحاضرات', summarizeHTML);
-            document.getElementById('go-to-summarize-site-btn').onclick = () => {
-                handleRedirectWithCountdown('https://notebooklm.google.com/notebook/4537acf2-d026-4183-9a99-e7bb06f3c059', 'جارٍ التوجيه إلى NotebookLM');
-            };
-        });
-
         // ======================= MEETING BUTTON HANDLER =======================
         document.getElementById('meeting-btn').addEventListener('click', async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1751,6 +1837,7 @@
                 'tickets-panel': 'support_tickets',
                 'opinions-panel': 'opinions',
                 'polls-panel': 'polls',
+                'attendance-panel': 'attendance', // ✅
             };
             for (const [panelId, collectionName] of Object.entries(collectionsToWatch)) {
                 const navBtn = document.querySelector(`[data-panel="${panelId}"]`);
@@ -1992,6 +2079,32 @@
                           </div>`;
                 });
                 if(container) container.innerHTML = h;
+            });
+            // ✅ Attendance Panel
+            const attendanceRef = collection(db, "attendance");
+            onSnapshot(query(attendanceRef, orderBy("timestamp", "desc")), (snapshot) => {
+                const container = document.getElementById('attendance-list');
+                if (!container) return;
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-slate-400">لا يوجد حضور مسجل حتى الآن.</p>';
+                    return;
+                }
+                let html = '<div class="space-y-3">';
+                snapshot.forEach(doc => {
+                    const att = doc.data();
+                    const device = parseUserAgent(att.userAgent);
+                    const time = att.timestamp ? att.timestamp.toDate().toLocaleString('ar-EG') : 'غير معروف';
+                    html += `
+                        <div class="glass-effect p-3 rounded-lg">
+                            <p class="font-bold text-white">${att.userName}</p>
+                            <p class="text-sm text-slate-400">${att.userDivision === 'international' ? 'IB' : 'BIS'} - ${att.userYear}</p>
+                            <p class="text-xs text-slate-500 mt-1">الوقت: ${time}</p>
+                            <p class="text-xs text-slate-500">الجهاز: ${device} | IP: ${att.ipAddress || 'N/A'}</p>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
             });
             listenForNewAdminNotifications();
             const updateSubjects = () => { const y = adminContentPanelEl.year.value, d = adminContentPanelEl.division.value; adminContentPanelEl.subject.innerHTML = '<option value="">اختر المادة</option>'; if (y && d) { (materials['ar'][`${y}_${d}`] || []).forEach(s => { const o = document.createElement('option'); o.value = s; o.textContent = s; adminContentPanelEl.subject.appendChild(o); }); } displayAdminContent(); }; 
