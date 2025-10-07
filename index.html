@@ -529,33 +529,23 @@
         #live-attendance-banner:hover {
             background: #ef4444;
         }
-        /* === WELCOME BANNER FOR NEW USERS === */
-        #welcome-new-user-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(90deg, #00f5c3, #a78bfa);
-            color: #0d0d1a;
-            text-align: center;
-            padding: 8px 0;
-            font-weight: bold;
-            z-index: 101;
-            display: none;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        /* === CONTENT POLICY NOTICE === */
+        .content-policy-notice {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+            padding: 0.75rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+            color: #fca5a5;
         }
-        /* === SPEECH CONTROLS REMOVED FROM LECTURE VIEW === */
-        /* === REVIEW SECTION REMOVED FROM LECTURE VIEW === */
-        /* === LIBRARY ICON === */
-        #library-nav-btn {
-            position: relative;
+        .content-policy-notice strong {
+            color: #fecaca;
         }
     </style>
 </head>
 <body class="w-full h-screen">
     <div id="app-bg"></div>
-    <!-- Welcome New User Banner -->
-    <div id="welcome-new-user-banner"></div>
     <!-- Live Attendance Banner -->
     <div id="live-attendance-banner" onclick="handleLiveAttendanceBannerClick()">
         🎓 اضغط هنا للدخول وحضور المحاضرة مباشرة!
@@ -585,14 +575,14 @@
         <!-- Onboarding Modal - بدون زر تخطي -->
         <div id="onboarding-modal">
             <div id="onboarding-content">
-                <div id="onboarding-icon"><i class="ph-rocket-launch"></i></div>
+                <div id="onboarding-icon"><i class="ph-identification-card"></i></div>
                 <h3 id="onboarding-title">مرحباً بك في Mora!</h3>
                 <p id="onboarding-text">استعد لرحلة تعليمية ممتعة وسهلة مع أفضل الميزات التفاعلية!</p>
                 <div id="onboarding-buttons">
                     <button id="onboarding-next-btn">التالي</button>
                 </div>
-                <div class="absolute -top-4 -right-4 text-5xl animate-bounce">🚀</div>
-                <div class="absolute -bottom-4 -left-4 text-4xl animate-pulse">✨</div>
+                <div class="absolute -top-4 -right-4 text-5xl animate-bounce">✨</div>
+                <div class="absolute -bottom-4 -left-4 text-4xl animate-pulse">📚</div>
             </div>
         </div>
         <!-- Splash Screen -->
@@ -647,8 +637,6 @@
                     </div>
                 </button>
                 <button id="digital-card-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-identification-card text-xl"></i><span>بطاقتي</span></button>
-                <!-- ✅ My Library Button -->
-                <button id="library-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-bookmarks text-xl"></i><span>مكتبتي</span></button>
                 <!-- ✅ Summary Button -->
                 <button id="summary-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-notebook text-xl"></i><span>تلخيص</span></button>
                 <button id="privacy-policy-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-shield-check text-xl"></i><span>الخصوصية</span></button>
@@ -675,6 +663,7 @@
                         <button data-panel="content-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة المحتوى</button>
                         <button data-panel="text-management-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة النصوص</button>
                         <button data-panel="notifications-panel" class="admin-nav-btn text-right p-3 rounded-lg">الإشعارات</button>
+                        <!-- ✅ NEW: Courses Panel -->
                         <button data-panel="courses-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة الكورسات</button>
                         <button data-panel="ai-tools-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة أدوات AI</button>
                         <button data-panel="opinions-panel" class="admin-nav-btn text-right p-3 rounded-lg">آراء الطلاب</button>
@@ -750,11 +739,18 @@
                         <button id="save-texts-btn" class="w-full max-w-sm mt-6 py-2.5 rounded-lg text-base font-bold btn-celestial">حفظ كل التغييرات</button>
                     </div>
                     <div id="notifications-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة الإشعارات</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><div class="glass-effect p-6 rounded-lg"><h3 class="text-xl font-bold mb-4">إرسال إشعار جديد</h3><input id="notification-title-input" type="text" placeholder="عنوان الإشعار (اختياري)" class="w-full rounded-lg input-field mb-4"><textarea id="notification-body-input" placeholder="نص الإشعار..." class="w-full rounded-lg input-field mb-4" rows="4"></textarea><button id="send-notification-btn" class="w-full py-2 rounded-lg text-sm font-bold btn-celestial">إرسال</button></div></div><div><h3 class="text-xl font-bold mb-4">الإشعارات المرسلة</h3><div id="admin-notifications-list" class="space-y-3"></div></div></div></div>
+                    <!-- ✅ COURSES PANEL (CATEGORIZED) -->
                     <div id="courses-panel" class="admin-panel hidden">
                          <h2 class="text-3xl font-bold mb-6">إدارة الكورسات</h2>
                          <div class="glass-effect p-6 rounded-lg mb-6">
+                            <h3 class="font-bold mb-4">إضافة فئة كورس جديدة</h3>
+                            <input id="course-category-input" type="text" placeholder="اسم الفئة (مثال: المونتاج)" class="w-full rounded-lg input-field mb-4">
+                            <button id="add-course-category-btn" class="w-full py-2 rounded-lg font-bold btn-celestial">إضافة فئة</button>
+                            <hr class="my-4 border-slate-700/50">
                             <h3 class="font-bold mb-4">إضافة كورس جديد</h3>
-                            <input id="course-category-input" type="text" placeholder="فئة الكورس (مثال: المونتاج)" class="w-full rounded-lg input-field mb-4">
+                            <select id="course-category-select" class="w-full rounded-lg select-field appearance-none mb-4">
+                                <option value="">اختر الفئة</option>
+                            </select>
                             <input id="course-title-input" type="text" placeholder="عنوان الكورس" class="w-full rounded-lg input-field mb-4">
                             <textarea id="course-desc-input" placeholder="وصف الكورس" class="w-full rounded-lg input-field mb-4" rows="3"></textarea>
                             <input id="course-url-input" type="text" placeholder="رابط فيديو يوتيوب" class="w-full rounded-lg input-field mb-4">
@@ -823,7 +819,7 @@
             "اباحي", "اباحية", "اباحيي", "جنس", "جنسية", "عاهر", "عاهرة", "دعارة", "دعارة", "فاحشة", "فاحش",
             "سافل", "سافلة", "وقح", "وقاحة", "بذاءة", "بذئ", "منحرف", "منحرفة", "شاذ", "شاذة", "مثلية", "لواط",
             "شرمط", "شرموطه", "شرموط", "زاني", "زنا", "عاهر", "عاهره", "عاهرة", "عاهرات", "عاهر", "عاهره", "عاهرة",
-            "ابن وسخه", "ابن وسخة", "ولد وسخ", "بنت وسخة", "وسخ", "وسخه", "وسخة"
+            "ابن وسخه", "ابن وسخة", "ولد وسخ", "بنت وسخة", "وسخ", "وسخه", "وسخة", "هنيكك", "كسمك", "ابن مىه"
         ];
         const defaultTexts = {
             splashScreenMessage: "متنساش تصلي على النبي ﷺ",
@@ -904,7 +900,7 @@
                     return false;
                 } else {
                     await updateDoc(userDocRef, { hasWarning: true });
-                    showToast(`سوف يتم حظر حسابك في حالة التكرار.`, true);
+                    showToast(`تنبيه هام: سيتم حظر حسابك نهائيًا في حالة تكرار نشر محتوى غير لائق أو يحتوي على أرقام.`, true);
                     return false;
                 }
             } catch (error) {
@@ -1019,7 +1015,7 @@
             } else {
                 document.getElementById('onboarding-modal').style.display = 'none';
                 localStorage.setItem('onboardingCompleted', 'true');
-                showToast('شكراً لاستخدامك Mora! 🌟');
+                // ✅ تم إزالة رسالة "شكرًا لاستخدامك Mora!" تمامًا
             }
         });
         // ======================= AUTHENTICATION =======================
@@ -1118,18 +1114,7 @@
                 localStorage.setItem('moraUser', JSON.stringify(currentUser)); 
                 destroyVantaBackground(); 
                 document.getElementById('register-sound').play();
-                // ✅ جملة ترحيبية 3D تفاعلية
-                const welcomeBanner = document.getElementById('welcome-new-user-banner');
-                welcomeBanner.innerHTML = `
-                    <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-weight:bold;font-size:1.1rem;">
-                        <i class="ph-rocket-launch unlocked-icon-3d" style="font-size:1.4rem;"></i>
-                        <span>مرحباً بك في <strong style="color:#00f5c3;text-shadow:0 0 10px #00f5c3;">Mora For Studying</strong>!</span>
-                    </div>
-                `;
-                welcomeBanner.style.display = 'block';
-                setTimeout(() => {
-                    welcomeBanner.style.display = 'none';
-                }, 8000);
+                // ✅ تم إزالة جملة الترحيب 3D تمامًا
                 showPage('splash-screen');
             } catch (error) { 
                 errorMsg.textContent = error.message; 
@@ -1264,20 +1249,6 @@
                     snapshot.forEach(doc => { 
                         const item = doc.data(); 
                         const isUrl = item.body.startsWith('http'); 
-                        // ✅ تسجيل الكتاب/السكشن في "مكتبتي"
-                        const now = new Date();
-                        const libraryItem = {
-                            type: type === 'books' ? 'book' : 'section',
-                            title: item.title,
-                            subject: subject,
-                            timestamp: now,
-                            formattedTime: now.toLocaleString('ar-EG')
-                        };
-                        let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
-                        if (!library.some(i => i.type === libraryItem.type && i.title === libraryItem.title && i.subject === libraryItem.subject)) {
-                            library.push(libraryItem);
-                            localStorage.setItem('moraLibrary', JSON.stringify(library));
-                        }
                         if (type === 'books' && isUrl) {
                             content += `
                                 <div class="glass-effect p-4 rounded-xl">
@@ -1327,20 +1298,6 @@
                  snapshot.forEach(doc => {
                      const course = doc.data();
                      const category = course.category || 'متنوع';
-                     // ✅ تسجيل الكورس في "مكتبتي" عند فتح القائمة (لكل كورس)
-                     const now = new Date();
-                     const libraryItem = {
-                         type: 'course',
-                         title: course.title,
-                         subject: category,
-                         timestamp: now,
-                         formattedTime: now.toLocaleString('ar-EG')
-                     };
-                     let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
-                     if (!library.some(i => i.type === 'course' && i.title === course.title)) {
-                         library.push(libraryItem);
-                         localStorage.setItem('moraLibrary', JSON.stringify(library));
-                     }
                      if (!coursesByCategory[category]) {
                          coursesByCategory[category] = [];
                      }
@@ -1451,65 +1408,6 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         };
-        // ======================= LIBRARY SECTION =======================
-        document.getElementById('library-nav-btn').addEventListener('click', () => {
-            updateUserActivity("يفتح مكتبته الذكية");
-            let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
-            if (library.length === 0) {
-                openModalWithContent('مكتبتي', '<p class="text-center text-slate-400 p-4">مكتبتك فارغة حاليًا. ابدأ بفتح محاضرات أو كتب!</p>');
-                return;
-            }
-            // فرز من الأحدث للأقدم
-            library.sort((a, b) => b.timestamp - a.timestamp);
-            let contentHTML = '<div class="space-y-3">';
-            library.forEach(item => {
-                let icon = 'ph-book-open-text';
-                let typeText = '';
-                if (item.type === 'lecture') {
-                    icon = 'ph-chalkboard-teacher';
-                    typeText = 'محاضرة';
-                } else if (item.type === 'book') {
-                    icon = 'ph-books';
-                    typeText = 'كتاب';
-                } else if (item.type === 'section') {
-                    icon = 'ph-stack-simple';
-                    typeText = 'سكشن';
-                } else if (item.type === 'course') {
-                    icon = 'ph-cube';
-                    typeText = 'كورس';
-                }
-                contentHTML += `
-                    <div class="glass-effect p-3 rounded-lg flex items-start gap-3 cursor-pointer" onclick="openLibraryItem('${item.type}', '${item.title}', '${item.subject}')">
-                        <i class="${icon} text-xl text-[var(--primary-glow)] mt-0.5"></i>
-                        <div>
-                            <p class="font-bold text-white">${item.title}</p>
-                            <p class="text-sm text-slate-400">${item.subject} • ${typeText}</p>
-                            <p class="text-xs text-slate-500">${item.formattedTime}</p>
-                        </div>
-                    </div>
-                `;
-            });
-            contentHTML += '</div>';
-            openModalWithContent('مكتبتي الذكية', contentHTML);
-        });
-        window.openLibraryItem = (type, title, subject) => {
-            if (type === 'lecture') {
-                // إعادة فتح المحاضرة
-                const q = query(collection(db, 'lectures'), where("title", "==", title), where("subject", "==", subject));
-                getDocs(q).then(snapshot => {
-                    if (!snapshot.empty) {
-                        const doc = snapshot.docs[0];
-                        viewContentDetail(doc.id, title, btoa(encodeURIComponent(doc.data().body)), subject);
-                    }
-                });
-            } else if (type === 'book') {
-                openContentModal('books', subject);
-            } else if (type === 'section') {
-                openContentModal('sections', subject);
-            } else if (type === 'course') {
-                showCoursesList();
-            }
-        };
         // ======================= SUMMARY SECTION =======================
         document.getElementById('summary-nav-btn').addEventListener('click', () => {
             updateUserActivity("يفتح قسم التلخيص");
@@ -1532,6 +1430,9 @@
             updateUserActivity("يتصفح الاستطلاعات");
             const pollsHTML = `
                 <div class="space-y-4">
+                    <div class="content-policy-notice">
+                        <strong>تنبيه هام:</strong> يُمنع تمامًا نشر أي محتوى يحتوي على ألفاظ غير لائقة، شتائم، أرقام، أو محتوى مخل. سيتم إصدار تحذير عند المخالفة الأولى، وحظر الحساب نهائيًا عند التكرار.
+                    </div>
                     <div>
                         <h4 class="text-lg font-bold text-slate-300 mb-2">ابدأ موضوعًا جديدًا</h4>
                         <textarea id="poll-topic-input" class="w-full rounded-lg input-field" rows="4" placeholder="اكتب سؤالك أو رأيك هنا..."></textarea>
@@ -1655,7 +1556,15 @@
                 if (currentContentUnsubscribe) currentContentUnsubscribe(); 
                 if (type === 'opinions-modal') { 
                     updateUserActivity('يتصفح قسم الآراء'); 
-                    openModalWithContent('آراء الطلاب', `<div id="opinions-view" class="space-y-3 mb-4 max-h-60 overflow-y-auto"></div><textarea id="opinion-input" class="w-full rounded-lg input-field mt-4" rows="3" placeholder="اكتب رأيك هنا..."></textarea><button id="submit-opinion-btn" class="w-full mt-2 py-2 rounded-lg font-bold btn-celestial">نشر الرأي</button>`); 
+                    const opinionsHTML = `
+                        <div class="content-policy-notice">
+                            <strong>تنبيه هام:</strong> يُمنع تمامًا نشر أي محتوى يحتوي على ألفاظ غير لائقة، شتائم، أرقام، أو محتوى مخل. سيتم إصدار تحذير عند المخالفة الأولى، وحظر الحساب نهائيًا عند التكرار.
+                        </div>
+                        <div id="opinions-view" class="space-y-3 mb-4 max-h-60 overflow-y-auto"></div>
+                        <textarea id="opinion-input" class="w-full rounded-lg input-field mt-4" rows="3" placeholder="اكتب رأيك هنا..."></textarea>
+                        <button id="submit-opinion-btn" class="w-full mt-2 py-2 rounded-lg font-bold btn-celestial">نشر الرأي</button>
+                    `;
+                    openModalWithContent('آراء الطلاب', opinionsHTML); 
                     onSnapshot(query(collection(db, "opinions"), orderBy('createdAt', 'desc')), snap => { 
                         document.getElementById('opinions-view').innerHTML = snap.docs.map(d => { 
                             const o = d.data(); 
@@ -1762,30 +1671,36 @@
                 updateUserActivity("يفتح بطاقته الرقمية");
                 const issueDate = currentUser.createdAt && currentUser.createdAt.seconds ? new Date(currentUser.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : new Date().toLocaleDateString('ar-EG');
                 const cardHTML = `
-                    <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 to-slate-900 w-full max-w-md mx-auto shadow-2xl shadow-black/50 border border-slate-700 relative overflow-hidden" 
-                        style="background-image: linear-gradient(rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.02)), url('https://www.transparenttextures.com/patterns/carbon-fibre.png');">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h4 class="text-lg font-bold text-white text-right">بطاقة طالب رقمية</h4>
-                                <p class="text-xs text-slate-400 text-right">المعهد العالي للحاسبات وتكنولوجيا الإدارة</p>
+                    <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-black w-full max-w-md mx-auto shadow-2xl shadow-black/50 border border-[var(--primary-glow)] relative overflow-hidden" 
+                        style="background-image: radial-gradient(circle at 30% 30%, rgba(0, 245, 195, 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(167, 139, 250, 0.1) 0%, transparent 40%);">
+                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                        <div class="relative z-10">
+                            <div class="flex justify-between items-start">
+                                <div class="text-right">
+                                    <h4 class="text-lg font-bold text-white text-right">بطاقة طالب رقمية</h4>
+                                    <p class="text-xs text-slate-400 text-right">المعهد العالي للحاسبات وتكنولوجيا الإدارة</p>
+                                </div>
+                                <div class="relative">
+                                    <img src="https://i.postimg.cc/mgdFZ313/IMG-20250414-WA0047-1.jpg" alt="Logo" class="w-16 h-16 rounded-full border-2 border-[var(--primary-glow)] shadow-lg shadow-[var(--primary-glow)]/30">
+                                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                                </div>
                             </div>
-                            <img src="https://i.postimg.cc/mgdFZ313/IMG-20250414-WA0047-1.jpg" alt="Logo" class="w-16 h-16 rounded-full border-2 border-[var(--primary-glow)]">
-                        </div>
-                        <div class="mt-6 text-right">
-                            <p class="text-sm text-slate-400">الاســـــم</p>
-                            <p class="text-2xl font-bold text-white -mt-1">${currentUser.name}</p>
-                            <p class="text-sm text-slate-400 mt-2">التخصص</p>
-                            <p class="text-lg font-semibold text-slate-200 -mt-1">${currentUser.year === '1' ? "الفرقة الأولى" : "الفرقة الثانية"} - ${currentUser.division === "international" ? "أعمال دولية (IB)" : "نظم معلومات (BIS)"}</p>
-                        </div>
-                        <div class="flex justify-between items-end mt-4">
-                            <div class="text-right">
-                                <p class="text-xs text-slate-500">تاريخ الإصدار</p>
-                                <p class="text-sm font-mono text-slate-300">${issueDate}</p>
+                            <div class="mt-6 text-right">
+                                <p class="text-sm text-slate-400">الاســـــم</p>
+                                <p class="text-2xl font-bold text-white -mt-1">${currentUser.name}</p>
+                                <p class="text-sm text-slate-400 mt-2">التخصص</p>
+                                <p class="text-lg font-semibold text-slate-200 -mt-1">${currentUser.year === '1' ? "الفرقة الأولى" : "الفرقة الثانية"} - ${currentUser.division === "international" ? "أعمال دولية (IB)" : "نظم معلومات (BIS)"}</p>
                             </div>
-                            <div id="qrcode-container" class="p-1.5 bg-white rounded-md inline-block shadow-lg"></div>
-                        </div>
-                        <div class="mt-4 bg-black/30 p-2 rounded-lg text-center">
-                            <p class="font-mono text-lg md:text-xl text-[var(--primary-glow)] tracking-wider whitespace-nowrap">${currentUser.studentId || 'ID غير متوفر'}</p>
+                            <div class="flex justify-between items-end mt-4">
+                                <div class="text-right">
+                                    <p class="text-xs text-slate-500">تاريخ الإصدار</p>
+                                    <p class="text-sm font-mono text-slate-300">${issueDate}</p>
+                                </div>
+                                <div id="qrcode-container" class="p-1.5 bg-white rounded-md inline-block shadow-lg"></div>
+                            </div>
+                            <div class="mt-4 bg-gradient-to-r from-[var(--primary-glow)]/20 to-[var(--secondary-glow)]/20 p-2 rounded-lg text-center backdrop-blur-sm">
+                                <p class="font-mono text-lg md:text-xl text-[var(--primary-glow)] tracking-wider whitespace-nowrap">${currentUser.studentId || 'ID غير متوفر'}</p>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2225,6 +2140,36 @@
                 html += '</div>';
                 openModalWithContent('سجل تنزيلات التطبيق', html);
             });
+            // ✅ COURSES CATEGORIES
+            const coursesRef = collection(db, "courses");
+            const categoriesRef = collection(db, "course_categories");
+            onSnapshot(categoriesRef, (snapshot) => {
+                const select = document.getElementById('course-category-select');
+                select.innerHTML = '<option value="">اختر الفئة</option>';
+                snapshot.forEach(doc => {
+                    const cat = doc.data();
+                    const opt = document.createElement('option');
+                    opt.value = cat.name;
+                    opt.textContent = cat.name;
+                    select.appendChild(opt);
+                });
+            });
+            document.getElementById('add-course-category-btn').addEventListener('click', async () => {
+                const name = document.getElementById('course-category-input').value.trim();
+                if (!name) {
+                    showToast('يرجى إدخال اسم الفئة', true);
+                    return;
+                }
+                const q = query(categoriesRef, where("name", "==", name));
+                const snap = await getDocs(q);
+                if (!snap.empty) {
+                    showToast('الفئة موجودة بالفعل', true);
+                    return;
+                }
+                await addDoc(categoriesRef, { name, createdAt: serverTimestamp() });
+                document.getElementById('course-category-input').value = '';
+                showToast('تمت إضافة الفئة!');
+            });
         }
         async function displayAdminContent() { const { type, year, division, subject, contentList } = adminContentPanelEl; const coll = type.value; const filters = [ where("year", "==", year.value), where("division", "==", division.value) ]; if (subject.value) filters.push(where("subject", "==", subject.value)); if (!year.value || !division.value) { contentList.innerHTML = '<p class="text-center text-slate-400">اختر الفرقة والشعبة لعرض المحتوى.</p>'; return; } const q = query(collection(db, coll), ...filters); onSnapshot(q, (snapshot) => { let h = ''; if (snapshot.empty) { h = '<p class="text-center text-slate-400">لا يوجد محتوى يطابق هذا الفلتر.</p>'; } else { snapshot.forEach(doc => { const item = doc.data(); h += `<div class="p-3 rounded-lg flex justify-between items-center hover:bg-slate-500/10 transition"><p class="font-semibold text-white truncate">${item.title} (${item.subject})</p><div class="flex gap-2"><button onclick="populateContentForm('${doc.id}', '${coll}')" class="text-sky-400 hover:text-sky-300 text-lg"><i class="ph-pencil-simple"></i></button><button onclick="toggleContentVisibility('${doc.id}', '${coll}', ${item.isHidden || false})" class="text-yellow-400 hover:text-yellow-300 text-lg"><i class="ph ${item.isHidden ? 'ph-eye-slash' : 'ph-eye'}"></i></button><button onclick="deleteContent('${doc.id}', '${coll}')" class="text-red-500 hover:text-red-400 text-lg"><i class="ph-trash"></i></button></div></div>`; }); } contentList.innerHTML = h; }); }
         window.populateContentForm = async (id, coll) => { const docSnap = await getDoc(doc(db, coll, id)); if (docSnap.exists()) { const item = docSnap.data(); adminContentPanelEl.title.value = item.title; adminContentPanelEl.body.value = item.body; adminContentPanelEl.subject.value = item.subject; adminContentPanelEl.formTitle.textContent = 'تعديل المحتوى'; adminContentPanelEl.saveBtn.textContent = 'حفظ التعديلات'; adminContentPanelEl.cancelBtn.classList.remove('hidden'); currentEditState = { id, collection: coll }; } }
@@ -2278,14 +2223,13 @@
         document.getElementById('add-course-btn').addEventListener('click', async () => { 
             const title = document.getElementById('course-title-input').value.trim();
             const desc = document.getElementById('course-desc-input').value.trim();
-            const category = document.getElementById('course-category-input').value.trim();
+            const category = document.getElementById('course-category-select').value.trim();
             const url = document.getElementById('course-url-input').value.trim();
             if (!title || !desc || !url || !category) { showToast('يرجى ملء جميع الحقول', true); return; } 
             await addDoc(collection(db, 'courses'), { title, desc, url, category, createdAt: serverTimestamp() }); 
             showToast('تمت إضافة الكورس!'); 
             document.getElementById('course-title-input').value = ''; 
             document.getElementById('course-desc-input').value = '';
-            document.getElementById('course-category-input').value = '';
             document.getElementById('course-url-input').value = '';
         });
         document.getElementById('add-ai-tool-btn').addEventListener('click', async () => { const name = document.getElementById('ai-name-input').value.trim(), desc = document.getElementById('ai-desc-input').value.trim(), url = document.getElementById('ai-url-input').value.trim(); if (!name || !desc || !url) { showToast('يرجى ملء جميع الحقول', true); return; } await addDoc(collection(db, 'ai_tools'), { name, desc, url }); showToast('تمت إضافة الأداة!'); document.getElementById('ai-name-input').value = ''; document.getElementById('ai-desc-input').value = ''; document.getElementById('ai-url-input').value = ''; });
