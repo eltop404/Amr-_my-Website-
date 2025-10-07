@@ -348,12 +348,12 @@
             background: var(--primary-glow);
             color: var(--bg-color);
         }
-        .course-actions {
+        .course-actions, .book-actions {
             display: flex;
             gap: 0.5rem;
             margin-top: 0.75rem;
         }
-        .course-btn {
+        .course-btn, .book-btn {
             flex: 1;
             padding: 0.4rem 0.6rem;
             font-size: 0.85rem;
@@ -529,46 +529,37 @@
         #live-attendance-banner:hover {
             background: #ef4444;
         }
-        /* === SPEECH CONTROLS === */
-        .speech-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            justify-content: center;
-        }
-        .speech-btn {
-            padding: 0.4rem 0.8rem;
-            border-radius: 0.375rem;
+        /* === WELCOME BANNER FOR NEW USERS === */
+        #welcome-new-user-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(90deg, #00f5c3, #a78bfa);
+            color: #0d0d1a;
+            text-align: center;
+            padding: 8px 0;
             font-weight: bold;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 0.85rem;
+            z-index: 101;
+            display: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
-        .listen-btn {
-            background: var(--primary-glow);
-            color: var(--bg-color);
+        /* === SPEECH CONTROLS REMOVED FROM LECTURE VIEW === */
+        /* === REVIEW SECTION REMOVED FROM LECTURE VIEW === */
+        /* === LIBRARY ICON === */
+        #library-nav-btn {
+            position: relative;
         }
-        .pause-btn, .resume-btn {
-            background: #6b7280;
-            color: white;
-        }
-        .stop-btn {
-            background: #ef4444;
-            color: white;
-        }
-        .listen-btn:hover { background: #00d1a0; }
-        .pause-btn:hover, .resume-btn:hover { background: #4b5563; }
-        .stop-btn:hover { background: #dc2626; }
     </style>
 </head>
 <body class="w-full h-screen">
     <div id="app-bg"></div>
-    
+    <!-- Welcome New User Banner -->
+    <div id="welcome-new-user-banner"></div>
     <!-- Live Attendance Banner -->
     <div id="live-attendance-banner" onclick="handleLiveAttendanceBannerClick()">
         🎓 اضغط هنا للدخول وحضور المحاضرة مباشرة!
     </div>
-
     <div id="app-container" class="w-full h-full relative">
         <!-- Auth Page -->
         <div id="auth-page" class="page justify-center items-end p-4">
@@ -656,6 +647,10 @@
                     </div>
                 </button>
                 <button id="digital-card-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-identification-card text-xl"></i><span>بطاقتي</span></button>
+                <!-- ✅ My Library Button -->
+                <button id="library-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-bookmarks text-xl"></i><span>مكتبتي</span></button>
+                <!-- ✅ Summary Button -->
+                <button id="summary-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-notebook text-xl"></i><span>تلخيص</span></button>
                 <button id="privacy-policy-nav-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-shield-check text-xl"></i><span>الخصوصية</span></button>
                 <button data-modal="support-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-headset text-xl"></i><span>الدعم</span></button>
                 <button data-modal="about-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-info text-xl"></i><span>عنا</span></button>
@@ -1123,6 +1118,18 @@
                 localStorage.setItem('moraUser', JSON.stringify(currentUser)); 
                 destroyVantaBackground(); 
                 document.getElementById('register-sound').play();
+                // ✅ جملة ترحيبية 3D تفاعلية
+                const welcomeBanner = document.getElementById('welcome-new-user-banner');
+                welcomeBanner.innerHTML = `
+                    <div style="display:flex;align-items:center;justify-content:center;gap:8px;font-weight:bold;font-size:1.1rem;">
+                        <i class="ph-rocket-launch unlocked-icon-3d" style="font-size:1.4rem;"></i>
+                        <span>مرحباً بك في <strong style="color:#00f5c3;text-shadow:0 0 10px #00f5c3;">Mora For Studying</strong>!</span>
+                    </div>
+                `;
+                welcomeBanner.style.display = 'block';
+                setTimeout(() => {
+                    welcomeBanner.style.display = 'none';
+                }, 8000);
                 showPage('splash-screen');
             } catch (error) { 
                 errorMsg.textContent = error.message; 
@@ -1181,6 +1188,7 @@
             listenToSiteSettings(); 
             listenForNotifications(); 
             listenForSupportReplies();
+            listenForNewUserJoin(); // ✅ استقبال إشعارات انضمام طلاب جدد
             setTimeout(showOnboarding, 800);
         }
         function loadMaterialsForStudent() {
@@ -1205,96 +1213,32 @@
             showPage('subject-content-page'); 
             const lecturesContainer = document.getElementById('subject-lectures'); 
             const q = query(collection(db, 'lectures'), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
-            currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
+            currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}', '${subject}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
         };
-        // ======================= SPEECH SYNTHESIS =======================
-        let speechUtterance = null;
-        let speechSynthesis = window.speechSynthesis;
-        let isSpeaking = false;
-        let currentLectureId = null;
-
-        function resumeSpeech(text, charIndex = 0) {
-            if (speechSynthesis.speaking) speechSynthesis.cancel();
-            speechUtterance = new SpeechSynthesisUtterance(text.substring(charIndex));
-            speechUtterance.lang = 'ar-SA';
-            speechUtterance.rate = 0.9;
-            speechUtterance.onend = () => {
-                isSpeaking = false;
-                localStorage.removeItem(`speech_${currentLectureId}`);
-            };
-            speechUtterance.onerror = () => {
-                isSpeaking = false;
-                showToast("عذرًا، حدث خطأ في قراءة النص.", true);
-            };
-            speechSynthesis.speak(speechUtterance);
-            isSpeaking = true;
+        // ======================= NEW USER JOIN NOTIFICATION =======================
+        function listenForNewUserJoin() {
+            const usersRef = collection(db, "users");
+            onSnapshot(usersRef, (snapshot) => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === "added") {
+                        const newUser = change.doc.data();
+                        if (newUser.name && currentUser && newUser.id !== currentUser.id) {
+                            const yearText = newUser.year === '1' ? 'الفرقة الأولى' : 'الفرقة الثانية';
+                            const divText = newUser.division === 'international' ? 'أعمال دولية' : 'نظم معلومات';
+                            showToast(`طالب جديد انضم: ${newUser.name} (${yearText} - ${divText})`, false);
+                        }
+                    }
+                });
+            });
         }
-
-        function pauseSpeech() {
-            if (speechSynthesis.speaking) {
-                const charIndex = speechSynthesis.getVoices().length > 0 ? speechUtterance.text.length - (speechUtterance.text.length - speechUtterance.text.indexOf(' ')) : 0;
-                // في الواقع، Web Speech API لا يدعم الحصول على موضع القراءة بدقة.
-                // لذا سنستخدم تقنية تقريبية: حفظ وقت البدء والتقدير.
-                // لكن لتبسيط الأمور، سنعيد التشغيل من البداية عند الاستئناف.
-                speechSynthesis.cancel();
-                isSpeaking = false;
-                // حفظ في localStorage أن المستخدم أوقفها
-                localStorage.setItem(`speech_${currentLectureId}`, 'paused');
-                showToast("تم إيقاف القراءة مؤقتًا.");
-            }
-        }
-
-        window.viewContentDetail = async (id, title, body) => { 
+        // ======================= CONTENT VIEW WITHOUT SPEECH/REVIEW =======================
+        window.viewContentDetail = async (id, title, body, subject) => { 
             await updateUserActivity(`يشاهد محاضرة: ${title}`);
-            // ✅ تم إلغاء نظام المكافآت (النقاط)
             const decodedBody = decodeURIComponent(atob(body));
-            currentLectureId = id;
-            const isPaused = localStorage.getItem(`speech_${id}`) === 'paused';
-
-            const speechControls = `
-                <div class="speech-controls">
-                    ${!isSpeaking ? `<button class="speech-btn listen-btn" onclick="startListening('${id}', \`${decodedBody.replace(/`/g, '\\`')}\`)">استماع</button>` : ''}
-                    ${isSpeaking ? `<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>` : ''}
-                    ${isPaused ? `<button class="speech-btn resume-btn" onclick="resumeListening('${id}', \`${decodedBody.replace(/`/g, '\\`')}\`)">استكمال</button>` : ''}
-                </div>
-            `;
-
-            openModalWithContent(title, `<div class="p-2" style="white-space: pre-wrap; user-select: text;">${decodedBody}</div>${speechControls}`); 
+            // ✅ لا يوجد أزرار استماع أو تلخيص
+            openModalWithContent(title, `<div class="p-2" style="white-space: pre-wrap; user-select: text;">${decodedBody}</div>`); 
         };
-
-        window.startListening = (id, text) => {
-            currentLectureId = id;
-            resumeSpeech(text, 0);
-            localStorage.setItem(`speech_${id}`, 'playing');
-            // تحديث واجهة الزر
-            const modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = modalBody.innerHTML.replace(
-                /<button class="speech-btn listen-btn"[^>]*>استماع<\/button>/,
-                '<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>'
-            );
-        };
-
-        window.pauseListening = () => {
-            pauseSpeech();
-            const modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = modalBody.innerHTML.replace(
-                /<button class="speech-btn pause-btn"[^>]*>إيقاف مؤقت<\/button>/,
-                '<button class="speech-btn resume-btn" onclick="resumeListening(\'' + currentLectureId + '\', `' + decodeURIComponent(atob(document.querySelector('[data-lecture-id]').dataset.lectureBody)).replace(/`/g, '\\`') + '`)">استكمال</button>'
-            );
-        };
-
-        window.resumeListening = (id, text) => {
-            currentLectureId = id;
-            resumeSpeech(text, 0); // إعادة التشغيل من البداية (لأن Web Speech لا يدعم الاستئناف بدقة)
-            localStorage.setItem(`speech_${id}`, 'playing');
-            const modalBody = document.getElementById('modal-body');
-            modalBody.innerHTML = modalBody.innerHTML.replace(
-                /<button class="speech-btn resume-btn"[^>]*>استكمال<\/button>/,
-                '<button class="speech-btn pause-btn" onclick="pauseListening()">إيقاف مؤقت</button>'
-            );
-        };
-        // ======================= END SPEECH =======================
-
+        // ======================= BOOKS WITH WATCH/DOWNLOAD BUTTONS =======================
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
             const userMaterials = materials['ar'][`${currentUser.year}_${currentUser.division}`] || []; 
@@ -1320,7 +1264,33 @@
                     snapshot.forEach(doc => { 
                         const item = doc.data(); 
                         const isUrl = item.body.startsWith('http'); 
-                        content += `<div class="glass-effect p-3 rounded-lg"><h4 class="font-bold text-[var(--primary-glow)]">${item.title}</h4>${isUrl ? `<button class="w-full mt-2 py-2 rounded-lg text-sm btn-celestial" onclick="openIframeModal('${item.body}')">فتح الملف</button>` : `<p class="text-sm mt-2">${item.body}</p>`}</div>`; 
+                        // ✅ تسجيل الكتاب/السكشن في "مكتبتي"
+                        const now = new Date();
+                        const libraryItem = {
+                            type: type === 'books' ? 'book' : 'section',
+                            title: item.title,
+                            subject: subject,
+                            timestamp: now,
+                            formattedTime: now.toLocaleString('ar-EG')
+                        };
+                        let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
+                        if (!library.some(i => i.type === libraryItem.type && i.title === libraryItem.title && i.subject === libraryItem.subject)) {
+                            library.push(libraryItem);
+                            localStorage.setItem('moraLibrary', JSON.stringify(library));
+                        }
+                        if (type === 'books' && isUrl) {
+                            content += `
+                                <div class="glass-effect p-4 rounded-xl">
+                                    <h5 class="font-bold text-white text-lg">${item.title}</h5>
+                                    <div class="book-actions">
+                                        <button class="book-btn watch-btn" onclick="openIframeModal('${item.body}')">مشاهدة</button>
+                                        <button class="book-btn download-btn" onclick="window.open('${item.body}', '_blank')">تحميل</button>
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            content += `<div class="glass-effect p-3 rounded-lg"><h4 class="font-bold text-[var(--primary-glow)]">${item.title}</h4>${isUrl ? `<button class="w-full mt-2 py-2 rounded-lg text-sm btn-celestial" onclick="openIframeModal('${item.body}')">فتح الملف</button>` : `<p class="text-sm mt-2">${item.body}</p>`}</div>`;
+                        }
                     }); 
                     content += '</div>'; 
                 } 
@@ -1357,6 +1327,20 @@
                  snapshot.forEach(doc => {
                      const course = doc.data();
                      const category = course.category || 'متنوع';
+                     // ✅ تسجيل الكورس في "مكتبتي" عند فتح القائمة (لكل كورس)
+                     const now = new Date();
+                     const libraryItem = {
+                         type: 'course',
+                         title: course.title,
+                         subject: category,
+                         timestamp: now,
+                         formattedTime: now.toLocaleString('ar-EG')
+                     };
+                     let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
+                     if (!library.some(i => i.type === 'course' && i.title === course.title)) {
+                         library.push(libraryItem);
+                         localStorage.setItem('moraLibrary', JSON.stringify(library));
+                     }
                      if (!coursesByCategory[category]) {
                          coursesByCategory[category] = [];
                      }
@@ -1428,7 +1412,6 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         });
-
         // ======================= LIVE ATTENDANCE BANNER CLICK =======================
         window.handleLiveAttendanceBannerClick = async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1468,7 +1451,82 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         };
-
+        // ======================= LIBRARY SECTION =======================
+        document.getElementById('library-nav-btn').addEventListener('click', () => {
+            updateUserActivity("يفتح مكتبته الذكية");
+            let library = JSON.parse(localStorage.getItem('moraLibrary') || '[]');
+            if (library.length === 0) {
+                openModalWithContent('مكتبتي', '<p class="text-center text-slate-400 p-4">مكتبتك فارغة حاليًا. ابدأ بفتح محاضرات أو كتب!</p>');
+                return;
+            }
+            // فرز من الأحدث للأقدم
+            library.sort((a, b) => b.timestamp - a.timestamp);
+            let contentHTML = '<div class="space-y-3">';
+            library.forEach(item => {
+                let icon = 'ph-book-open-text';
+                let typeText = '';
+                if (item.type === 'lecture') {
+                    icon = 'ph-chalkboard-teacher';
+                    typeText = 'محاضرة';
+                } else if (item.type === 'book') {
+                    icon = 'ph-books';
+                    typeText = 'كتاب';
+                } else if (item.type === 'section') {
+                    icon = 'ph-stack-simple';
+                    typeText = 'سكشن';
+                } else if (item.type === 'course') {
+                    icon = 'ph-cube';
+                    typeText = 'كورس';
+                }
+                contentHTML += `
+                    <div class="glass-effect p-3 rounded-lg flex items-start gap-3 cursor-pointer" onclick="openLibraryItem('${item.type}', '${item.title}', '${item.subject}')">
+                        <i class="${icon} text-xl text-[var(--primary-glow)] mt-0.5"></i>
+                        <div>
+                            <p class="font-bold text-white">${item.title}</p>
+                            <p class="text-sm text-slate-400">${item.subject} • ${typeText}</p>
+                            <p class="text-xs text-slate-500">${item.formattedTime}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            contentHTML += '</div>';
+            openModalWithContent('مكتبتي الذكية', contentHTML);
+        });
+        window.openLibraryItem = (type, title, subject) => {
+            if (type === 'lecture') {
+                // إعادة فتح المحاضرة
+                const q = query(collection(db, 'lectures'), where("title", "==", title), where("subject", "==", subject));
+                getDocs(q).then(snapshot => {
+                    if (!snapshot.empty) {
+                        const doc = snapshot.docs[0];
+                        viewContentDetail(doc.id, title, btoa(encodeURIComponent(doc.data().body)), subject);
+                    }
+                });
+            } else if (type === 'book') {
+                openContentModal('books', subject);
+            } else if (type === 'section') {
+                openContentModal('sections', subject);
+            } else if (type === 'course') {
+                showCoursesList();
+            }
+        };
+        // ======================= SUMMARY SECTION =======================
+        document.getElementById('summary-nav-btn').addEventListener('click', () => {
+            updateUserActivity("يفتح قسم التلخيص");
+            const summaryHTML = `
+                <div class="p-4 space-y-4 text-center">
+                    <h3 class="text-xl font-bold text-[var(--primary-glow)]">تلخيص المحاضرات</h3>
+                    <p class="text-slate-300">استخدم الذكاء الاصطناعي لتلخيص المحاضرات، طرح الأسئلة، وفهم أعمق.</p>
+                    <div class="mt-6">
+                        <button class="btn-celestial py-2 px-6 rounded-lg font-bold" onclick="handleRedirectWithCountdown('https://notebooklm.google.com/notebook/4537acf2-d026-4183-9a99-e7bb06f3c059')">
+                            الذهاب إلى NotebookLM
+                        </button>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-6">تطوير Amr lotfy</p>
+                </div>
+            `;
+            openModalWithContent('تلخيص', summaryHTML);
+        });
         // ======================= POLLS/DISCUSSION FEATURE - بدون حد للكلمات =======================
         async function openPollsView() {
             updateUserActivity("يتصفح الاستطلاعات");
@@ -1688,7 +1746,7 @@
                             const adminReply = ticket.adminReply ? `<div class="mt-2 pt-2 border-t border-slate-600"><p class="text-sm font-bold text-green-400">رد الإدارة:</p><p class="text-sm text-slate-200">${ticket.adminReply}</p></div>` : '';
                             ticketsHTML += `
                                 <div class="glass-effect p-3 rounded-lg">
-                                    <div class="flex justify-between items-center">
+                                    <div class="flex justify-between items-start">
                                         <p class="text-xs text-slate-400">${ticket.createdAt.toDate().toLocaleString('ar-EG')}</p>
                                         <span class="text-sm font-bold ${statusColor}">${ticket.status}</span>
                                     </div>
