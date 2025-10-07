@@ -542,6 +542,54 @@
         .content-policy-notice strong {
             color: #fecaca;
         }
+
+        /* === Lecture Content Styling === */
+        .lecture-content {
+            line-height: 1.8;
+            color: #cbd5e1;
+            font-size: 1.05rem;
+        }
+        .lecture-content h1,
+        .lecture-content h2,
+        .lecture-content h3 {
+            color: #60a5fa;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            font-weight: 700;
+        }
+        .lecture-content p {
+            margin-bottom: 1rem;
+            color: #e2e8f0;
+        }
+        .lecture-content strong {
+            color: #93c5fd;
+        }
+        .lecture-content em {
+            color: #bae6fd;
+            font-style: italic;
+        }
+        .lecture-content ul,
+        .lecture-content ol {
+            padding-right: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .lecture-content li {
+            margin-bottom: 0.4rem;
+        }
+        .lecture-content code {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: monospace;
+            color: #a7f3d0;
+        }
+        .lecture-content blockquote {
+            border-right: 3px solid var(--primary-glow);
+            padding-right: 1rem;
+            margin: 1.2rem 0;
+            color: #94a3b8;
+            font-style: italic;
+        }
     </style>
 </head>
 <body class="w-full h-screen">
@@ -813,11 +861,7 @@
         const badWords = [
             "كلب", "خرا", "متناك", "معرص", "خول", "شرموطة", "كس", "زب", "عير", "قحبة", "ابن الوسخة",
             "عاهرة", "زنا", "لعين", "حقير", "وضيع", "سافل", "شاذ", "شاذة", "عاهر", "زانية", "عاهرات",
-            "فاسق", "فاسقة", "منحرف", "منحرفة", "ساقطة", "ساقط", "عاهر", "عاهرة", "سافل", "سافلة",
-            "كلاب", "خراا", "متناكك", "معرصص", "خوول", "شرموط", "كسم", "زبر", "عيرر", "قحب", "ابن الوسخ",
-            "كلبة", "خراة", "متناكة", "معرصة", "خولة", "شرموطه", "كسس", "زبب", "عيرير", "قحبه", "ابن الوسخه",
-            "اباحي", "اباحية", "اباحيي", "جنس", "جنسية", "عاهر", "عاهرة", "دعارة", "دعارة", "فاحشة", "فاحش",
-            "سافل", "سافلة", "وقح", "وقاحة", "بذاءة", "بذئ", "منحرف", "منحرفة", "شاذ", "شاذة", "مثلية", "لواط",
+            "فاسق", "فاسقة", "منحرف", "منحرفة", "ساقطة", "ساقط", "عاهر", "عاهرة", "سافل", "سافلة", "وقح", "وقاحة", "بذاءة", "بذئ", "مثلية", "لواط",
             "شرمط", "شرموطه", "شرموط", "زاني", "زنا", "عاهر", "عاهره", "عاهرة", "عاهرات", "عاهر", "عاهره", "عاهرة",
             "ابن وسخه", "ابن وسخة", "ولد وسخ", "بنت وسخة", "وسخ", "وسخه", "وسخة", "هنيكك", "كسمك", "ابن مىه"
         ];
@@ -862,6 +906,7 @@
         const adminDashboardEl = { studentCount: document.getElementById('admin-student-count'), notificationsCount: document.getElementById('admin-notifications-count'), opinionsCount: document.getElementById('admin-opinions-count'), ratingsCount: document.getElementById('admin-ratings-count'), studentsList: document.getElementById('admin-students-list'), opinionsList: document.getElementById('admin-opinions-list'), coursesList: document.getElementById('admin-courses-list'), aiToolsList: document.getElementById('admin-ai-tools-list'), notificationsList: document.getElementById('admin-notifications-list'), pollsCount: document.getElementById('admin-polls-count'), pollsList: document.getElementById('admin-polls-list') };
         const adminContentPanelEl = { type: document.getElementById('content-type-select'), year: document.getElementById('content-year-select'), division: document.getElementById('content-division-select'), subject: document.getElementById('content-subject-select'), title: document.getElementById('content-title-input'), body: document.getElementById('content-body-input'), saveBtn: document.getElementById('save-content-btn'), formTitle: document.getElementById('content-form-title'), contentList: document.getElementById('admin-content-list'), cancelBtn: document.getElementById('cancel-edit-btn') };
         const subjectIcons = { 'محاسبه': 'ph-calculator', 'اقتصاد': 'ph-chart-bar', 'قانون': 'ph-scales', 'اداره': 'ph-briefcase', 'تسويق': 'ph-projector-screen-chart', 'لوچيستيات': 'ph-truck', 'حاسب': 'ph-desktop-tower', 'بيانات': 'ph-database', 'برامج': 'ph-code-simple', 'رياضيات': 'ph-function', 'اتصال': 'ph-chats-circle', 'سلوك': 'ph-users-three', 'تفكير': 'ph-lightbulb', 'انتاج': 'ph-factory', 'انسان': 'ph-hand-heart', 'لغه': 'ph-translate', 'default': 'ph-book-open-text' };
+
         // ======================= HELPER FUNCTIONS =======================
         function containsPhoneNumber(text) {
             const phonePattern = /(?:\+?20)?\s*1[0-9]{9}|01[0-9]{8}/;
@@ -986,6 +1031,7 @@
                 }
             }, 1000);
         };
+
         // ======================= ONBOARDING - بدون زر تخطي =======================
         let currentOnboardingStep = 0;
         function showOnboarding() {
@@ -1015,9 +1061,9 @@
             } else {
                 document.getElementById('onboarding-modal').style.display = 'none';
                 localStorage.setItem('onboardingCompleted', 'true');
-                // ✅ تم إزالة رسالة "شكرًا لاستخدامك Mora!" تمامًا
             }
         });
+
         // ======================= AUTHENTICATION =======================
         function renderAuthForm(isInitial = true, showRegister = false) {
             const authFormContainer = document.getElementById('auth-form-container'); 
@@ -1114,7 +1160,6 @@
                 localStorage.setItem('moraUser', JSON.stringify(currentUser)); 
                 destroyVantaBackground(); 
                 document.getElementById('register-sound').play();
-                // ✅ تم إزالة جملة الترحيب 3D تمامًا
                 showPage('splash-screen');
             } catch (error) { 
                 errorMsg.textContent = error.message; 
@@ -1162,6 +1207,7 @@
                 submitBtn.textContent = 'دخــــول'; 
             } 
         }
+
         // ======================= STUDENT DASHBOARD =======================
         function initStudentDashboard() { 
             showPage('student-dashboard'); 
@@ -1173,7 +1219,7 @@
             listenToSiteSettings(); 
             listenForNotifications(); 
             listenForSupportReplies();
-            listenForNewUserJoin(); // ✅ استقبال إشعارات انضمام طلاب جدد
+            // ✅ تم إزالة listenForNewUserJoin تمامًا
             setTimeout(showOnboarding, 800);
         }
         function loadMaterialsForStudent() {
@@ -1200,29 +1246,33 @@
             const q = query(collection(db, 'lectures'), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
             currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}', '${subject}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
         };
-        // ======================= NEW USER JOIN NOTIFICATION =======================
-        function listenForNewUserJoin() {
-            const usersRef = collection(db, "users");
-            onSnapshot(usersRef, (snapshot) => {
-                snapshot.docChanges().forEach(change => {
-                    if (change.type === "added") {
-                        const newUser = change.doc.data();
-                        if (newUser.name && currentUser && newUser.id !== currentUser.id) {
-                            const yearText = newUser.year === '1' ? 'الفرقة الأولى' : 'الفرقة الثانية';
-                            const divText = newUser.division === 'international' ? 'أعمال دولية' : 'نظم معلومات';
-                            showToast(`طالب جديد انضم: ${newUser.name} (${yearText} - ${divText})`, false);
-                        }
-                    }
-                });
-            });
-        }
-        // ======================= CONTENT VIEW WITHOUT SPEECH/REVIEW =======================
+
+        // ======================= CONTENT VIEW WITH STYLING =======================
         window.viewContentDetail = async (id, title, body, subject) => { 
             await updateUserActivity(`يشاهد محاضرة: ${title}`);
             const decodedBody = decodeURIComponent(atob(body));
-            // ✅ لا يوجد أزرار استماع أو تلخيص
-            openModalWithContent(title, `<div class="p-2" style="white-space: pre-wrap; user-select: text;">${decodedBody}</div>`); 
+
+            // ✅ تنسيق احترافي للنص
+            let formattedBody = decodedBody
+                .replace(/^(#+\s*.*)$/gm, '<h2>$1</h2>')
+                .replace(/^(##+\s*.*)$/gm, '<h3>$1</h3>')
+                .replace(/^\*\s+(.*)$/gm, '<li>$1</li>')
+                .replace(/(?<!<li>)(<li>.*<\/li>)/g, '<ul>$1</ul>')
+                .replace(/(?<!<\/ul>)<\/ul>(?!\s*<\/ul>)/g, '</ul>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/__(.*?)__/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/_(.*?)_/g, '<em>$1</em>')
+                .replace(/`(.*?)`/g, '<code>$1</code>')
+                .replace(/^>\s+(.*)$/gm, '<blockquote>$1</blockquote>');
+
+            // Ensure proper list wrapping
+            formattedBody = formattedBody.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
+            formattedBody = formattedBody.replace(/<\/ul>\s*<ul>/g, '');
+
+            openModalWithContent(title, `<div class="lecture-content p-2">${formattedBody}</div>`); 
         };
+
         // ======================= BOOKS WITH WATCH/DOWNLOAD BUTTONS =======================
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
@@ -1271,21 +1321,33 @@
         window.openIframeModal = (url) => { 
             openModalWithContent("عرض الملف", `<iframe src="${url}" class="w-full h-[70vh] rounded-lg bg-white" frameborder="0"></iframe>`); 
         };
+
         async function listenToSiteSettings() { 
             onSnapshot(doc(db, "settings", "site"), async (doc) => { 
                 siteSettings = doc.data() || { meetingActive: false, coursesActive: true, isLive: false, meetLink: ''};
                 const meetingBtn = document.getElementById('meeting-btn');
                 const indicator = document.getElementById('meeting-live-indicator');
                 const banner = document.getElementById('live-attendance-banner');
-                if (siteSettings.isLive) {
+                const materials = materials['ar'][`${currentUser?.year}_${currentUser?.division}`] || [];
+                const isLogisticsSubject = materials.includes('اداره اللوچيستيات وسلاسل الامداد');
+
+                if (siteSettings.isLive && isLogisticsSubject) {
                     indicator.classList.remove('hidden');
                     banner.style.display = 'block';
+                    banner.textContent = '🎓 اضغط هنا للدخول وحضور المحاضرة مباشرة!';
+                } else if (!siteSettings.isLive && isLogisticsSubject) {
+                    indicator.classList.add('hidden');
+                    banner.style.display = 'block';
+                    banner.textContent = 'انتهى البث.';
+                    banner.style.backgroundColor = '#374151';
+                    banner.onclick = null;
                 } else {
                     indicator.classList.add('hidden');
                     banner.style.display = 'none';
                 }
             }); 
         }
+
         async function showCoursesList() {
             await updateUserActivity("يتصفح قسم الكورسات");
             const q = query(collection(db, "courses"), orderBy("category"));
@@ -1325,6 +1387,7 @@
         document.getElementById('courses-btn').addEventListener('click', async () => {
             showCoursesList();
         });
+
         // ======================= MEETING BUTTON HANDLER =======================
         document.getElementById('meeting-btn').addEventListener('click', async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1369,6 +1432,7 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         });
+
         // ======================= LIVE ATTENDANCE BANNER CLICK =======================
         window.handleLiveAttendanceBannerClick = async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1408,6 +1472,7 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         };
+
         // ======================= SUMMARY SECTION =======================
         document.getElementById('summary-nav-btn').addEventListener('click', () => {
             updateUserActivity("يفتح قسم التلخيص");
@@ -1425,6 +1490,7 @@
             `;
             openModalWithContent('تلخيص', summaryHTML);
         });
+
         // ======================= POLLS/DISCUSSION FEATURE - بدون حد للكلمات =======================
         async function openPollsView() {
             updateUserActivity("يتصفح الاستطلاعات");
@@ -1513,7 +1579,6 @@
                 showToast('لا يمكن نشر موضوع فارغ.', true);
                 return;
             }
-            // ✅ لا يوجد حد لعدد الكلمات
             const isAllowed = await checkAndHandleContent(topic, currentUser.id, currentUser.name);
             if (!isAllowed) return;
             await addDoc(collection(db, "polls"), {
@@ -1546,6 +1611,7 @@
             });
             input.value = '';
         }
+
         // =========================================================================
         function activateNavButtons() {
             document.getElementById('platform-btn').addEventListener('click', () => {
@@ -1700,6 +1766,7 @@
                             </div>
                             <div class="mt-4 bg-gradient-to-r from-[var(--primary-glow)]/20 to-[var(--secondary-glow)]/20 p-2 rounded-lg text-center backdrop-blur-sm">
                                 <p class="font-mono text-lg md:text-xl text-[var(--primary-glow)] tracking-wider whitespace-nowrap">${currentUser.studentId || 'ID غير متوفر'}</p>
+                                <p class="text-xs text-slate-300 mt-1">استخدم هذا الرقم التعريفي (ID) في أي مكان يتطلب التحقق من هويتك كطالب.</p>
                             </div>
                         </div>
                     </div>
@@ -1810,7 +1877,7 @@
                 'tickets-panel': 'support_tickets',
                 'opinions-panel': 'opinions',
                 'polls-panel': 'polls',
-                'attendance-panel': 'attendance', // ✅
+                'attendance-panel': 'attendance',
             };
             for (const [panelId, collectionName] of Object.entries(collectionsToWatch)) {
                 const navBtn = document.querySelector(`[data-panel="${panelId}"]`);
@@ -1840,11 +1907,14 @@
         }
         function showCountdownModal(title, callback) { openModalWithContent(title, `<div class="text-center p-8"><p class="text-lg">سيتم الإجراء خلال <span id="countdown-span" class="font-bold text-xl text-[var(--primary-glow)]">3</span>...</p></div>`); let count = 3; const countdownSpan = document.getElementById('countdown-span'); const interval = setInterval(() => { count--; if(countdownSpan) countdownSpan.textContent = count > 0 ? count + '...' : 'الآن!'; if (count <= 0) { clearInterval(interval); callback(); } }, 1000); }
         function handleLogout() { showCountdownModal('تسجيل الخروج', () => { updateUserActivity("سجل الخروج"); const userToLogOut = { ...currentUser }; localStorage.removeItem('moraUser'); currentUser = null; document.getElementById('generic-modal').classList.remove('open'); showPage('auth-page'); renderAuthForm(false, false); if (userToLogOut && userToLogOut.name) { document.getElementById('auth-name').value = userToLogOut.name; document.getElementById('auth-password').value = userToLogOut.password || ''; } initVantaBackground(); }); }
+
+        // ✅ مراقبة حذف الحساب من لوحة التحكم
         function listenForUserBanOrDeletion() {
             if (!currentUser || currentUser.isAdmin || !currentUser.id) return;
             const userDocRef = doc(db, "users", currentUser.id);
             onSnapshot(userDocRef, (doc) => {
                 if (!doc.exists()) {
+                    // تم حذف الحساب من لوحة التحكم
                     handleImmediateBan("تم حذف حسابك من النظام.");
                     return;
                 }
@@ -1877,6 +1947,7 @@
                 initVantaBackground();
             }, 3000);
         }
+
         // ======================= TIMER =======================
         let timerInterval; let timerState = { running: false, duration: 25 * 60 };
         function formatTime(seconds) { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
@@ -1907,6 +1978,7 @@
                 timerState.duration = 25*60; 
             } 
         }
+
         // ======================= THEMES =======================
         const themes = { "default":{n:"افتراضي",p:"#00f5c3",s:"#a78bfa"},"gold":{n:"ذهبي",p:"#f59e0b",s:"#fbbf24"},"emerald":{n:"زمردي",p:"#10b981",s:"#34d399"},"crimson":{n:"قرمزي",p:"#dc2626",s:"#f87171"},"violet":{n:"بنفسجي",p:"#8b5cf6",s:"#c084fc"},"rose":{n:"وردي",p:"#f43f5e",s:"#fb7185"},"sky":{n:"سماوي",p:"#0ea5e9",s:"#38bdf8"},"forest":{n:"غابي",p:"#22c55e",s:"#4ade80"},"ocean":{n:"محيط",p:"#0891b2",s:"#22d3ee"},"sunset":{n:"غروب",p:"#f97316",s:"#f59e0b"},"galaxy":{n:"مجرة",p:"#9333ea",s:"#d946ef"},"candy":{n:"حلوى",p:"#ec4899",s:"#f87171"},"lime":{n:"ليموني",p:"#84cc16",s:"#a3e635"},"fire":{n:"ناري",p:"#f59e0b",s:"#ef4444"},"ice":{n:"جليدي",p:"#22d3ee",s:"#67e8f9"},"royal":{n:"ملكي",p:"#d97706",s:"#f59e0b"},"hacker":{n:"هاكر",p:"#16a34a",s:"#4ade80"},"retro":{n:"ريترو",p:"#ca8a04",s:"#eab308"},"sakura":{n:"ساكورا",p:"#f472b6",s:"#fb7185"},"mint":{n:"نعناع",p:"#2dd4bf",s:"#5eead4"},"copper":{n:"نحاسي",p:"#b45309",s:"#d97706"},"lavender":{n:"خزامي",p:"#a78bfa",s:"#c4b5fd"},"cyber":{n:"سايبر",p:"#ea580c",s:"#f59e0b"},"sand":{n:"رملي",p:"#ca8a04",s:"#eab308"},"grape":{n:"عنبي",p:"#9333ea",s:"#a855f7"},"cherry":{n:"كرزي",p:"#be123c",s:"#e11d48"},"peach":{n:"خوخي",p:"#f97316",s:"#fb923c"},"teal":{n:"بطيخي",p:"#0d9488",s:"#14b8a6"},"indigo":{n:"نيلي",p:"#4f46e5",s:"#6366f1"},"amber":{n:"عنبري",p:"#d97706",s:"#f59e0b"},"fuchsia":{n:"فوشيا",p:"#c026d3",s:"#d946ef"} };
         function applyTheme(themeKey) {
@@ -1926,6 +1998,7 @@
             ` + style.innerHTML.split('}').slice(1).join('}');
             localStorage.setItem('moraTheme', themeKey);
         }
+
         // ======================= TEXTS =======================
         function applySiteTexts() {
             document.querySelectorAll('[data-text-key]').forEach(el => {
@@ -1950,6 +2023,7 @@
                 applySiteTexts();
             });
         }
+
         // ======================= ADMIN DASHBOARD =======================
         function initAdminDashboard() { 
             showPage('admin-dashboard'); 
@@ -2053,7 +2127,8 @@
                 });
                 if(container) container.innerHTML = h;
             });
-            // ✅ Attendance Panel
+
+            // ✅ Attendance Panel with Delete Button (only from attendance, not users)
             const attendanceRef = collection(db, "attendance");
             onSnapshot(query(attendanceRef, orderBy("timestamp", "desc")), (snapshot) => {
                 const container = document.getElementById('attendance-list');
@@ -2068,11 +2143,14 @@
                     const device = parseUserAgent(att.userAgent);
                     const time = att.timestamp ? att.timestamp.toDate().toLocaleString('ar-EG') : 'غير معروف';
                     html += `
-                        <div class="glass-effect p-3 rounded-lg">
-                            <p class="font-bold text-white">${att.userName}</p>
-                            <p class="text-sm text-slate-400">${att.userDivision === 'international' ? 'IB' : 'BIS'} - ${att.userYear}</p>
-                            <p class="text-xs text-slate-500 mt-1">الوقت: ${time}</p>
-                            <p class="text-xs text-slate-500">الجهاز: ${device} | IP: ${att.ipAddress || 'N/A'}</p>
+                        <div class="glass-effect p-3 rounded-lg flex justify-between items-start">
+                            <div>
+                                <p class="font-bold text-white">${att.userName}</p>
+                                <p class="text-sm text-slate-400">${att.userDivision === 'international' ? 'IB' : 'BIS'} - ${att.userYear}</p>
+                                <p class="text-xs text-slate-500 mt-1">الوقت: ${time}</p>
+                                <p class="text-xs text-slate-500">الجهاز: ${device} | IP: ${att.ipAddress || 'N/A'}</p>
+                            </div>
+                            <button onclick="deleteAttendanceRecord('${doc.id}')" class="text-red-500 hover:text-red-400 text-lg p-1"><i class="ph-trash"></i></button>
                         </div>
                     `;
                 });
@@ -2113,6 +2191,7 @@
             });
             document.getElementById('start-stream-btn').addEventListener('click', () => setDoc(siteSettingsRef, { isLive: true }, { merge: true }));
             document.getElementById('end-stream-btn').addEventListener('click', () => setDoc(siteSettingsRef, { isLive: false }, { merge: true }));
+
             // ✅ قسم تحميل التطبيق
             const appDownloadsRef = collection(db, "app_downloads");
             onSnapshot(appDownloadsRef, (snapshot) => {
@@ -2140,6 +2219,7 @@
                 html += '</div>';
                 openModalWithContent('سجل تنزيلات التطبيق', html);
             });
+
             // ✅ COURSES CATEGORIES
             const coursesRef = collection(db, "courses");
             const categoriesRef = collection(db, "course_categories");
@@ -2171,6 +2251,19 @@
                 showToast('تمت إضافة الفئة!');
             });
         }
+
+        // ✅ Delete ONLY attendance record (not user)
+        window.deleteAttendanceRecord = async (recordId) => {
+            if (!confirm('هل أنت متأكد من حذف سجل الحضور لهذا الطالب؟ لن يتمكن من الدخول إلى البث المباشر مستقبلاً، لكن حسابه سيظل نشطًا في الموقع.')) return;
+            try {
+                await deleteDoc(doc(db, "attendance", recordId));
+                showToast('تم حذف سجل الحضور بنجاح.');
+            } catch (error) {
+                console.error("Error deleting attendance record:", error);
+                showToast("حدث خطأ أثناء الحذف.", true);
+            }
+        };
+
         async function displayAdminContent() { const { type, year, division, subject, contentList } = adminContentPanelEl; const coll = type.value; const filters = [ where("year", "==", year.value), where("division", "==", division.value) ]; if (subject.value) filters.push(where("subject", "==", subject.value)); if (!year.value || !division.value) { contentList.innerHTML = '<p class="text-center text-slate-400">اختر الفرقة والشعبة لعرض المحتوى.</p>'; return; } const q = query(collection(db, coll), ...filters); onSnapshot(q, (snapshot) => { let h = ''; if (snapshot.empty) { h = '<p class="text-center text-slate-400">لا يوجد محتوى يطابق هذا الفلتر.</p>'; } else { snapshot.forEach(doc => { const item = doc.data(); h += `<div class="p-3 rounded-lg flex justify-between items-center hover:bg-slate-500/10 transition"><p class="font-semibold text-white truncate">${item.title} (${item.subject})</p><div class="flex gap-2"><button onclick="populateContentForm('${doc.id}', '${coll}')" class="text-sky-400 hover:text-sky-300 text-lg"><i class="ph-pencil-simple"></i></button><button onclick="toggleContentVisibility('${doc.id}', '${coll}', ${item.isHidden || false})" class="text-yellow-400 hover:text-yellow-300 text-lg"><i class="ph ${item.isHidden ? 'ph-eye-slash' : 'ph-eye'}"></i></button><button onclick="deleteContent('${doc.id}', '${coll}')" class="text-red-500 hover:text-red-400 text-lg"><i class="ph-trash"></i></button></div></div>`; }); } contentList.innerHTML = h; }); }
         window.populateContentForm = async (id, coll) => { const docSnap = await getDoc(doc(db, coll, id)); if (docSnap.exists()) { const item = docSnap.data(); adminContentPanelEl.title.value = item.title; adminContentPanelEl.body.value = item.body; adminContentPanelEl.subject.value = item.subject; adminContentPanelEl.formTitle.textContent = 'تعديل المحتوى'; adminContentPanelEl.saveBtn.textContent = 'حفظ التعديلات'; adminContentPanelEl.cancelBtn.classList.remove('hidden'); currentEditState = { id, collection: coll }; } }
         function resetContentForm() { adminContentPanelEl.formTitle.textContent = 'إضافة محتوى جديد'; adminContentPanelEl.saveBtn.textContent = 'حفظ'; adminContentPanelEl.cancelBtn.classList.add('hidden'); adminContentPanelEl.title.value = ''; adminContentPanelEl.body.value = ''; currentEditState = { id: null, collection: null }; }
@@ -2290,6 +2383,7 @@
             await deleteDoc(replyRef);
             showToast('تم حذف الرد.');
         }
+
         // ======================= INITIALIZATION =======================
         window.addEventListener('load', async () => {
             await listenToSiteContent();
