@@ -15,6 +15,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <!-- ✅ PDF Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style id="theme-style-root">
         :root {
             --bg-color: #0d0d1a;
@@ -589,6 +592,60 @@
             color: #94a3b8;
             font-style: italic;
         }
+
+        /* === CINEMATIC MODE STYLES === */
+        .cinematic-overlay {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+            pointer-events: none;
+            transition: opacity 0.8s ease;
+        }
+        .cinematic-overlay.hidden {
+            opacity: 0;
+        }
+        #cinematic-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .cinematic-text {
+            position: relative;
+            z-index: 10001;
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 20px var(--primary-glow);
+            animation: cinematic-text-fade 2s ease-in-out;
+        }
+        @keyframes cinematic-text-fade {
+            0%, 100% { opacity: 0; }
+            20%, 80% { opacity: 1; }
+        }
+        /* PDF Download Button */
+        .pdf-download-btn {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background: #4f46e5;
+            color: white;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .pdf-download-btn:hover {
+            background: #4338ca;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 <body class="w-full h-screen">
@@ -845,6 +902,13 @@
         <audio id="timer-end-sound" src="https://code-gemini.github.io/Mora-For-Studying/timer-end.mp3" preload="auto"></audio>
         <audio id="admin-notification-sound" src="https://code-gemini.github.io/Mora-For-Studying/notification.mp3" preload="auto"></audio>
     </div>
+
+    <!-- === CINEMATIC OVERLAY (HIDDEN BY DEFAULT) === -->
+    <div id="cinematic-overlay" class="cinematic-overlay hidden">
+        <canvas id="cinematic-canvas"></canvas>
+        <div id="cinematic-text" class="cinematic-text"></div>
+    </div>
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getFirestore, collection, doc, addDoc, getDocs, query, where, onSnapshot, deleteDoc, updateDoc, orderBy, serverTimestamp, getDoc, setDoc, limit, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
@@ -904,6 +968,90 @@
         const adminDashboardEl = { studentCount: document.getElementById('admin-student-count'), notificationsCount: document.getElementById('admin-notifications-count'), opinionsCount: document.getElementById('admin-opinions-count'), ratingsCount: document.getElementById('admin-ratings-count'), studentsList: document.getElementById('admin-students-list'), opinionsList: document.getElementById('admin-opinions-list'), coursesList: document.getElementById('admin-courses-list'), aiToolsList: document.getElementById('admin-ai-tools-list'), notificationsList: document.getElementById('admin-notifications-list'), pollsCount: document.getElementById('admin-polls-count'), pollsList: document.getElementById('admin-polls-list') };
         const adminContentPanelEl = { type: document.getElementById('content-type-select'), year: document.getElementById('content-year-select'), division: document.getElementById('content-division-select'), subject: document.getElementById('content-subject-select'), title: document.getElementById('content-title-input'), body: document.getElementById('content-body-input'), saveBtn: document.getElementById('save-content-btn'), formTitle: document.getElementById('content-form-title'), contentList: document.getElementById('admin-content-list'), cancelBtn: document.getElementById('cancel-edit-btn') };
         const subjectIcons = { 'محاسبه': 'ph-calculator', 'اقتصاد': 'ph-chart-bar', 'قانون': 'ph-scales', 'اداره': 'ph-briefcase', 'تسويق': 'ph-projector-screen-chart', 'لوچيستيات': 'ph-truck', 'حاسب': 'ph-desktop-tower', 'بيانات': 'ph-database', 'برامج': 'ph-code-simple', 'رياضيات': 'ph-function', 'اتصال': 'ph-chats-circle', 'سلوك': 'ph-users-three', 'تفكير': 'ph-lightbulb', 'انتاج': 'ph-factory', 'انسان': 'ph-hand-heart', 'لغه': 'ph-translate', 'default': 'ph-book-open-text' };
+
+        // ======================= CINEMATIC MODE FUNCTION (2 seconds) =======================
+        let cinematicPlayed = {};
+        function playCinematicMode(title, category = 'default') {
+            const key = `${category}-${title}`;
+            if (cinematicPlayed[key]) return;
+            cinematicPlayed[key] = true;
+
+            const overlay = document.getElementById('cinematic-overlay');
+            const textEl = document.getElementById('cinematic-text');
+            const canvas = document.getElementById('cinematic-canvas');
+
+            textEl.textContent = title;
+            overlay.classList.remove('hidden');
+
+            // Initialize Vanta Globe effect for cinematic
+            let cinematicEffect = null;
+            try {
+                cinematicEffect = VANTA.GLOBE({
+                    el: canvas,
+                    mouseControls: false,
+                    touchControls: false,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: 1.00,
+                    color: 0x00f5c3,
+                    color2: 0xa78bfa,
+                    backgroundColor: 0x000000,
+                    size: 1.5
+                });
+            } catch(e) { console.error("Cinematic Vanta failed", e); }
+
+            // ✅ Changed to 2000 ms (2 seconds)
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+                if (cinematicEffect) cinematicEffect.destroy();
+            }, 2000);
+        }
+
+        // ======================= PDF DOWNLOAD FUNCTION =======================
+        async function downloadLectureAsPDF(title, content) {
+            showToast("جارٍ إنشاء ملف PDF...");
+            try {
+                // Create a temporary div to render content
+                const tempDiv = document.createElement('div');
+                tempDiv.style.width = '210mm';
+                tempDiv.style.padding = '20px';
+                tempDiv.style.fontFamily = 'Cairo, sans-serif';
+                tempDiv.style.fontSize = '14px';
+                tempDiv.style.lineHeight = '1.6';
+                tempDiv.style.color = '#333';
+                tempDiv.innerHTML = `
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: bold; color: #000;">${title}</h2>
+                        <p style="font-size: 12px; color: #666;">${currentUser?.name || 'طالب'} - ${new Date().toLocaleDateString('ar-EG')}</p>
+                    </div>
+                    <div class="lecture-content">${content}</div>
+                `;
+                document.body.appendChild(tempDiv);
+
+                const canvas = await html2canvas(tempDiv, {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false
+                });
+
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+                pdf.save(`${title.replace(/[^a-z0-9]/gi, '_')}.pdf`);
+
+                document.body.removeChild(tempDiv);
+                showToast("تم تحميل المحاضرة كملف PDF بنجاح!");
+            } catch (error) {
+                console.error("PDF Error:", error);
+                showToast("حدث خطأ أثناء إنشاء ملف PDF.", true);
+            }
+        }
+
         // ======================= HELPER FUNCTIONS =======================
         function containsPhoneNumber(text) {
             const phonePattern = /(?:\+?20)?\s*1[0-9]{9}|01[0-9]{8}/;
@@ -1225,6 +1373,7 @@
         window.goBackToDashboard = () => { if (currentContentUnsubscribe) currentContentUnsubscribe(); showPage('student-dashboard'); document.getElementById('subject-content-page').innerHTML = ''; }
         window.openSubjectPage = async (subject) => { 
             await updateUserActivity(`يتصفح مادة: ${subject}`);
+            playCinematicMode(subject, 'subject');
             const subjectPage = document.getElementById('subject-content-page'); 
             // ✅ زر الرجوع تحت اسم المادة وليس بجانبه
             const pageHTML = `
@@ -1240,7 +1389,7 @@
             const q = query(collection(db, 'lectures'), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
             currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}', '${subject}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
         };
-        // ======================= CONTENT VIEW WITH STYLING =======================
+        // ======================= CONTENT VIEW WITH STYLING + PDF BUTTON =======================
         window.viewContentDetail = async (id, title, body, subject) => { 
             await updateUserActivity(`يشاهد محاضرة: ${title}`);
             const decodedBody = decodeURIComponent(atob(body));
@@ -1260,7 +1409,14 @@
             // Ensure proper list wrapping
             formattedBody = formattedBody.replace(/(<li>.*<\/li>)/g, '<ul>$1</ul>');
             formattedBody = formattedBody.replace(/<\/ul>\s*<ul>/g, '');
-            openModalWithContent(title, `<div class="lecture-content p-2">${formattedBody}</div>`); 
+            // ✅ Add PDF Download Button
+            const modalContent = `
+                <div class="lecture-content p-2">${formattedBody}</div>
+                <button class="pdf-download-btn" onclick="downloadLectureAsPDF('${title.replace(/'/g, "\\'")}', \`${formattedBody}\`)">
+                    تحميل كـ PDF
+                </button>
+            `;
+            openModalWithContent(title, modalContent); 
         };
         // ======================= BOOKS WITH DOWNLOAD ONLY =======================
         window.showSubjectSelectionModal = (type) => { 
@@ -1276,6 +1432,7 @@
         };
         window.openContentModal = async (type, subject) => { 
             const title = `${type === 'books' ? 'الكتب' : 'السكاشن'} - ${subject}`; 
+            playCinematicMode(title, type);
             openModalWithContent(title, `<div id="modal-content-list" class="text-center"><i class="ph-spinner ph-spin text-2xl"></i></div>`); 
             const container = document.getElementById('modal-content-list'); 
             const q = query(collection(db, type), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
@@ -1336,6 +1493,7 @@
         }
         async function showCoursesList() {
             await updateUserActivity("يتصفح قسم الكورسات");
+            playCinematicMode("الكورسات المجانية", 'courses');
             const q = query(collection(db, "courses"), orderBy("category"));
             const snapshot = await getDocs(q);
             let content = '<div class="space-y-4">';
@@ -1459,6 +1617,7 @@
         // ======================= SUMMARY SECTION =======================
         document.getElementById('summary-nav-btn').addEventListener('click', () => {
             updateUserActivity("يفتح قسم التلخيص");
+            playCinematicMode("تلخيص المحاضرات", 'summary');
             const summaryHTML = `
                 <div class="p-4 space-y-4 text-center">
                     <h3 class="text-xl font-bold text-[var(--primary-glow)]">تلخيص المحاضرات</h3>
@@ -1476,6 +1635,7 @@
         // ======================= POLLS/DISCUSSION FEATURE - بدون حد للكلمات =======================
         async function openPollsView() {
             updateUserActivity("يتصفح الاستطلاعات");
+            playCinematicMode("الاستطلاعات والمناقشات", 'polls');
             const pollsHTML = `
                 <div class="space-y-4">
                     <div class="content-policy-notice">
@@ -1603,6 +1763,7 @@
                 if (currentContentUnsubscribe) currentContentUnsubscribe(); 
                 if (type === 'opinions-modal') { 
                     updateUserActivity('يتصفح قسم الآراء'); 
+                    playCinematicMode("آراء الطلاب", 'opinions');
                     const opinionsHTML = `
                         <div class="content-policy-notice">
                             <strong>تنبيه هام:</strong> يُمنع تمامًا نشر أي محتوى يحتوي على ألفاظ غير لائقة، شتائم، أرقام، أو محتوى مخل. سيتم إصدار تحذير عند المخالفة الأولى، وحظر الحساب نهائيًا عند التكرار.
@@ -1655,6 +1816,7 @@
                 } 
                 if (type === 'ai-tools-modal') { 
                     updateUserActivity("يتصفح أدوات الذكاء الاصطناعي"); 
+                    playCinematicMode("أدوات الذكاء الاصطناعي", 'ai');
                     const q = query(collection(db, "ai_tools")); 
                     const snapshot = await getDocs(q); 
                     let content = '<div class="grid grid-cols-1 md:grid-cols-2 gap-4">'; 
@@ -1716,6 +1878,7 @@
             }));
             document.getElementById('digital-card-nav-btn').addEventListener('click', () => {
                 updateUserActivity("يفتح بطاقته الرقمية");
+                playCinematicMode("بطاقتك الرقمية", 'card');
                 const issueDate = currentUser.createdAt && currentUser.createdAt.seconds ? new Date(currentUser.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : new Date().toLocaleDateString('ar-EG');
                 const cardHTML = `
                     <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-black w-full max-w-md mx-auto shadow-2xl shadow-black/50 border border-[var(--primary-glow)] relative overflow-hidden" 
@@ -1763,10 +1926,12 @@
             });
             document.getElementById('privacy-policy-nav-btn').addEventListener('click', () => {
                 updateUserActivity("يقرأ سياسة الخصوصية");
+                playCinematicMode("سياسة الخصوصية", 'privacy');
                 openModalWithContent('سياسة الخصوصية', '<div class="p-2 text-sm text-slate-300 space-y-3"><p><strong>مقدمة:</strong> نحن في منصة "Mora For Studying" نأخذ خصوصية بياناتك على محمل الجد.</p><p><strong>البيانات التي نجمعها:</strong> عند إنشاء حساب، نقوم بجمع الاسم، الفرقة، الشعبة، بالإضافة إلى IP Address ونوع الجهاز لأغراض أمنية وتحليلية.</p><p><strong>استخدام البيانات:</strong> لا يتم مشاركة بياناتك الشخصية مع أي طرف ثالث. تستخدم البيانات داخلياً لتحسين تجربتك وتأمين المنصة.</p><p class="font-bold text-red-400 border-t border-red-500/30 pt-3 mt-3"><strong>سياسة الاستخدام العادل:</strong> أي محاولة لإساءة استخدام الموقع، أو نشر محتوى غير لائق، أو التحايل على نظام النقاط سيؤدي إلى <strong>الحظر الفوري والدائم للحساب</strong> دون سابق إنذار.</p><p class="text-xs text-slate-500 text-center pt-3">تطوير Amr lotfy</p></div>');
             });
             document.getElementById('study-timer-nav-btn').addEventListener('click', () => {
                 updateUserActivity("يفتح تايمر المذاكرة");
+                playCinematicMode("تايمر المذاكرة", 'timer');
                 openModalWithContent('تايمر المذاكرة', `<div class="text-center p-4 flex flex-col items-center"><p id="timer-display" class="text-6xl font-mono tracking-widest mb-6">${formatTime(timerState.duration)}</p><div class="flex gap-4"><button id="timer-start-btn" class="w-24 py-2 rounded-lg text-base font-bold btn-celestial">بدء</button><button id="timer-reset-btn" class="w-24 py-2 rounded-lg text-base font-bold btn-celestial border-amber-500 text-amber-500 hover:bg-amber-500 hover:text-black">إعادة ضبط</button></div></div>`); 
                 document.getElementById('timer-start-btn').onclick = () => timerState.running ? stopTimer() : startTimer(); 
                 document.getElementById('timer-reset-btn').onclick = () => { stopTimer(); timerState.duration = 25 * 60; updateTimerDisplay(); };
