@@ -1226,10 +1226,11 @@
         window.openSubjectPage = async (subject) => { 
             await updateUserActivity(`يتصفح مادة: ${subject}`);
             const subjectPage = document.getElementById('subject-content-page'); 
+            // ✅ زر الرجوع تحت اسم المادة وليس بجانبه
             const pageHTML = `
-                <header class="p-4 flex justify-between items-center">
+                <header class="p-4 text-center">
                     <h2 class="text-xl font-bold text-[var(--primary-glow)]">${subject}</h2>
-                    <button onclick="goBackToDashboard()" class="text-3xl hover:text-[var(--primary-glow)] transition"><i class="ph-arrow-right"></i></button>
+                    <button onclick="goBackToDashboard()" class="text-2xl hover:text-[var(--primary-glow)] transition mt-2"><i class="ph-arrow-right"></i></button>
                 </header>
                 <main class="flex-grow p-4 overflow-y-auto pb-5"><div id="subject-lectures" class="text-center pt-4"><i class="ph-spinner ph-spin text-2xl"></i></div></main>
             `;
@@ -1261,7 +1262,7 @@
             formattedBody = formattedBody.replace(/<\/ul>\s*<ul>/g, '');
             openModalWithContent(title, `<div class="lecture-content p-2">${formattedBody}</div>`); 
         };
-        // ======================= BOOKS WITH WATCH/DOWNLOAD BUTTONS =======================
+        // ======================= BOOKS WITH DOWNLOAD ONLY =======================
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
             const userMaterials = materials['ar'][`${currentUser.year}_${currentUser.division}`] || []; 
@@ -1288,11 +1289,11 @@
                         const item = doc.data(); 
                         const isUrl = item.body.startsWith('http'); 
                         if (type === 'books' && isUrl) {
+                            // ✅ فقط زر "تحميل" بدون "مشاهدة"
                             content += `
                                 <div class="glass-effect p-4 rounded-xl">
                                     <h5 class="font-bold text-white text-lg">${item.title}</h5>
                                     <div class="book-actions">
-                                        <button class="book-btn watch-btn" onclick="openIframeModal('${item.body}')">مشاهدة</button>
                                         <button class="book-btn download-btn" onclick="window.open('${item.body}', '_blank')">تحميل</button>
                                     </div>
                                 </div>
@@ -2388,5 +2389,5 @@
             if(modalCloseBtn.onclick) modalCloseBtn.onclick();
         });
     </script>
-</body>  
+</body>
 </html>
