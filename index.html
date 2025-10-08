@@ -15,7 +15,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-    <!-- ✅ PDF Libraries -->
+    <!-- ✅ PDF Libraries (Global UMD) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style id="theme-style-root">
@@ -1009,10 +1009,13 @@
             }, 2000);
         }
 
-        // ======================= PDF DOWNLOAD FUNCTION =======================
+        // ======================= PDF DOWNLOAD FUNCTION (FIXED) =======================
         async function downloadLectureAsPDF(title, content) {
             showToast("جارٍ إنشاء ملف PDF...");
             try {
+                // Access jsPDF from global window
+                const { jsPDF } = window.jspdf;
+
                 // Create a temporary div to render content
                 const tempDiv = document.createElement('div');
                 tempDiv.style.width = '210mm';
@@ -1030,6 +1033,7 @@
                 `;
                 document.body.appendChild(tempDiv);
 
+                // Use html2canvas to capture the content
                 const canvas = await html2canvas(tempDiv, {
                     scale: 2,
                     useCORS: true,
@@ -1037,7 +1041,7 @@
                 });
 
                 const imgData = canvas.toDataURL('image/png');
-                const pdf = new window.jspdf.jsPDF('p', 'mm', 'a4');
+                const pdf = new jsPDF('p', 'mm', 'a4');
                 const pdfWidth = pdf.internal.pageSize.getWidth();
                 const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
@@ -1176,6 +1180,8 @@
                 }
             }, 1000);
         };
+        // ... (بقية الدوال كما هي: onboarding, auth, dashboard, etc.)
+
         // ======================= ONBOARDING - بدون زر تخطي =======================
         let currentOnboardingStep = 0;
         function showOnboarding() {
@@ -1418,6 +1424,8 @@
             `;
             openModalWithContent(title, modalContent); 
         };
+        // ... (بقية الدوال: books, courses, meeting, etc. — بدون تغيير)
+
         // ======================= BOOKS WITH DOWNLOAD ONLY =======================
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
