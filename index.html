@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="default">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Mora For Studying - Final Version</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -650,7 +650,6 @@
             animation: unlocked-3d-float 3s infinite ease-in-out;
             margin-bottom: 1rem;
         }
-        /* QR TEXT FOR SCANNING */
         .qr-readable-text {
             position: absolute;
             bottom: 8px;
@@ -665,6 +664,134 @@
         }
         .qr-readable-text::selection {
             background: transparent;
+        }
+        /* Correction Button - Mobile Optimized */
+        .correction-btn {
+            background: #f97316;
+            color: white;
+            padding: 0.3rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            font-size: 0.75rem;
+        }
+        .correction-btn:hover {
+            background: #ea580c;
+        }
+        /* Correction Form Modal */
+        #correction-form {
+            text-align: center;
+        }
+        #correction-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-glow);
+            box-shadow: 0 0 15px var(--primary-glow);
+            margin: 0 auto 1rem;
+            display: block;
+            animation: glowing-logo-pulse 4s infinite ease-in-out;
+            will-change: box-shadow;
+        }
+        #correction-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--primary-glow);
+            margin-bottom: 0.5rem;
+        }
+        #correction-instructions {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        /* ========== STUDENT CARD STYLES ========== */
+        .student-card-container {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+        .student-card {
+            /* شفاف تمامًا - بدون خلفية أو إطار */
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0;
+        }
+        .student-card-content {
+            color: white;
+            text-align: center;
+        }
+        .student-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items-start;
+            margin-bottom: 1.5rem;
+        }
+        .student-card-title h4 {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .student-card-logo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-glow);
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+        .student-card-info p {
+            margin: 0.4rem 0;
+            font-size: 1rem;
+        }
+        .student-card-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .student-card-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+        }
+        .student-card-id-box {
+            margin-top: 1.2rem;
+            padding: 0.6rem 0;
+        }
+        .student-card-id-box .student-card-value {
+            font-size: 1.3rem;
+            font-family: monospace;
+            color: var(--primary-glow);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+        }
+        .student-card-id-box .student-card-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: block;
+            margin-top: 0.3rem;
+        }
+        .student-card-qr {
+            display: flex;
+            justify-content: center;
+            margin-top: 1.2rem;
+        }
+        .qr-readable-text {
+            position: absolute;
+            bottom: 8px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 0.65rem;
+            color: transparent;
+            user-select: none;
+            pointer-events: none;
+            opacity: 0;
         }
     </style>
 </head>
@@ -743,10 +870,11 @@
                 <p class="footer-text" data-text-key="footerText"></p>
             </footer>
             <nav class="bottom-nav fixed bottom-0 right-0 left-0 glass-effect flex text-xs z-50 p-1">
-                <button onclick="showSubjectSelectionModal('books')" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-books text-xl"></i><span>كتب</span></button>
+                <!-- Removed Books button -->
                 <button onclick="showSubjectSelectionModal('sections')" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-stack-simple text-xl"></i><span>سكاشن</span></button>
                 <button id="courses-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-cube unlocked-icon-3d text-xl"></i><span>كورسات</span></button>
                 <button data-modal="ai-tools-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-robot text-xl"></i><span>أدوات AI</span></button>
+                <!-- CALCULATOR REMOVED -->
                 <button data-modal="opinions-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-chats-teardrop text-xl"></i><span>آراء</span></button>
                 <button data-modal="polls-modal" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2"><i class="ph-megaphone-simple text-xl"></i><span>استطلاعات</span></button>
                 <button id="meeting-btn" class="bottom-nav-btn flex flex-col items-center space-y-1 p-2 relative">
@@ -781,6 +909,7 @@
                         <button data-panel="students-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة الطلاب</button>
                         <button data-panel="tickets-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة الشكاوى</button>
                         <button data-panel="live-stream-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة البث المباشر</button>
+                        <!-- Removed books from content panel -->
                         <button data-panel="content-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة المحتوى</button>
                         <button data-panel="text-management-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة النصوص</button>
                         <button data-panel="notifications-panel" class="admin-nav-btn text-right p-3 rounded-lg">الإشعارات</button>
@@ -788,6 +917,7 @@
                         <button data-panel="ai-tools-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة أدوات AI</button>
                         <button data-panel="opinions-panel" class="admin-nav-btn text-right p-3 rounded-lg">آراء الطلاب</button>
                         <button data-panel="polls-panel" class="admin-nav-btn text-right p-3 rounded-lg">إدارة الاستطلاعات</button>
+                        <button data-panel="corrections-panel" class="admin-nav-btn text-right p-3 rounded-lg">تصحيحات المحاضرات</button>
                         <button data-panel="settings-panel" class="admin-nav-btn text-right p-3 rounded-lg">إعدادات الموقع</button>
                         <button data-panel="attendance-panel" class="admin-nav-btn text-right p-3 rounded-lg">تسجيل الحضور</button>
                     </nav>
@@ -796,6 +926,7 @@
                     </div>
                 </aside>
                 <main class="flex-grow p-4 md:p-8 overflow-y-auto">
+                    <!-- Existing panels remain unchanged -->
                     <div id="info-panel" class="admin-panel hidden">
                         <h2 class="text-3xl font-bold mb-6">لوحة المعلومات</h2>
                         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 text-center">
@@ -847,7 +978,13 @@
                         <div id="admin-tickets-list" class="space-y-4"></div>
                     </div>
                     <div id="students-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة الطلاب</h2><div id="admin-students-list" class="space-y-4"></div></div>
-                    <div id="content-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة المحتوى</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><div class="glass-effect p-6 rounded-lg"><h3 id="content-form-title" class="text-xl font-bold mb-4">إضافة محتوى جديد</h3><select id="content-type-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="lectures">محاضرة</option><option value="books">كتاب</option><option value="sections">سكشن</option></select><select id="content-year-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر الفرقة</option><option value="1">الأولى</option><option value="2">الثانية</option></select><select id="content-division-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر الشعبة</option><option value="international">أعمال دولية</option><option value="systems">نظم معلومات</option></select><select id="content-subject-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر المادة أولاً</option></select><input id="content-title-input" type="text" placeholder="عنوان المحتوى" class="w-full rounded-lg input-field mb-4"><textarea id="content-body-input" placeholder="نص المحتوى أو الرابط..." class="w-full rounded-lg input-field mb-4" rows="4"></textarea><div class="flex gap-4"><button id="save-content-btn" class="w-full py-2 rounded-lg text-sm font-bold btn-celestial">حفظ</button><button id="cancel-edit-btn" class="w-full py-2 rounded-lg text-sm font-bold btn-celestial border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black hidden">إلغاء التعديل</button></div></div></div><div><h3 class="text-xl font-bold mb-4">المحتوى المضاف حاليًا</h3><div id="admin-content-list" class="space-y-3"></div></div></div></div>
+                    <div id="content-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة المحتوى</h2><div class="grid grid-cols-1 lg:grid-cols-2 gap-8"><div><div class="glass-effect p-6 rounded-lg"><h3 id="content-form-title" class="text-xl font-bold mb-4">إضافة محتوى جديد</h3>
+                    <!-- Removed books option -->
+                    <select id="content-type-select" class="w-full rounded-lg select-field appearance-none mb-4">
+                        <option value="lectures">محاضرة</option>
+                        <option value="sections">سكشن</option>
+                    </select>
+                    <select id="content-year-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر الفرقة</option><option value="1">الأولى</option><option value="2">الثانية</option></select><select id="content-division-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر الشعبة</option><option value="international">أعمال دولية</option><option value="systems">نظم معلومات</option></select><select id="content-subject-select" class="w-full rounded-lg select-field appearance-none mb-4"><option value="">اختر المادة أولاً</option></select><input id="content-title-input" type="text" placeholder="عنوان المحتوى" class="w-full rounded-lg input-field mb-4"><textarea id="content-body-input" placeholder="نص المحتوى أو الرابط..." class="w-full rounded-lg input-field mb-4" rows="4"></textarea><div class="flex gap-4"><button id="save-content-btn" class="w-full py-2 rounded-lg text-sm font-bold btn-celestial">حفظ</button><button id="cancel-edit-btn" class="w-full py-2 rounded-lg text-sm font-bold btn-celestial border-yellow-500 text-yellow-500 hover:bg-yellow-500 hover:text-black hidden">إلغاء التعديل</button></div></div></div><div><h3 class="text-xl font-bold mb-4">المحتوى المضاف حاليًا</h3><div id="admin-content-list" class="space-y-3"></div></div></div></div>
                     <div id="text-management-panel" class="admin-panel hidden">
                         <h2 class="text-3xl font-bold mb-6">إدارة نصوص الموقع</h2>
                         <div id="text-management-form" class="space-y-4"></div>
@@ -875,6 +1012,13 @@
                     <div id="ai-tools-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة أدوات AI</h2><div class="glass-effect p-6 rounded-lg mb-6"><h3 class="font-bold mb-4">إضافة أداة جديدة</h3><input id="ai-name-input" type="text" placeholder="اسم الأداة" class="w-full rounded-lg input-field mb-4"><input id="ai-desc-input" type="text" placeholder="وصف الأداة" class="w-full rounded-lg input-field mb-4"><input id="ai-url-input" type="text" placeholder="رابط الأداة" class="w-full rounded-lg input-field mb-4"><button id="add-ai-tool-btn" class="w-full py-2 rounded-lg font-bold btn-celestial">إضافة الأداة</button></div><div id="admin-ai-tools-list" class="space-y-4"></div></div>
                     <div id="opinions-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">آراء الطلاب</h2><div id="admin-opinions-list" class="space-y-4"></div></div>
                     <div id="polls-panel" class="admin-panel hidden"><h2 class="text-3xl font-bold mb-6">إدارة الاستطلاعات</h2><div id="admin-polls-list" class="space-y-4"></div></div>
+                    <!-- NEW: Corrections Panel -->
+                    <div id="corrections-panel" class="admin-panel hidden">
+                        <h2 class="text-3xl font-bold mb-6">تصحيحات المحاضرات</h2>
+                        <div id="admin-corrections-list" class="space-y-4">
+                            <p class="text-center text-slate-400">جارٍ تحميل طلبات التصحيح...</p>
+                        </div>
+                    </div>
                     <div id="settings-panel" class="admin-panel hidden">
                         <h2 class="text-3xl font-bold mb-6">إعدادات الموقع</h2>
                         <div class="space-y-4 max-w-2xl">
@@ -950,27 +1094,30 @@
         const materials = {
             ar: { '1_international': [ 'مبادئ المحاسبة الماليه', 'مبادئ الاقتصاد', 'مبادئ القانون', 'لغه اجنبيه (1)', 'مبادئ اداره الاعمال' ], '1_systems': ['طرق ومهارات الاتصال', 'رياضيات الاعمال', 'حقوق الانسان', 'التفكير الابتكاري', 'السلوك التنظيمي', 'اساسيات الحاسب وتكتولوچيا المعلومات'], '2_international': ['اداره اللوچيستيات وسلاسل الامداد', 'مبادئ التسويق', 'مبادئ الاقتصاد الجزئي', 'محاسبه التكاليف', 'قانون الاعمال'], '2_systems': ['قانون الاعمال', 'قواعد البيانات (1)', 'اداره الانتاج', 'محاسبه الشركات', 'تصميم برامج الحاسب'] },
         };
-        const onboardingSteps = [
-            { icon: 'ph-books', title: 'الكتب', text: 'استعرض الكتب الدراسية الخاصة بمادتك.' },
-            { icon: 'ph-stack-simple', title: 'السكاشن', text: 'شاهد شرح السكاشن من المحاضرات.' },
-            { icon: 'ph-cube', title: 'الكورسات', text: 'تعلم من كورسات مجانية متنوعة.' },
-            { icon: 'ph-robot', title: 'أدوات الذكاء الاصطناعي', text: 'استخدم أدوات ذكاء اصطناعي مساعدة.' },
-            { icon: 'ph-chats-teardrop', title: 'آراء الطلاب', text: 'شارك رأيك أو اقرأ آراء زملائك.' },
-            { icon: 'ph-megaphone-simple', title: 'استطلاعات', text: 'شارك في استطلاعات الرأي والمناقشات.' },
-            { icon: 'ph-video', title: 'ميتنج', text: 'انضم إلى البث المباشر للمحاضرات.' },
-            { icon: 'ph-identification-card', title: 'بطاقتي', text: 'عرض بطاقتك الرقمية مع رمز QR.' },
-            { icon: 'ph-shield-check', title: 'الخصوصية', text: 'اقرأ سياسة الخصوصية الخاصة بالموقع.' },
-            { icon: 'ph-headset', title: 'الدعم', text: 'تواصل مع فريق الدعم الفني.' },
-            { icon: 'ph-info', title: 'عنا', text: 'تعرف على فريق التطوير والمشرفين.' },
-            { icon: 'ph-globe-hemisphere-west', title: 'المنصة', text: 'الانتقال إلى المنصة الرسمية للمعهد.' },
-            { icon: 'ph-timer', title: 'تايمر', text: 'استخدم تايمر المذاكرة لتحسين تركيزك.' },
-            { icon: 'ph-gear-six', title: 'الإعدادات', text: 'غيّر الثيم أو الإعدادات الأخرى.' },
-            { icon: 'ph-user-circle', title: 'حسابي', text: 'إدارة حسابك أو تسجيل الخروج.' }
-        ];
-        const studentDashboardEl = { welcomeName: document.getElementById('welcome-name'), userDetails: document.getElementById('user-details'), studentId: document.getElementById('student-id'), materialsList: document.getElementById('materials-list') };
-        const adminDashboardEl = { studentCount: document.getElementById('admin-student-count'), notificationsCount: document.getElementById('admin-notifications-count'), opinionsCount: document.getElementById('admin-opinions-count'), ratingsCount: document.getElementById('admin-ratings-count'), studentsList: document.getElementById('admin-students-list'), opinionsList: document.getElementById('admin-opinions-list'), coursesList: document.getElementById('admin-courses-list'), aiToolsList: document.getElementById('admin-ai-tools-list'), notificationsList: document.getElementById('admin-notifications-list'), pollsCount: document.getElementById('admin-polls-count'), pollsList: document.getElementById('admin-polls-list') };
-        const adminContentPanelEl = { type: document.getElementById('content-type-select'), year: document.getElementById('content-year-select'), division: document.getElementById('content-division-select'), subject: document.getElementById('content-subject-select'), title: document.getElementById('content-title-input'), body: document.getElementById('content-body-input'), saveBtn: document.getElementById('save-content-btn'), formTitle: document.getElementById('content-form-title'), contentList: document.getElementById('admin-content-list'), cancelBtn: document.getElementById('cancel-edit-btn') };
-        const subjectIcons = { 'محاسبه': 'ph-calculator', 'اقتصاد': 'ph-chart-bar', 'قانون': 'ph-scales', 'اداره': 'ph-briefcase', 'تسويق': 'ph-projector-screen-chart', 'لوچيستيات': 'ph-truck', 'حاسب': 'ph-desktop-tower', 'بيانات': 'ph-database', 'برامج': 'ph-code-simple', 'رياضيات': 'ph-function', 'اتصال': 'ph-chats-circle', 'سلوك': 'ph-users-three', 'تفكير': 'ph-lightbulb', 'انتاج': 'ph-factory', 'انسان': 'ph-hand-heart', 'لغه': 'ph-translate', 'default': 'ph-book-open-text' };
+        // ======================= DEVICE ICON HELPER =======================
+        function getDeviceIcon(userAgent) {
+            if (!userAgent) return { icon: '💻', name: 'جهاز غير معروف' };
+            if (userAgent.includes('iPhone')) {
+                return { 
+                    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M17.25 14.25a6.75 6.75 0 0 1-6.75 6.75H9a6.75 6.75 0 0 1-6.75-6.75V9A6.75 6.75 0 0 1 9 2.25h1.5a6.75 6.75 0 0 1 6.75 6.75v5.25Z" fill="#007AFF"></path><path d="M15.75 12a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" fill="#007AFF"></path></svg>',
+                    name: 'iPhone'
+                };
+            }
+            if (userAgent.includes('Android')) {
+                return {
+                    icon: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" fill="#3DDC84"></path></svg>',
+                    name: 'Android'
+                };
+            }
+            if (userAgent.includes('Windows')) {
+                return { icon: '🪟', name: 'Windows PC' };
+            }
+            if (userAgent.includes('Macintosh')) {
+                return { icon: '🍎', name: 'Mac' };
+            }
+            return { icon: '💻', name: 'جهاز آخر' };
+        }
+
         // ======================= HELPER FUNCTIONS =======================
         function containsPhoneNumber(text) {
             const phonePattern = /(?:\+?20)?\s*1[0-9]{9}|01[0-9]{8}/;
@@ -1095,6 +1242,54 @@
                 }
             }, 1000);
         };
+
+        // ======================= CORRECTION SYSTEM =======================
+        window.openCorrectionForm = async (lectureId, lectureTitle, subject) => {
+            await updateUserActivity(`يفتح نموذج تصحيح للمحاضرة: ${lectureTitle}`);
+            const correctionHTML = `
+                <div id="correction-form">
+                    <img id="correction-logo" src="https://i.postimg.cc/mgdFZ313/IMG-20250414-WA0047-1.jpg" alt="Logo" loading="lazy" decoding="async">
+                    <h3 id="correction-title">نموذج تصحيح المحاضرة</h3>
+                    <p id="correction-instructions">يرجى كتابة الخطأ الذي لاحظته في المحاضرة أدناه. سيتم مراجعته من قبل الإدارة.</p>
+                    <input type="hidden" id="correction-lecture-id" value="${lectureId}">
+                    <input type="hidden" id="correction-lecture-title" value="${lectureTitle}">
+                    <input type="hidden" id="correction-subject" value="${subject}">
+                    <textarea id="correction-text" class="w-full rounded-lg input-field mb-4" rows="5" placeholder="اكتب وصف الخطأ هنا..."></textarea>
+                    <button id="submit-correction-btn" class="w-full py-2 rounded-lg font-bold btn-celestial">إرسال التصحيح</button>
+                </div>
+            `;
+            openModalWithContent('إبلاغ عن خطأ', correctionHTML);
+            document.getElementById('submit-correction-btn').addEventListener('click', submitCorrection);
+        };
+        async function submitCorrection() {
+            const lectureId = document.getElementById('correction-lecture-id').value;
+            const lectureTitle = document.getElementById('correction-lecture-title').value;
+            const subject = document.getElementById('correction-subject').value;
+            const text = document.getElementById('correction-text').value.trim();
+            if (!text) {
+                showToast('يرجى كتابة وصف للخطأ.', true);
+                return;
+            }
+            const isAllowed = await checkAndHandleContent(text, currentUser.id, currentUser.name);
+            if (!isAllowed) return;
+            await addDoc(collection(db, "lecture_corrections"), {
+                userId: currentUser.id,
+                userName: currentUser.name,
+                userYear: currentUser.year,
+                userDivision: currentUser.division,
+                lectureId,
+                lectureTitle,
+                subject,
+                text,
+                status: 'جديد',
+                createdAt: serverTimestamp(),
+                isReadByAdmin: false,
+                adminReply: ''
+            });
+            showToast('تم إرسال طلب التصحيح بنجاح! شكرًا لك.');
+            document.getElementById('generic-modal').classList.remove('open');
+        };
+
         // ======================= EXPLANATION SECTION =======================
         document.getElementById('explanation-nav-btn').addEventListener('click', () => {
             updateUserActivity("يفتح قسم الشرح");
@@ -1131,10 +1326,43 @@
                 }
             }, 1000);
         };
+
         // ======================= ONBOARDING =======================
         let currentOnboardingStep = 0;
+        let onboardingSteps = [];
+        function generateOnboardingStepsFromNav() {
+            const navButtons = document.querySelectorAll('.bottom-nav .bottom-nav-btn:not([id="account-options-btn"]):not([data-modal="settings-modal"])');
+            const steps = [];
+            navButtons.forEach(btn => {
+                const icon = btn.querySelector('i').className;
+                const title = btn.querySelector('span').textContent;
+                const descriptions = {
+                    'سكاشن': 'شاهد شرح السكاشن من المحاضرات.',
+                    'كورسات': 'تعلم من كورسات مجانية متنوعة.',
+                    'أدوات AI': 'استخدم أدوات ذكاء اصطناعي مساعدة.',
+                    'آراء': 'شارك رأيك أو اقرأ آراء زملائك.',
+                    'استطلاعات': 'شارك في استطلاعات الرأي والمناقشات.',
+                    'ميتنج': 'انضم إلى البث المباشر للمحاضرات.',
+                    'بطاقتي': 'عرض بطاقتك الرقمية مع رمز QR.',
+                    'الخصوصية': 'اقرأ سياسة الخصوصية الخاصة بالموقع.',
+                    'الدعم': 'تواصل مع فريق الدعم الفني.',
+                    'عنا': 'تعرف على فريق التطوير والمشرفين.',
+                    'المنصة': 'الانتقال إلى المنصة الرسمية للمعهد.',
+                    'تايمر': 'استخدم تايمر المذاكرة لتحسين تركيزك.',
+                    'شرح': 'شاهد شروحات المحاضرات بالذكاء الاصطناعي.',
+                    'تلخيص': 'استخدم أدوات الذكاء الاصطناعي لتلخيص المحاضرات.'
+                };
+                steps.push({
+                    icon: icon,
+                    title: title,
+                    text: descriptions[title] || 'استكشف هذه الميزة الجديدة.'
+                });
+            });
+            return steps;
+        }
         function showOnboarding() {
             if (localStorage.getItem('onboardingCompleted') === 'true') return;
+            onboardingSteps = generateOnboardingStepsFromNav();
             document.getElementById('onboarding-modal').style.display = 'flex';
             updateOnboardingStep(0);
         }
@@ -1162,6 +1390,7 @@
                 localStorage.setItem('onboardingCompleted', 'true');
             }
         });
+
         // ======================= AUTHENTICATION =======================
         function renderAuthForm(isInitial = true, showRegister = false) {
             const authFormContainer = document.getElementById('auth-form-container'); 
@@ -1305,6 +1534,7 @@
                 submitBtn.textContent = 'دخــــول'; 
             } 
         }
+
         // ======================= STUDENT DASHBOARD =======================
         function initStudentDashboard() { 
             showPage('student-dashboard'); 
@@ -1316,8 +1546,13 @@
             listenToSiteSettings(); 
             listenForNotifications(); 
             listenForSupportReplies();
+            listenForCorrections();
             setTimeout(showOnboarding, 800);
         }
+        const studentDashboardEl = { welcomeName: document.getElementById('welcome-name'), userDetails: document.getElementById('user-details'), studentId: document.getElementById('student-id'), materialsList: document.getElementById('materials-list') };
+        const adminDashboardEl = { studentCount: document.getElementById('admin-student-count'), notificationsCount: document.getElementById('admin-notifications-count'), opinionsCount: document.getElementById('admin-opinions-count'), ratingsCount: document.getElementById('admin-ratings-count'), studentsList: document.getElementById('admin-students-list'), opinionsList: document.getElementById('admin-opinions-list'), coursesList: document.getElementById('admin-courses-list'), aiToolsList: document.getElementById('admin-ai-tools-list'), notificationsList: document.getElementById('admin-notifications-list'), pollsCount: document.getElementById('admin-polls-count'), pollsList: document.getElementById('admin-polls-list'), correctionsList: document.getElementById('admin-corrections-list') };
+        const adminContentPanelEl = { type: document.getElementById('content-type-select'), year: document.getElementById('content-year-select'), division: document.getElementById('content-division-select'), subject: document.getElementById('content-subject-select'), title: document.getElementById('content-title-input'), body: document.getElementById('content-body-input'), saveBtn: document.getElementById('save-content-btn'), formTitle: document.getElementById('content-form-title'), contentList: document.getElementById('admin-content-list'), cancelBtn: document.getElementById('cancel-edit-btn') };
+        const subjectIcons = { 'محاسبه': 'ph-calculator', 'اقتصاد': 'ph-chart-bar', 'قانون': 'ph-scales', 'اداره': 'ph-briefcase', 'تسويق': 'ph-projector-screen-chart', 'لوچيستيات': 'ph-truck', 'حاسب': 'ph-desktop-tower', 'بيانات': 'ph-database', 'برامج': 'ph-code-simple', 'رياضيات': 'ph-function', 'اتصال': 'ph-chats-circle', 'سلوك': 'ph-users-three', 'تفكير': 'ph-lightbulb', 'انتاج': 'ph-factory', 'انسان': 'ph-hand-heart', 'لغه': 'ph-translate', 'default': 'ph-book-open-text' };
         function loadMaterialsForStudent() {
             const userMaterials = materials['ar'][`${currentUser.year}_${currentUser.division}`] || [];
             studentDashboardEl.materialsList.innerHTML = userMaterials.map((mat) => { 
@@ -1340,8 +1575,9 @@
             showPage('subject-content-page'); 
             const lecturesContainer = document.getElementById('subject-lectures'); 
             const q = query(collection(db, 'lectures'), where("year", "==", currentUser.year), where("division", "==", currentUser.division), where("subject", "==", subject), where("isHidden", "==", false), orderBy('createdAt', 'desc')); 
-            currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}', '${subject}')"><h4 class="font-bold text-white">${item.title}</h4></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
+            currentContentUnsubscribe = onSnapshot(q, (snapshot) => { if (snapshot.empty) { lecturesContainer.innerHTML = `<p class="text-slate-400 py-4">لا توجد محاضرات منشورة لهذه المادة حالياً.</p>`; } else { let contentHTML = '<div class="space-y-3">'; snapshot.forEach(doc => { const item = doc.data(); contentHTML += `<div class="glass-effect p-3 rounded-lg cursor-pointer hover:bg-slate-500/10 transition-colors" onclick="viewContentDetail('${doc.id}', '${item.title}', '${btoa(encodeURIComponent(item.body))}', '${subject}')"><h4 class="font-bold text-white">${item.title}</h4><div class="mt-2 flex justify-end"><button class="correction-btn" onclick="event.stopPropagation(); openCorrectionForm('${doc.id}', '${item.title}', '${subject}')">تصحيح</button></div></div>`; }); contentHTML += '</div>'; lecturesContainer.innerHTML = contentHTML; } }, (error) => { console.error("Error:", error); lecturesContainer.innerHTML = `<p class="text-red-400 py-4">حدث خطأ أثناء تحميل المحاضرات.</p>`; }); 
         };
+
         // ======================= CONTENT VIEW WITH STYLING =======================
         window.viewContentDetail = async (id, title, body, subject) => { 
             await updateUserActivity(`يشاهد محاضرة: ${title}`);
@@ -1362,6 +1598,7 @@
             formattedBody = formattedBody.replace(/<\/ul>\s*<ul>/g, '');
             openModalWithContent(title, `<div class="lecture-content p-2">${formattedBody}</div>`); 
         };
+
         // ======================= BOOKS WITH WATCH & DOWNLOAD =======================
         window.showSubjectSelectionModal = (type) => { 
             updateUserActivity(`يتصفح قسم ${type === 'books' ? 'الكتب' : 'السكاشن'}`);
@@ -1476,6 +1713,7 @@
         document.getElementById('courses-btn').addEventListener('click', async () => {
             showCoursesList();
         });
+
         // ======================= MEETING BUTTON HANDLER =======================
         document.getElementById('meeting-btn').addEventListener('click', async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1520,6 +1758,7 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         });
+
         // ======================= LIVE ATTENDANCE BANNER CLICK =======================
         window.handleLiveAttendanceBannerClick = async () => {
             if (!currentUser || currentUser.isAdmin) return;
@@ -1559,6 +1798,7 @@
                 showToast("حدث خطأ أثناء تسجيل الحضور.", true);
             }
         };
+
         // ======================= SUMMARY SECTION =======================
         document.getElementById('summary-nav-btn').addEventListener('click', () => {
             updateUserActivity("يفتح قسم التلخيص");
@@ -1576,6 +1816,7 @@
             `;
             openModalWithContent('تلخيص', summaryHTML);
         });
+
         // ======================= POLLS/DISCUSSION FEATURE - GLOBAL =======================
         const emojis = [
             '👍', '👎', '❤️', '🔥', '👏', '😂', '😮', '😢', '😡', '🎉', '💯', '🙏', '👌', '👀', '🤔', '😎', '🤩', '🥳', '😜', '🤪',
@@ -1609,7 +1850,7 @@
             '🚦', '🛑', '🚧', '⚓', '⛵', '🛶', '🚤', '🛳️', '⛴️', '🛥️', '🚢', '✈️', '🛩️', '🛫', '🛬', '🪂', '💺', '🚁', '🚟', '🚠', '🚡',
             '🛰️', '🚀', '🛸', '🛎️', '🧳', '⌛', '⏳', '⌚', '⏰', '⏱️', '⏲️', '🕰️', '🕛', '🕧', '🕐', '🕜', '🕑', '🕝', '🕒', '🕞', '🕓',
             '🕟', '🕔', '🕠', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚', '🕡', '🌑', '🌒', '🌓', '🌔', '🌕', '🌖', '🌗', '🌘', '🌙', '🌚', '🌛',
-            '🌜', '🌡️', '☀️', '🌝', '🌞', '🪐', '⭐', '🌟', '🌠', '🌌', '☁️', '⛅', '⛈️', '🌤️', '🌥️', '🌦️', '🌧️', '🌨️', '🌩️', '🌪️',
+            '🌜', '🌡️', '☀️', '🌝', '🌞', '🪐', '⭐', '🌟', '🌠', '🌌', '☁️', '⛅', '⛈️', '🌤️', '🌥️', '🌦️', '🌧️', '🌨️', 'heim', '🌪️',
             '🌫️', '🌬️', '🌀', '🌈', '🌂', '☂️', '☔', '⛱️', '⚡', '❄️', '☃️', '⛄', '☄️', '🔥', '💧', '🌊', '🎃', '🎄', '🎆', '🎇', '🧨',
             '✨', '🎈', '🎉', '🎊', '🎋', '🎍', '🎎', '🎏', '🎐', '🎑', '🧧', '🎀', '🎁', '🎗️', '🎟️', '🎫', '🎖️', '🏆', '🏅', '🥇', '🥈',
             '🥉', '⚽', '🏀', '🏈', '⚾', '🥎', '🎾', '🏐', '🏉', '🎱', '🏓', '🏸', '🏒', '🏑', '🥍', '🏏', '🪃', '🥏', '🎯', '🪀', '🎮',
@@ -1620,7 +1861,7 @@
             '📐', '✂️', '🗃️', '🗄️', '🗑️', '🔒', '🔓', '🔏', '🔐', '🔑', '🔨', '🪓', '⛏️', '⚒️', '🛠️', '🗡️', '⚔️', '🔫', '🏹', '🛡️',
             '🪚', '🔧', '🪛', '🔩', '⚙️', '🗜️', '⚖️', '🦯', '🔗', '⛓️', '🪝', '🧰', '🧲', '🪜', '⚗️', '🧪', '🧫', '🧬', '🔬', '🔭', '📡',
             '💉', '🩸', '💊', '🩹', '🩺', '🚪', '🛗', '🪞', '🪟', '🛏️', '🛋️', '🪑', '🚽', '🪠', '🚿', '🛁', '🪤', '🪒', '🧴', '🧷', '🧹',
-            '🧺', '🧻', '🪣', '🧼', '🪥', '🧽', '🧯', '🛒', '🚬', '⚰️', '🪦', '⚱️', '🧿', '🪬', '🔮', '📿', '💈', '⚗️', '🧪', '🧫', '🧬',
+            '🧺', '🧻', '🪣', '🧼', '🪥', '🧽', '🧯', '🛒', '🚬', '⚰️', '🪦', '⚱️', '🧿', '🪬', '🔮', '📿', '💈', '💣', '🧨', '🧪', '🧫', '🧬',
             '🔬', '🔭', '📡', '💉', '🩸', '💊', '🩹', '🩺', '🚪', '🛗', '🪞', '🪟', '🛏️', '🛋️', '🪑', '🚽', '🪠', '🚿', '🛁', '🪤', '🪒',
             '🧴', '🧷', '🧹', '🧺', '🧻', '🪣', '🧼', '🪥', '🧽', '🧯', '🛒', '🚬', '⚰️', '🪦', '⚱️', '🧿', '🪬', '🔮', '📿', '💈'
         ];
@@ -1687,6 +1928,7 @@
                 });
             });
         }
+
         // ======================= OPINIONS VIEW =======================
         async function openOpinionsView() {
             updateUserActivity("يتصفح قسم الآراء");
@@ -1733,6 +1975,7 @@
                 });
             });
         }
+
         // ======================= REACTIONS SYSTEM =======================
         function addLongPressReaction(element, collectionName) {
             let pressTimer;
@@ -1857,6 +2100,7 @@
             });
             input.value = '';
         }
+
         // =========================================================================
         function activateNavButtons() {
             document.getElementById('platform-btn').addEventListener('click', () => {
@@ -1966,42 +2210,52 @@
             document.getElementById('digital-card-nav-btn').addEventListener('click', () => {
                 updateUserActivity("يفتح بطاقته الرقمية");
                 const issueDate = currentUser.createdAt && currentUser.createdAt.seconds ? new Date(currentUser.createdAt.seconds * 1000).toLocaleDateString('ar-EG') : new Date().toLocaleDateString('ar-EG');
+                const deviceInfo = getDeviceIcon(currentUser.userAgent);
                 // ✅ نص مخفي لقارئ QR حقيقي
-                const qrText = `اسم الطالب: ${currentUser.name}\nالرقم التعريفي: ${currentUser.studentId || 'غير متوفر'}`;
+                const qrText = `اسم الطالب: ${currentUser.name}
+الرقم التعريفي: ${currentUser.studentId || 'غير متوفر'}`;
                 const cardHTML = `
-                    <div class="p-4 rounded-2xl bg-gradient-to-br from-slate-800 via-slate-900 to-black w-full max-w-md mx-auto shadow-2xl shadow-black/50 border border-[var(--primary-glow)] relative overflow-hidden" 
-                        style="background-image: radial-gradient(circle at 30% 30%, rgba(0, 245, 195, 0.15) 0%, transparent 40%), radial-gradient(circle at 70% 70%, rgba(167, 139, 250, 0.1) 0%, transparent 40%);">
-                        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                        <div class="relative z-10">
-                            <div class="flex justify-between items-start">
-                                <div class="text-right">
-                                    <h4 class="text-lg font-bold text-white text-right">بطاقة طالب رقمية</h4>
-                                    <p class="text-xs text-slate-400 text-right">المعهد العالي للحاسبات وتكنولوجيا الإدارة</p>
+                    <div class="student-card-container">
+                        <div class="student-card">
+                            <div class="student-card-content">
+                                <div class="student-card-header">
+                                    <div class="student-card-title">
+                                        <h4 class="text-lg font-bold text-white">بطاقة طالب رقمية</h4>
+                                        <p class="text-xs text-slate-400">المعهد العالي للحاسبات وتكنولوجيا الإدارة</p>
+                                    </div>
+                                    <img src="https://i.postimg.cc/mgdFZ313/IMG-20250414-WA0047-1.jpg" alt="Logo" class="student-card-logo">
                                 </div>
-                                <div class="relative">
-                                    <img src="https://i.postimg.cc/mgdFZ313/IMG-20250414-WA0047-1.jpg" alt="Logo" class="w-16 h-16 rounded-full border-2 border-[var(--primary-glow)] shadow-lg shadow-[var(--primary-glow)]/30">
-                                    <div class="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+                                <div class="student-card-info">
+                                    <div>
+                                        <p class="student-card-label">الاســـــم</p>
+                                        <p class="student-card-value">${currentUser.name}</p>
+                                    </div>
+                                    <div>
+                                        <p class="student-card-label">التخصص</p>
+                                        <p class="student-card-value">${currentUser.year === '1' ? "الفرقة الأولى" : "الفرقة الثانية"} - ${currentUser.division === "international" ? "أعمال دولية (IB)" : "نظم معلومات (BIS)"}</p>
+                                    </div>
+                                    <div>
+                                        <p class="student-card-label">نوع الجهاز</p>
+                                        <p class="student-card-value">
+                                            ${deviceInfo.name}
+                                            <span class="device-icon">${deviceInfo.icon}</span>
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="student-card-label">تاريخ الانضمام</p>
+                                        <p class="student-card-value">${issueDate}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="mt-6 text-right">
-                                <p class="text-sm text-slate-400">الاســـــم</p>
-                                <p class="text-2xl font-bold text-white -mt-1">${currentUser.name}</p>
-                                <p class="text-sm text-slate-400 mt-2">التخصص</p>
-                                <p class="text-lg font-semibold text-slate-200 -mt-1">${currentUser.year === '1' ? "الفرقة الأولى" : "الفرقة الثانية"} - ${currentUser.division === "international" ? "أعمال دولية (IB)" : "نظم معلومات (BIS)"}</p>
-                            </div>
-                            <div class="flex justify-between items-end mt-4">
-                                <div class="text-right">
-                                    <p class="text-xs text-slate-500">تاريخ الإصدار</p>
-                                    <p class="text-sm font-mono text-slate-300">${issueDate}</p>
+                                <div class="student-card-id-box">
+                                    <span class="student-card-value">${currentUser.studentId || 'ID غير متوفر'}</span>
+                                    <span class="student-card-label">استخدم هذا الرقم التعريفي (ID) في أي مكان يتطلب التحقق من هويتك كطالب.</span>
                                 </div>
-                                <div id="qrcode-container" class="p-1.5 bg-white rounded-md inline-block shadow-lg"></div>
+                                <div class="student-card-qr">
+                                    <div id="qrcode-container"></div>
+                                </div>
+                                <!-- نص مخفي يُقرأ عند مسح الـ QR -->
+                                <div class="qr-readable-text">${qrText}</div>
                             </div>
-                            <div class="mt-4 bg-gradient-to-r from-[var(--primary-glow)]/20 to-[var(--secondary-glow)]/20 p-2 rounded-lg text-center backdrop-blur-sm">
-                                <p class="font-mono text-lg md:text-xl text-[var(--primary-glow)] tracking-wider whitespace-nowrap">${currentUser.studentId || 'ID غير متوفر'}</p>
-                                <p class="text-xs text-slate-300 mt-1">استخدم هذا الرقم التعريفي (ID) في أي مكان يتطلب التحقق من هويتك كطالب.</p>
-                            </div>
-                            <!-- نص مخفي يُقرأ عند مسح الـ QR -->
-                            <div class="qr-readable-text">${qrText}</div>
                         </div>
                     </div>
                 `;
@@ -2009,7 +2263,15 @@
                 const qrContainer = document.getElementById('qrcode-container');
                 if(qrContainer && currentUser.studentId) {
                     qrContainer.innerHTML = '';
-                    new QRCode(qrContainer, { text: qrText, width: 90, height: 90, colorDark : "#000000", colorLight : "#ffffff", correctLevel : QRCode.CorrectLevel.H });
+                    // ✅ QR Code حقيقي بدون خلفية بيضاء
+                    new QRCode(qrContainer, {
+                        text: qrText,
+                        width: 100,
+                        height: 100,
+                        colorDark : "#000000",
+                        colorLight : "transparent", // ✅ خلفية شفافة
+                        correctLevel : QRCode.CorrectLevel.H
+                    });
                 } else if (qrContainer) {
                     qrContainer.innerHTML = '<p class="text-center text-xs p-2 text-red-500">ID غير<br>متوفر</p>';
                 }
@@ -2096,6 +2358,11 @@
                 }
             });
         }
+        // ======================= CORRECTIONS LISTENER =======================
+        function listenForCorrections() {
+            const correctionsNavBtn = document.querySelector('[data-modal="corrections-modal"]');
+            // Not needed for student, only for admin
+        }
         async function markAdminItemsAsRead(collectionName) {
             const q = query(collection(db, collectionName), where("isReadByAdmin", "==", false));
             const snapshot = await getDocs(q);
@@ -2112,6 +2379,7 @@
                 'opinions-panel': 'opinions',
                 'polls-panel': 'polls',
                 'attendance-panel': 'attendance',
+                'corrections-panel': 'lecture_corrections'
             };
             for (const [panelId, collectionName] of Object.entries(collectionsToWatch)) {
                 const navBtn = document.querySelector(`[data-panel="${panelId}"]`);
@@ -2179,6 +2447,7 @@
                 initVantaBackground();
             }, 3000);
         }
+
         // ======================= TIMER =======================
         let timerInterval; let timerState = { running: false, duration: 25 * 60 };
         function formatTime(seconds) { const m = Math.floor(seconds / 60); const s = seconds % 60; return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
@@ -2209,6 +2478,7 @@
                 timerState.duration = 25*60; 
             } 
         }
+
         // ======================= THEMES =======================
         const themes = { "default":{n:"افتراضي",p:"#00f5c3",s:"#a78bfa"},"gold":{n:"ذهبي",p:"#f59e0b",s:"#fbbf24"},"emerald":{n:"زمردي",p:"#10b981",s:"#34d399"},"crimson":{n:"قرمزي",p:"#dc2626",s:"#f87171"},"violet":{n:"بنفسجي",p:"#8b5cf6",s:"#c084fc"},"rose":{n:"وردي",p:"#f43f5e",s:"#fb7185"},"sky":{n:"سماوي",p:"#0ea5e9",s:"#38bdf8"},"forest":{n:"غابي",p:"#22c55e",s:"#4ade80"},"ocean":{n:"محيط",p:"#0891b2",s:"#22d3ee"},"sunset":{n:"غروب",p:"#f97316",s:"#f59e0b"},"galaxy":{n:"مجرة",p:"#9333ea",s:"#d946ef"},"candy":{n:"حلوى",p:"#ec4899",s:"#f87171"},"lime":{n:"ليموني",p:"#84cc16",s:"#a3e635"},"fire":{n:"ناري",p:"#f59e0b",s:"#ef4444"},"ice":{n:"جليدي",p:"#22d3ee",s:"#67e8f9"},"royal":{n:"ملكي",p:"#d97706",s:"#f59e0b"},"hacker":{n:"هاكر",p:"#16a34a",s:"#4ade80"},"retro":{n:"ريترو",p:"#ca8a04",s:"#eab308"},"sakura":{n:"ساكورا",p:"#f472b6",s:"#fb7185"},"mint":{n:"نعناع",p:"#2dd4bf",s:"#5eead4"},"copper":{n:"نحاسي",p:"#b45309",s:"#d97706"},"lavender":{n:"خزامي",p:"#a78bfa",s:"#c4b5fd"},"cyber":{n:"سايبر",p:"#ea580c",s:"#f59e0b"},"sand":{n:"رملي",p:"#ca8a04",s:"#eab308"},"grape":{n:"عنبي",p:"#9333ea",s:"#a855f7"},"cherry":{n:"كرزي",p:"#be123c",s:"#e11d48"},"peach":{n:"خوخي",p:"#f97316",s:"#fb923c"},"teal":{n:"بطيخي",p:"#0d9488",s:"#14b8a6"},"indigo":{n:"نيلي",p:"#4f46e5",s:"#6366f1"},"amber":{n:"عنبري",p:"#d97706",s:"#f59e0b"},"fuchsia":{n:"فوشيا",p:"#c026d3",s:"#d946ef"} };
         function applyTheme(themeKey) {
@@ -2228,6 +2498,7 @@
             ` + style.innerHTML.split('}').slice(1).join('}');
             localStorage.setItem('moraTheme', themeKey);
         }
+
         // ======================= TEXTS =======================
         function applySiteTexts() {
             document.querySelectorAll('[data-text-key]').forEach(el => {
@@ -2252,6 +2523,7 @@
                 applySiteTexts();
             });
         }
+
         // ======================= ADMIN DASHBOARD =======================
         function initAdminDashboard() { 
             showPage('admin-dashboard'); 
@@ -2378,6 +2650,43 @@
                                 <p class="text-xs text-slate-500">الجهاز: ${device} | IP: ${att.ipAddress || 'N/A'}</p>
                             </div>
                             <button onclick="deleteAttendanceRecord('${doc.id}')" class="text-red-500 hover:text-red-400 text-lg p-1"><i class="ph-trash"></i></button>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            });
+            // ✅ NEW: Corrections Panel
+            const correctionsRef = collection(db, "lecture_corrections");
+            onSnapshot(query(correctionsRef, orderBy("createdAt", "desc")), (snapshot) => {
+                const container = document.getElementById('admin-corrections-list');
+                if (!container) return;
+                if (snapshot.empty) {
+                    container.innerHTML = '<p class="text-center text-slate-400">لا توجد طلبات تصحيح حتى الآن.</p>';
+                    return;
+                }
+                let html = '<div class="space-y-4">';
+                snapshot.forEach(doc => {
+                    const c = doc.data();
+                    const statusColor = c.status === 'تم الرد' ? 'text-green-400' : 'text-yellow-400';
+                    const replySection = c.adminReply ? `<div class="mt-2 pt-2 border-t border-green-500/30"><p class="text-xs text-slate-400">ردك:</p><p class="text-sm text-green-300">${c.adminReply}</p></div>` : `<div class="mt-3"><textarea id="correction-reply-${doc.id}" class="w-full rounded-lg input-field" rows="2" placeholder="اكتب ردك هنا..."></textarea><button onclick="replyToCorrection('${doc.id}')" class="w-full mt-2 py-2 rounded-lg text-sm font-bold btn-celestial">إرسال الرد</button></div>`;
+                    html += `
+                        <div class="glass-effect p-4 rounded-lg">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-bold text-white">${c.lectureTitle}</p>
+                                    <p class="text-sm text-slate-400">المادة: ${c.subject}</p>
+                                    <p class="text-xs text-slate-400 mt-1">الطالب: ${c.userName} (${c.userYear} - ${c.userDivision === 'international' ? 'IB' : 'BIS'})</p>
+                                    <p class="text-xs text-slate-400">الوقت: ${c.createdAt.toDate().toLocaleString('ar-EG')}</p>
+                                    <p class="mt-2 text-white">${c.text}</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xs font-bold text-white px-2 py-1 rounded-full ${statusColor}">${c.status}</span>
+                                    <button onclick="hideCorrection('${doc.id}', ${c.isHidden || false})" class="px-2 py-1 text-sm rounded ${c.isHidden ? 'bg-green-600' : 'bg-slate-600'}">${c.isHidden ? 'إظهار' : 'إخفاء'}</button>
+                                    <button onclick="deleteFromCollection('${doc.id}', 'lecture_corrections')" class="text-red-500 hover:text-red-400 text-lg p-1"><i class="ph-trash"></i></button>
+                                </div>
+                            </div>
+                            ${replySection}
                         </div>
                     `;
                 });
@@ -2535,6 +2844,22 @@
             });
             showToast("تم إرسال الرد بنجاح.");
         };
+        // ✅ NEW: Correction Functions
+        window.replyToCorrection = async (correctionId) => {
+            const replyText = document.getElementById(`correction-reply-${correctionId}`).value.trim();
+            if (!replyText) { showToast("لا يمكن إرسال رد فارغ.", true); return; }
+            await updateDoc(doc(db, "lecture_corrections", correctionId), {
+                adminReply: replyText,
+                status: "تم الرد",
+                resolvedAt: serverTimestamp(),
+                isReadByStudent: false
+            });
+            showToast("تم إرسال الرد بنجاح.");
+        };
+        window.hideCorrection = async (id, isHidden) => {
+            await updateDoc(doc(db, "lecture_corrections", id), { isHidden: !isHidden });
+            showToast(`تم ${isHidden ? 'إظهار' : 'إخفاء'} طلب التصحيح.`);
+        };
         document.getElementById('send-notification-btn').addEventListener('click', async () => { const title = document.getElementById('notification-title-input').value.trim(); const body = document.getElementById('notification-body-input').value.trim(); if (!body) { showToast('نص الإشعار لا يمكن أن يكون فارغاً', true); return; } await addDoc(collection(db, 'notifications'), { title, body, createdAt: serverTimestamp() }); showToast('تم إرسال الإشعار بنجاح!'); document.getElementById('notification-title-input').value = ''; document.getElementById('notification-body-input').value = ''; });
         document.getElementById('add-course-btn').addEventListener('click', async () => { 
             const title = document.getElementById('course-title-input').value.trim();
@@ -2606,6 +2931,7 @@
             await deleteDoc(replyRef);
             showToast('تم حذف الرد.');
         }
+
         // ======================= INITIALIZATION =======================
         window.addEventListener('load', async () => {
             await listenToSiteContent();
