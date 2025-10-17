@@ -1094,6 +1094,7 @@
         const materials = {
             ar: { '1_international': [ 'مبادئ المحاسبة الماليه', 'مبادئ الاقتصاد', 'مبادئ القانون', 'لغه اجنبيه (1)', 'مبادئ اداره الاعمال' ], '1_systems': ['طرق ومهارات الاتصال', 'رياضيات الاعمال', 'حقوق الانسان', 'التفكير الابتكاري', 'السلوك التنظيمي', 'اساسيات الحاسب وتكتولوچيا المعلومات'], '2_international': ['اداره اللوچيستيات وسلاسل الامداد', 'مبادئ التسويق', 'مبادئ الاقتصاد الجزئي', 'محاسبه التكاليف', 'قانون الاعمال'], '2_systems': ['قانون الاعمال', 'قواعد البيانات (1)', 'اداره الانتاج', 'محاسبه الشركات', 'تصميم برامج الحاسب'] },
         };
+
         // ======================= DEVICE ICON HELPER =======================
         function getDeviceIcon(userAgent) {
             if (!userAgent) return { icon: '💻', name: 'جهاز غير معروف' };
@@ -1407,7 +1408,7 @@
                                         <input type="text" id="auth-name" placeholder="الاسم" class="w-full rounded-lg text-center input-field">
                                         ${showRegister ? `
                                             <select id="auth-year" class="w-full rounded-lg text-center select-field appearance-none"><option value="">اختر الفرقة</option><option value="1">الأولى</option><option value="2">الثانية</option></select>
-                                            <select id="auth-division" class="w-full rounded-lg text-center select-field appearance-none"><option value="">اختر الشعبة</option><option value="international">أعمال دولية (IB)</option><option value="systems">نظم معلومات (BIS)</option></select>
+                                            <select id="auth-division" class="w-full rounded-lg text-center select-field appearance-none"><option value="">اختر الشعبة</option></select>
                                         ` : ''}
                                         <div class="relative">
                                             <input type="password" id="auth-password" placeholder="كلمة المرور" class="w-full rounded-lg text-center input-field pr-10">
@@ -1438,6 +1439,30 @@
                         passInput.type = isPassword ? 'text' : 'password';
                         eyeIcon.className = isPassword ? 'ph-eye-slash' : 'ph-eye';
                     };
+                }
+
+                // Dynamic division options based on selected year
+                if (showRegister) {
+                    const yearSelect = document.getElementById('auth-year');
+                    const divisionSelect = document.getElementById('auth-division');
+                    yearSelect.addEventListener('change', () => {
+                        divisionSelect.innerHTML = '<option value="">اختر الشعبة</option>';
+                        if (yearSelect.value === '1') {
+                            const opt = document.createElement('option');
+                            opt.value = 'international';
+                            opt.textContent = 'أعمال دولية (IB)';
+                            divisionSelect.appendChild(opt);
+                        } else if (yearSelect.value === '2') {
+                            const opt1 = document.createElement('option');
+                            opt1.value = 'international';
+                            opt1.textContent = 'أعمال دولية (IB)';
+                            divisionSelect.appendChild(opt1);
+                            const opt2 = document.createElement('option');
+                            opt2.value = 'systems';
+                            opt2.textContent = 'نظم معلومات (BIS)';
+                            divisionSelect.appendChild(opt2);
+                        }
+                    });
                 }
             } 
         }
@@ -2358,6 +2383,7 @@
                 }
             });
         }
+
         // ======================= CORRECTIONS LISTENER =======================
         function listenForCorrections() {
             const correctionsNavBtn = document.querySelector('[data-modal="corrections-modal"]');
@@ -2409,6 +2435,7 @@
         }
         function showCountdownModal(title, callback) { openModalWithContent(title, `<div class="text-center p-8"><p class="text-lg">سيتم الإجراء خلال <span id="countdown-span" class="font-bold text-xl text-[var(--primary-glow)]">3</span>...</p></div>`); let count = 3; const countdownSpan = document.getElementById('countdown-span'); const interval = setInterval(() => { count--; if(countdownSpan) countdownSpan.textContent = count > 0 ? count + '...' : 'الآن!'; if (count <= 0) { clearInterval(interval); callback(); } }, 1000); }
         function handleLogout() { showCountdownModal('تسجيل الخروج', () => { updateUserActivity("سجل الخروج"); const userToLogOut = { ...currentUser }; localStorage.removeItem('moraUser'); currentUser = null; document.getElementById('generic-modal').classList.remove('open'); showPage('auth-page'); renderAuthForm(false, false); if (userToLogOut && userToLogOut.name) { document.getElementById('auth-name').value = userToLogOut.name; document.getElementById('auth-password').value = userToLogOut.password || ''; } initVantaBackground(); }); }
+
         // ✅ مراقبة حذف الحساب من لوحة التحكم
         function listenForUserBanOrDeletion() {
             if (!currentUser || currentUser.isAdmin || !currentUser.id) return;
@@ -2785,6 +2812,7 @@
                 showToast('تمت إضافة الفئة!');
             });
         }
+
         // ✅ Delete ONLY attendance record (not user)
         window.deleteAttendanceRecord = async (recordId) => {
             if (!confirm('هل أنت متأكد من حذف سجل الحضور لهذا الطالب؟ لن يتمكن من الدخول إلى البث المباشر مستقبلاً، لكن حسابه سيظل نشطًا في الموقع.')) return;
@@ -2796,6 +2824,7 @@
                 showToast("حدث خطأ أثناء الحذف.", true);
             }
         };
+
         async function displayAdminContent() { const { type, year, division, subject, contentList } = adminContentPanelEl; const coll = type.value; const filters = [ where("year", "==", year.value), where("division", "==", division.value) ]; if (subject.value) filters.push(where("subject", "==", subject.value)); if (!year.value || !division.value) { contentList.innerHTML = '<p class="text-center text-slate-400">اختر الفرقة والشعبة لعرض المحتوى.</p>'; return; } const q = query(collection(db, coll), ...filters); onSnapshot(q, (snapshot) => { let h = ''; if (snapshot.empty) { h = '<p class="text-center text-slate-400">لا يوجد محتوى يطابق هذا الفلتر.</p>'; } else { snapshot.forEach(doc => { const item = doc.data(); h += `<div class="p-3 rounded-lg flex justify-between items-center hover:bg-slate-500/10 transition"><p class="font-semibold text-white truncate">${item.title} (${item.subject})</p><div class="flex gap-2"><button onclick="populateContentForm('${doc.id}', '${coll}')" class="text-sky-400 hover:text-sky-300 text-lg"><i class="ph-pencil-simple"></i></button><button onclick="toggleContentVisibility('${doc.id}', '${coll}', ${item.isHidden || false})" class="text-yellow-400 hover:text-yellow-300 text-lg"><i class="ph ${item.isHidden ? 'ph-eye-slash' : 'ph-eye'}"></i></button><button onclick="deleteContent('${doc.id}', '${coll}')" class="text-red-500 hover:text-red-400 text-lg"><i class="ph-trash"></i></button></div></div>`; }); } contentList.innerHTML = h; }); }
         window.populateContentForm = async (id, coll) => { const docSnap = await getDoc(doc(db, coll, id)); if (docSnap.exists()) { const item = docSnap.data(); adminContentPanelEl.title.value = item.title; adminContentPanelEl.body.value = item.body; adminContentPanelEl.subject.value = item.subject; adminContentPanelEl.formTitle.textContent = 'تعديل المحتوى'; adminContentPanelEl.saveBtn.textContent = 'حفظ التعديلات'; adminContentPanelEl.cancelBtn.classList.remove('hidden'); currentEditState = { id, collection: coll }; } }
         function resetContentForm() { adminContentPanelEl.formTitle.textContent = 'إضافة محتوى جديد'; adminContentPanelEl.saveBtn.textContent = 'حفظ'; adminContentPanelEl.cancelBtn.classList.add('hidden'); adminContentPanelEl.title.value = ''; adminContentPanelEl.body.value = ''; currentEditState = { id: null, collection: null }; }
